@@ -1,0 +1,71 @@
+<div class="dashboard-sidebar">
+  <!-- Sidebar Header -->
+  <div class="sidebar-header">
+    <h3>📚 Programs</h3>
+  </div>
+
+  <!-- Sidebar Tabs -->
+  <div class="sidebar-tabs">
+    <button 
+      class="sidebar-tab-btn"
+      (click)="switchTab('programs')">
+      <i class="bi bi-book"></i> Programs
+    </button>
+    <button 
+      class="sidebar-tab-btn"
+      (click)="switchTab('packages')">
+      <i class="bi bi-box"></i> Packages
+    </button>
+  </div>
+
+  <!-- Programs Tree -->
+  <div class="sidebar-content">
+    <div class="programs-list">
+      <div *ngIf="programs.length === 0" class="empty-state">
+        <p>No programs yet</p>
+      </div>
+
+      <!-- Program Item -->
+      <div *ngFor="let program of programs" class="program-item">
+        <button 
+          class="program-header"
+          (click)="toggleProgram(program.id)">
+          <i 
+            [class]="expandedProgram === program.id ? 'bi bi-chevron-down' : 'bi bi-chevron-right'">
+          </i>
+          <span class="program-title">{{ program.title }}</span>
+          <span class="duration-badge">{{ program.durationWeeks }}w</span>
+        </button>
+
+        <!-- Weeks List (expanded) -->
+        <div *ngIf="expandedProgram === program.id" class="weeks-list">
+          <div *ngIf="!program.weeks" class="loading">
+            <span>Loading weeks...</span>
+          </div>
+
+          <div *ngFor="let week of program.weeks" class="week-item">
+            <button 
+              class="week-header"
+              (click)="toggleWeek(week.id)">
+              <i 
+                [class]="expandedWeek === week.id ? 'bi bi-chevron-down' : 'bi bi-chevron-right'">
+              </i>
+              <span>Week {{ week.weekNumber }}</span>
+            </button>
+
+            <!-- Days List (expanded) -->
+            <div *ngIf="expandedWeek === week.id" class="days-list">
+              <div *ngFor="let day of week.days" class="day-item">
+                <div class="day-info">
+                  <span class="day-number">Day {{ day.dayNumber }}</span>
+                  <span class="day-title">{{ day.title }}</span>
+                  <span class="exercises-count">{{ day.exercises?.length || 0 }} exercises</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

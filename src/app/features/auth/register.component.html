@@ -1,0 +1,144 @@
+<div class="register-container">
+  <div class="register-card">
+    <div class="register-header">
+      <h1 class="brand-name">Gymunity</h1>
+      <p class="subtitle">Create Your Trainer Account</p>
+    </div>
+
+    <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="register-form">
+      <div class="form-group">
+        <label for="userName" class="form-label">Username</label>
+        <input
+          type="text"
+          id="userName"
+          class="form-control"
+          formControlName="userName"
+          placeholder="Choose a username"
+          [class.is-invalid]="userName?.invalid && userName?.touched"
+        />
+        <div class="invalid-feedback" *ngIf="userName?.invalid && userName?.touched">
+          <span *ngIf="userName?.errors?.['required']">Username is required</span>
+          <span *ngIf="userName?.errors?.['minlength']">Username must be at least 3 characters</span>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="email" class="form-label">Email Address</label>
+        <input
+          type="email"
+          id="email"
+          class="form-control"
+          formControlName="email"
+          placeholder="Enter your email"
+          [class.is-invalid]="email?.invalid && email?.touched"
+        />
+        <div class="invalid-feedback" *ngIf="email?.invalid && email?.touched">
+          <span *ngIf="email?.errors?.['required']">Email is required</span>
+          <span *ngIf="email?.errors?.['email']">Please enter a valid email</span>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="fullName" class="form-label">Full Name</label>
+        <input
+          type="text"
+          id="fullName"
+          class="form-control"
+          formControlName="fullName"
+          placeholder="Enter your full name"
+          [class.is-invalid]="fullName?.invalid && fullName?.touched"
+        />
+        <div class="invalid-feedback" *ngIf="fullName?.invalid && fullName?.touched">
+          <span *ngIf="fullName?.errors?.['required']">Full name is required</span>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="profilePhoto" class="form-label">Profile Photo</label>
+        <div class="file-input-wrapper">
+          <input
+            type="file"
+            id="profilePhoto"
+            class="file-input"
+            accept="image/*"
+            (change)="onFileSelected($event)"
+            [class.is-invalid]="profilePhoto?.invalid && profilePhoto?.touched"
+          />
+          <label for="profilePhoto" class="file-label">
+            <i class="bi bi-cloud-upload"></i>
+            <span *ngIf="!selectedFile">Choose a photo or drag and drop</span>
+            <span *ngIf="selectedFile">{{ selectedFile.name }}</span>
+          </label>
+          <img *ngIf="previewUrl" [src]="previewUrl" class="preview-image" alt="Preview" />
+        </div>
+        <div class="invalid-feedback" *ngIf="profilePhoto?.invalid && profilePhoto?.touched">
+          <span *ngIf="profilePhoto?.errors?.['required']">Profile photo is required</span>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="password" class="form-label">Password</label>
+          <div class="password-input-group">
+            <input
+              [type]="showPassword ? 'text' : 'password'"
+              id="password"
+              class="form-control"
+              formControlName="password"
+              placeholder="Enter your password"
+              [class.is-invalid]="password?.invalid && password?.touched"
+            />
+            <button
+              type="button"
+              class="password-toggle"
+              (click)="togglePasswordVisibility()"
+            >
+              <i [class]="showPassword ? 'bi bi-eye-slash' : 'bi bi-eye'"></i>
+            </button>
+          </div>
+          <div class="invalid-feedback" *ngIf="password?.invalid && password?.touched">
+            <span *ngIf="password?.errors?.['required']">Password is required</span>
+            <span *ngIf="password?.errors?.['minlength']">Password must be at least 6 characters</span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="confirmPassword" class="form-label">Confirm Password</label>
+          <div class="password-input-group">
+            <input
+              [type]="showConfirmPassword ? 'text' : 'password'"
+              id="confirmPassword"
+              class="form-control"
+              formControlName="confirmPassword"
+              placeholder="Confirm your password"
+              [class.is-invalid]="(confirmPassword?.invalid && confirmPassword?.touched) || registerForm.errors?.['passwordMismatch']"
+            />
+            <button
+              type="button"
+              class="password-toggle"
+              (click)="toggleConfirmPasswordVisibility()"
+            >
+              <i [class]="showConfirmPassword ? 'bi bi-eye-slash' : 'bi bi-eye'"></i>
+            </button>
+          </div>
+          <div class="invalid-feedback" *ngIf="(confirmPassword?.invalid && confirmPassword?.touched) || registerForm.errors?.['passwordMismatch']">
+            <span *ngIf="confirmPassword?.errors?.['required']">Confirm password is required</span>
+            <span *ngIf="registerForm.errors?.['passwordMismatch']">Passwords do not match</span>
+          </div>
+        </div>
+      </div>
+
+      <button type="submit" class="btn btn-primary btn-lg" [disabled]="isLoading || registerForm.invalid">
+        <span *ngIf="!isLoading">Create Account</span>
+        <span *ngIf="isLoading">
+          <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+          Creating...
+        </span>
+      </button>
+    </form>
+
+    <div class="register-footer">
+      <p>Already have an account? <a routerLink="/auth/login" class="signin-link">Sign in here</a></p>
+    </div>
+  </div>
+</div>

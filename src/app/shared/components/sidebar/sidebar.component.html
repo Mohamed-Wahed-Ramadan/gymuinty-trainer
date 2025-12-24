@@ -1,0 +1,56 @@
+<aside [class.open]="isOpen" class="sidebar">
+  <div class="sidebar-header">
+    <h2 class="sidebar-title">Gymunity</h2>
+    <button class="toggle-btn" (click)="toggleSidebar()">
+      <i class="bi bi-x-lg"></i>
+    </button>
+  </div>
+
+  <nav class="sidebar-nav">
+    <ul class="nav-list">
+      <li class="nav-item">
+        <a href="/dashboard" class="nav-link">
+          <i class="bi bi-speedometer2"></i>
+          <span>Dashboard</span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a href="/dashboard/programs" class="nav-link">
+          <i class="bi bi-collection"></i>
+          <span>Programs</span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a href="/dashboard/packages" class="nav-link">
+          <i class="bi bi-box"></i>
+          <span>Packages</span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a href="/exercise-library" class="nav-link">
+          <i class="bi bi-dumbbell"></i>
+          <span>Exercises</span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a href="/inbox" class="nav-link">
+          <i class="bi bi-chat-dots"></i>
+          <span>Messages</span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a href="/profile" class="nav-link">
+          <i class="bi bi-person"></i>
+          <span>Profile</span>
+        </a>
+      </li>
+    </ul>
+  </nav>
+
+  <div class="sidebar-footer">
+    <button class="logout-btn" (click)="logout()">
+      <i class="bi bi-box-arrow-right"></i>
+      <span>Logout</span>
+    </button>
+  </div>
+</aside>

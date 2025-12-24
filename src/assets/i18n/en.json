@@ -1,0 +1,97 @@
+{
+  "app": {
+    "title": "Gymunity Trainer Dashboard",
+    "brand": "Gymunity"
+  },
+  "auth": {
+    "login": {
+      "title": "Sign In",
+      "subtitle": "Trainer Dashboard",
+      "emailOrUsername": "Email or Username",
+      "password": "Password",
+      "rememberMe": "Remember me",
+      "forgotPassword": "Forgot Password?",
+      "signIn": "Sign In",
+      "signInWithGoogle": "Sign in with Google",
+      "noAccount": "Don't have an account?",
+      "signUp": "Sign up here",
+      "required": "This field is required",
+      "invalidEmail": "Please enter a valid email",
+      "minLength": "Password must be at least 6 characters"
+    },
+    "register": {
+      "title": "Create Account",
+      "subtitle": "Create Your Trainer Account",
+      "username": "Username",
+      "email": "Email Address",
+      "fullName": "Full Name",
+      "profilePhoto": "Profile Photo",
+      "password": "Password",
+      "confirmPassword": "Confirm Password",
+      "createAccount": "Create Account",
+      "haveAccount": "Already have an account?",
+      "signIn": "Sign in here",
+      "choosePhoto": "Choose a photo or drag and drop",
+      "passwordMismatch": "Passwords do not match",
+      "success": "Registration successful"
+    },
+    "forgotPassword": {
+      "title": "Reset Password",
+      "subtitle": "Reset Your Password",
+      "email": "Email Address",
+      "helpText": "Enter your email address and we'll send you a link to reset your password.",
+      "sendLink": "Send Reset Link",
+      "emailSent": "Email Sent!",
+      "success": "We've sent a password reset link to your email address.",
+      "checkSpam": "Didn't receive the email? Check your spam folder or try again.",
+      "havePassword": "Remember your password?",
+      "signIn": "Sign in here"
+    }
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "welcome": "Welcome back",
+    "programs": "Programs",
+    "packages": "Packages",
+    "clients": "Clients",
+    "revenue": "Revenue"
+  },
+  "sidebar": {
+    "dashboard": "Dashboard",
+    "programs": "Programs",
+    "packages": "Packages",
+    "exercises": "Exercises",
+    "messages": "Messages",
+    "profile": "Profile",
+    "logout": "Logout"
+  },
+  "notifications": {
+    "title": "Notifications",
+    "clearAll": "Clear All",
+    "noNotifications": "No notifications",
+    "success": "Success",
+    "error": "Error",
+    "warning": "Warning",
+    "info": "Information"
+  },
+  "profile": {
+    "title": "Profile",
+    "editProfile": "Edit Profile",
+    "settings": "Settings",
+    "changePassword": "Change Password",
+    "logout": "Logout"
+  },
+  "common": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "add": "Add",
+    "close": "Close",
+    "loading": "Loading...",
+    "error": "An error occurred",
+    "success": "Operation successful",
+    "confirm": "Are you sure?",
+    "back": "Back"
+  }
+}

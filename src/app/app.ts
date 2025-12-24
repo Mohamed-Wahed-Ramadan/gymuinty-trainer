@@ -1,12 +1,46 @@
-import { Component, signal } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { Component, OnInit, signal } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { RouterOutlet, Router } from '@angular/router';
+import { SidebarComponent } from './shared/components/sidebar/sidebar.component';
+import { NotificationsComponent } from './shared/components/notifications/notifications.component';
+import { AuthService } from './core/services/auth.service';
+import { TranslationService } from './core/services/translation.service';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet],
+  standalone: true,
+  imports: [CommonModule, RouterOutlet, SidebarComponent, NotificationsComponent],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
-export class App {
-  protected readonly title = signal('gymunity-trainer');
+export class App implements OnInit {
+  protected readonly title = signal('Gymunity Trainer');
+  protected isSidebarOpen = signal(true);
+  protected isLoggedIn = signal(false);
+
+  constructor(
+    private authService: AuthService,
+    private translationService: TranslationService,
+    private router: Router
+  ) {}
+
+  ngOnInit(): void {
+    // Initialize translation service
+    this.translationService.currentLanguage$.subscribe(() => {
+      // Language updated
+    });
+
+    // Check authentication
+    this.authService.isAuthenticated$.subscribe(isAuth => {
+      this.isLoggedIn.set(isAuth);
+    });
+  }
+
+  toggleSidebar(): void {
+    this.isSidebarOpen.update(state => !state);
+  }
+
+  goHome(): void {
+    this.router.navigate(['/home']);
+  }
 }

@@ -1,0 +1,242 @@
+.login-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #E6F0FF 0%, #F3E9FF 100%);
+  padding: 20px;
+}
+
+.login-card {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+  padding: 40px;
+  width: 100%;
+  max-width: 400px;
+}
+
+.login-header {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.brand-name {
+  font-size: 32px;
+  font-weight: 700;
+  color: #4A90E2;
+  margin: 0 0 8px 0;
+}
+
+.subtitle {
+  font-size: 14px;
+  color: #666666;
+  margin: 0;
+}
+
+.login-form {
+  margin-bottom: 20px;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-label {
+  display: block;
+  font-size: 14px;
+  font-weight: 500;
+  color: #333333;
+  margin-bottom: 8px;
+}
+
+.form-control {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 14px;
+  transition: all 0.3s;
+}
+
+.form-control:focus {
+  outline: none;
+  border-color: #4A90E2;
+  box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.1);
+}
+
+.form-control.is-invalid {
+  border-color: #dc3545;
+}
+
+.password-input-group {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.password-toggle {
+  position: absolute;
+  right: 12px;
+  background: none;
+  border: none;
+  color: #666666;
+  cursor: pointer;
+  font-size: 16px;
+  padding: 6px;
+}
+
+.password-toggle:hover {
+  color: #333333;
+}
+
+.invalid-feedback {
+  display: block;
+  color: #dc3545;
+  font-size: 12px;
+  margin-top: 4px;
+}
+
+.remember-forgot {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 13px;
+}
+
+.checkbox {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+}
+
+.checkbox input {
+  cursor: pointer;
+  width: 16px;
+  height: 16px;
+  accent-color: #4A90E2;
+}
+
+.forgot-link {
+  color: #4A90E2;
+  text-decoration: none;
+}
+
+.forgot-link:hover {
+  text-decoration: underline;
+}
+
+.btn {
+  width: 100%;
+  padding: 12px 16px;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.btn-primary {
+  background: #4A90E2;
+  color: white;
+}
+
+.btn-primary:hover:not(:disabled) {
+  background: #3a7bc8;
+}
+
+.btn-primary:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.btn-lg {
+  min-height: 44px;
+}
+
+.btn-outline-secondary {
+  border: 1px solid #ddd;
+  color: #333333;
+  background: white;
+}
+
+.btn-outline-secondary:hover {
+  background: #f8f9fa;
+  border-color: #999;
+}
+
+.btn-google {
+  margin-bottom: 20px;
+}
+
+.divider {
+  text-align: center;
+  margin: 20px 0;
+  color: #999;
+  font-size: 13px;
+}
+
+.divider::before,
+.divider::after {
+  content: '';
+  display: inline-block;
+  width: 40%;
+  height: 1px;
+  background: #ddd;
+  vertical-align: middle;
+}
+
+.divider::before {
+  margin-right: 10px;
+}
+
+.divider::after {
+  margin-left: 10px;
+}
+
+.login-footer {
+  text-align: center;
+  margin-top: 20px;
+  font-size: 13px;
+  color: #666666;
+}
+
+.signup-link {
+  color: #4A90E2;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.signup-link:hover {
+  text-decoration: underline;
+}
+
+.spinner-border-sm {
+  width: 16px;
+  height: 16px;
+}
+
+@media (max-width: 576px) {
+  .login-card {
+    padding: 24px;
+  }
+
+  .brand-name {
+    font-size: 28px;
+  }
+
+  .form-control {
+    padding: 8px 10px;
+    font-size: 16px;
+  }
+
+  .btn {
+    padding: 10px 14px;
+  }
+}
