@@ -3,6 +3,8 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Exercise } from '../../core/models/exercise.models';
 import { ExerciseLibraryService } from '../../core/services/exercise-library.service';
+import { AuthService } from '../../core/services/auth.service';
+import { NotificationService } from '../../core/services/notification.service';
 
 @Component({
   selector: 'app-exercise-library',
@@ -117,20 +119,21 @@ export class ExerciseLibraryComponent implements OnInit {
   muscleGroups: string[] = [];
   equipmentList: string[] = [];
 
-  constructor(private svc: ExerciseLibraryService) {}
+  constructor(private svc: ExerciseLibraryService, private auth: AuthService, private notify: NotificationService) {}
 
   ngOnInit(): void {
     this.loadExercises();
   }
 
   loadExercises(): void {
-    this.svc.getAll().subscribe({
+    const trainerId = this.auth.getUserIdFromToken();
+    this.svc.getAll(trainerId).subscribe({
       next: data => {
         this.exercises = data || [];
         this.populateFilters();
         this.applyFilters();
       },
-      error: err => console.error('Failed to load exercises', err)
+      error: err => { console.error('Failed to load exercises', err); this.notify.error('Error', 'Failed to load exercises'); }
     });
   }
 
@@ -138,7 +141,11 @@ export class ExerciseLibraryComponent implements OnInit {
     const cats = new Set<string>();
     const muscles = new Set<string>();
     const equip = new Set<string>();
-    this.exercises.forEach(e => { cats.add(e.category); muscles.add(e.muscleGroup); equip.add(e.equipment); });
+    this.exercises.forEach(e => {
+      if (e.category) cats.add(e.category);
+      if (e.muscleGroup) muscles.add(e.muscleGroup);
+      if (e.equipment) equip.add(e.equipment);
+    });
     this.categories = Array.from(cats);
     this.muscleGroups = Array.from(muscles);
     this.equipmentList = Array.from(equip);
@@ -150,8 +157,9 @@ export class ExerciseLibraryComponent implements OnInit {
   }
 
   onSearch() {
+    const trainerId = this.auth.getUserIdFromToken();
     if (!this.searchTerm) this.applyFilters();
-    else this.svc.search(this.searchTerm).subscribe({ next: data => { this.filteredExercises = data; }, error: err => console.error(err) });
+    else this.svc.search(this.searchTerm, trainerId).subscribe({ next: data => { this.filteredExercises = data; }, error: err => { console.error(err); this.notify.error('Error', 'Search failed'); } });
   }
 
   applyFilters() {
@@ -205,19 +213,46 @@ export class ExerciseLibraryComponent implements OnInit {
 
   submitForm(ev: Event) {
     ev.preventDefault();
-    const fd = new FormData();
-    fd.append('name', this.form.name || '');
-    fd.append('category', this.form.category || '');
-    fd.append('muscleGroup', this.form.muscleGroup || '');
-    fd.append('equipment', this.form.equipment || '');
-    fd.append('isCustom', String(this.form.isCustom ?? true));
-    if (this.thumbnailFile) fd.append('thumbnail', this.thumbnailFile, this.thumbnailFile.name);
-    if (this.videoFile) fd.append('videoDemo', this.videoFile, this.videoFile.name);
+    // Basic validation (name, category, muscleGroup required)
+    if (!this.form.name || !this.form.category || !this.form.muscleGroup) {
+      this.notify.error('Validation', 'Name, Category and Muscle Group are required');
+      return;
+    }
 
-    if (this.isEditing && this.form.id) {
-      this.svc.update(this.form.id, fd).subscribe({ next: () => { this.loadExercises(); this.closeForm(); }, error: err => console.error(err) });
+    const trainerId = this.auth.getUserIdFromToken();
+
+    // If files are present, send FormData (multipart). Otherwise send JSON payload.
+    if ((this.thumbnailFile || this.videoFile)) {
+      const fd = new FormData();
+      fd.append('name', this.form.name || '');
+      fd.append('category', this.form.category || '');
+      fd.append('muscleGroup', this.form.muscleGroup || '');
+      if (this.form.equipment) fd.append('equipment', this.form.equipment);
+      fd.append('isCustom', String(this.form.isCustom ?? true));
+      if (trainerId) fd.append('trainerId', trainerId);
+      if (this.thumbnailFile) fd.append('thumbnailUrl', this.thumbnailFile, this.thumbnailFile.name);
+      if (this.videoFile) fd.append('videoDemoUrl', this.videoFile, this.videoFile.name);
+
+      if (this.isEditing && this.form.id) {
+        this.svc.update(this.form.id, fd).subscribe({ next: () => { this.notify.success('Saved', 'Exercise updated'); this.loadExercises(); this.closeForm(); }, error: err => { console.error(err); this.notify.error('Error', err.message || err); } });
+      } else {
+        this.svc.create(fd).subscribe({ next: () => { this.notify.success('Created', 'Exercise created'); this.loadExercises(); this.closeForm(); }, error: err => { console.error(err); this.notify.error('Error', err.message || err); } });
+      }
     } else {
-      this.svc.create(fd).subscribe({ next: () => { this.loadExercises(); this.closeForm(); }, error: err => console.error(err) });
+      const payload: any = {
+        name: this.form.name,
+        category: this.form.category,
+        muscleGroup: this.form.muscleGroup,
+        equipment: this.form.equipment || null,
+        isCustom: this.form.isCustom ?? true
+      };
+      if (trainerId) payload.trainerId = trainerId;
+
+      if (this.isEditing && this.form.id) {
+        this.svc.update(this.form.id, payload).subscribe({ next: () => { this.notify.success('Saved', 'Exercise updated'); this.loadExercises(); this.closeForm(); }, error: err => { console.error(err); this.notify.error('Error', err.message || err); } });
+      } else {
+        this.svc.create(payload).subscribe({ next: () => { this.notify.success('Created', 'Exercise created'); this.loadExercises(); this.closeForm(); }, error: err => { console.error(err); this.notify.error('Error', err.message || err); } });
+      }
     }
   }
 

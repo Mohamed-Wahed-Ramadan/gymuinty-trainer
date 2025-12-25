@@ -136,6 +136,7 @@ export class ProgramsComponent implements OnInit {
   }
 
   selectProgram(program: Program): void {
-    this.programService.setSelectedProgram(program);
+    if (!program.id) return;
+    this.programService.getProgramDetails(program.id).subscribe({ next: p => { this.programService.setSelectedProgram(p); }, error: err => { console.error('Failed to load program details', err); this.notificationService.error('Error','Failed to load program details'); } });
   }
 }

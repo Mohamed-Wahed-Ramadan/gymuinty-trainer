@@ -40,14 +40,30 @@ export class DashboardSidebarComponent implements OnInit {
   }
 
   loadProgramDetails(programId: number): void {
-    this.programService.getProgramDetails(programId).subscribe({
-      next: (program) => {
-        const index = this.programs.findIndex(p => p.id === programId);
-        if (index !== -1) {
-          this.programs[index] = program;
-        }
+    const index = this.programs.findIndex(p => p.id === programId);
+    if (index === -1) return;
+    // mark as loading (weeks undefined) so template shows loading state
+    this.programs[index].weeks = undefined as any;
+
+    // First load weeks for the program, then for each week load its days.
+    this.programService.getWeeksByProgram(programId).subscribe({
+      next: (weeks) => {
+        this.programs[index].weeks = weeks || [];
+        // load days for each week (parallel requests)
+        this.programs[index].weeks.forEach((w, wi) => {
+          if (w && w.id) {
+            this.programService.getDaysByWeek(w.id).subscribe({
+              next: (days) => {
+                this.programs[index].weeks![wi].days = days || [];
+              },
+              error: (err) => console.error('Failed to load days for week', w.id, err)
+            });
+          } else {
+            this.programs[index].weeks![wi].days = [];
+          }
+        });
       },
-      error: (error) => console.error('Failed to load program details:', error)
+      error: (error) => console.error('Failed to load program weeks:', error)
     });
   }
 

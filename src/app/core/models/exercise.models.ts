@@ -3,10 +3,11 @@ export interface Exercise {
   name: string;
   category: string;
   muscleGroup: string;
-  equipment: string;
+  equipment?: string | null;
   videoDemoUrl?: string | null;
   thumbnailUrl?: string | null;
   isCustom: boolean;
   trainerId?: string | null;
   createdAt: string;
+  updatedAt?: string | null;
 }

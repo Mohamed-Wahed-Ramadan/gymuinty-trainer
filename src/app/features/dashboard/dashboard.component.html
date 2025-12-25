@@ -26,12 +26,16 @@
     <!-- Content Area -->
     <div class="content-area">
       <!-- Programs Tab -->
-      <app-programs 
-        *ngIf="activeTab === 'programs'"
-        [programs]="programs"
-        [isLoading]="isLoadingPrograms"
-        (reload)="loadPrograms()">
-      </app-programs>
+      <div *ngIf="activeTab === 'programs'">
+        <app-programs 
+          [programs]="programs"
+          [isLoading]="isLoadingPrograms"
+          (reload)="loadPrograms()">
+        </app-programs>
+
+        <!-- Program Detail Editor (below programs list) -->
+        <app-program-detail></app-program-detail>
+      </div>
 
       <!-- Packages Tab -->
       <app-packages 

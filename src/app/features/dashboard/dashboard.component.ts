@@ -8,6 +8,7 @@ import { AuthService, ProgramService, PackageService, Program, Package } from '.
 import { DashboardSidebarComponent } from './dashboard-sidebar/dashboard-sidebar.component';
 import { ProgramsComponent } from './programs/programs.component';
 import { PackagesComponent } from './packages/packages.component';
+import { ProgramDetailComponent } from './program-detail/program-detail.component';
 
 @Component({
   selector: 'app-dashboard',
@@ -16,7 +17,8 @@ import { PackagesComponent } from './packages/packages.component';
     CommonModule,
     DashboardSidebarComponent,
     ProgramsComponent,
-    PackagesComponent
+    PackagesComponent,
+    ProgramDetailComponent
   ],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css']
