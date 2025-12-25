@@ -24,4 +24,14 @@ export class SidebarComponent {
     this.auth.logout();
     this.router.navigate(['/auth/login']);
   }
+
+  goTo(target: string): void {
+    if (target === 'programs' || target === 'packages') {
+      this.router.navigate(['/dashboard'], { queryParams: { tab: target } });
+      return;
+    }
+    // allow passing absolute paths or simple segments
+    if (target.startsWith('/')) this.router.navigateByUrl(target);
+    else this.router.navigate([target]);
+  }
 }

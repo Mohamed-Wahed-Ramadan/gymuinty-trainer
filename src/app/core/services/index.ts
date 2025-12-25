@@ -6,3 +6,5 @@ export * from './home.service';
 export * from './trainer.service';
 export * from './program.service';
 export * from './package.service';
+export * from './chat.service';
+export * from './exercise-library.service';
