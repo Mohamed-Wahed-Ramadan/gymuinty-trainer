@@ -1,0 +1,31 @@
+<nav class="navbar">
+  <div class="navbar-container">
+    <!-- Logo/Brand -->
+    <div class="navbar-brand" routerLink="/home">
+      <span class="logo-icon">
+        <i class="bi bi-heart-pulse"></i>
+      </span>
+      <span class="brand-text">Gymunity</span>
+    </div>
+
+    <!-- Navbar Center (could add menu items here if needed) -->
+    <div class="navbar-center">
+      <!-- Reserved for future menu items -->
+    </div>
+
+    <!-- Navbar Right -->
+    <div class="navbar-right">
+      <!-- Language Toggle -->
+      <button class="language-toggle" (click)="toggleLanguage()" [attr.title]="'Switch to ' + (currentLanguage === 'en' ? 'Arabic' : 'English')">
+        <i class="bi bi-globe"></i>
+        <span class="lang-text">{{ currentLanguage === 'en' ? 'AR' : 'EN' }}</span>
+      </button>
+
+      <!-- Login Button -->
+      <button class="btn-login" (click)="goToLogin()">
+        <i class="bi bi-box-arrow-in-right"></i>
+        <span>{{ currentLanguage === 'en' ? 'Login' : 'دخول' }}</span>
+      </button>
+    </div>
+  </div>
+</nav>

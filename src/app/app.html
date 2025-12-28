@@ -1,5 +1,8 @@
 <div class="app-container" [dir]="'ltr'">
-  <!-- Sidebar -->
+  <!-- Navbar for public pages -->
+  <app-navbar *ngIf="!isLoggedIn()"></app-navbar>
+
+  <!-- Sidebar for authenticated users -->
   <app-sidebar
     *ngIf="isLoggedIn()"
     [isOpen]="isSidebarOpen()"
@@ -7,8 +10,8 @@
   </app-sidebar>
 
   <!-- Main Content -->
-  <main [class.sidebar-open]="isSidebarOpen() && isLoggedIn()" class="main-content">
-    <!-- Header -->
+  <main [class.sidebar-open]="isSidebarOpen() && isLoggedIn()" [class.with-navbar]="!isLoggedIn()" class="main-content">
+    <!-- Header for authenticated users -->
     <header *ngIf="isLoggedIn()" class="app-header">
       <div class="header-left">
         <button class="menu-toggle" (click)="toggleSidebar()">
@@ -25,8 +28,9 @@
     </header>
 
     <!-- Page Content -->
-    <div class="page-content">
+    <div class="page-content" [class.public-page]="!isLoggedIn()">
       <router-outlet></router-outlet>
     </div>
   </main>
 </div>
+

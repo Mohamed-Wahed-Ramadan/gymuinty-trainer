@@ -1,92 +1,133 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 import { HomeService } from '../../core/services/home.service';
+import { AuthService } from '../../core/services/auth.service';
 import { FormsModule } from '@angular/forms';
+import { trigger, transition, style, animate } from '@angular/animations';
 
 @Component({
   selector: 'app-home',
   standalone: true,
   imports: [CommonModule, FormsModule],
-  template: `
-    <div class="home p-3">
-      <div class="mb-3">
-        <input class="form-control" placeholder="Search" [(ngModel)]="term" />
-        <button class="btn btn-sm btn-primary mt-2" (click)="search()">Search</button>
-      </div>
-
-      <section class="mb-4">
-        <h3>Packages</h3>
-        <div class="row">
-          <div class="col-12 col-sm-6 col-md-4" *ngFor="let p of packages">
-            <div class="card mb-3">
-              <img *ngIf="p.thumbnailUrl" [src]="p.thumbnailUrl" class="card-img-top" />
-              <div class="card-body">
-                <h5 class="card-title">{{ p.name }}</h5>
-                <p class="card-text">{{ p.description }}</p>
-                <p class="card-text">{{ p.priceMonthly | currency }}</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section class="mb-4">
-        <h3>Programs</h3>
-        <div class="row">
-          <div class="col-12 col-sm-6 col-md-4" *ngFor="let pr of programs">
-            <div class="card mb-3">
-              <img *ngIf="pr.thumbnailUrl" [src]="pr.thumbnailUrl" class="card-img-top" />
-              <div class="card-body">
-                <h5 class="card-title">{{ pr.title }}</h5>
-                <p class="card-text">{{ pr.description }}</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section>
-        <h3>Trainers</h3>
-        <div class="row">
-          <div class="col-12 col-sm-6 col-md-4" *ngFor="let t of trainers">
-            <div class="card mb-3">
-              <div class="card-body">
-                <h5 class="card-title">{{ t.userName || t.userName }}</h5>
-                <p class="card-text">{{ t.bio }}</p>
-                <p class="card-text">Rating: {{ t.ratingAverage }}</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-    </div>
-  `,
-  styles: [``]
+  templateUrl: './home.component.html',
+  styleUrl: './home.component.css',
+  animations: [
+    trigger('fadeIn', [
+      transition(':enter', [
+        style({ opacity: 0, transform: 'translateY(8px)' }),
+        animate('320ms ease-out', style({ opacity: 1, transform: 'translateY(0)' }))
+      ])
+    ]),
+    trigger('expandCollapse', [
+      transition(':enter', [
+        style({ height: 0, opacity: 0 }),
+        animate('300ms ease-in', style({ height: '*', opacity: 1 }))
+      ]),
+      transition(':leave', [
+        animate('300ms ease-out', style({ height: 0, opacity: 0 }))
+      ])
+    ])
+  ]
 })
 export class HomeComponent implements OnInit {
   term = '';
   packages: any[] = [];
   programs: any[] = [];
   trainers: any[] = [];
+  isLoggedIn = false;
+  isLoading = false;
 
-  constructor(private home: HomeService) {}
+  // UI state
+  expandedPackageId: number | null = null;
+
+  // Program types mapping
+  programTypeMap: { [key: number]: string } = {
+    1: 'Workout',
+    2: 'Nutrition',
+    3: 'Hybrid',
+    4: 'Challenge'
+  };
+
+  constructor(
+    private homeService: HomeService,
+    private authService: AuthService,
+    private router: Router
+  ) {}
 
   ngOnInit(): void {
+    this.authService.isAuthenticated$.subscribe(isAuth => {
+      this.isLoggedIn = isAuth;
+    });
+
     this.loadAll();
   }
 
+  private normalizeArrayResp(data: any): any[] {
+    if (!data) return [];
+    if (Array.isArray(data)) return data;
+    if (Array.isArray(data.data)) return data.data;
+    if (Array.isArray(data.value)) return data.value;
+    if (Array.isArray(data.result)) return data.result;
+    return [];
+  }
+
   loadAll(): void {
-    this.home.getPackages().subscribe(p => this.packages = p || []);
-    this.home.getPrograms().subscribe(p => this.programs = p || []);
-    this.home.getTrainers().subscribe(t => this.trainers = t || []);
+    this.isLoading = true;
+
+    this.homeService.getPackages().subscribe({
+      next: (res: any) => {
+        this.packages = this.normalizeArrayResp(res);
+      },
+      error: () => { this.packages = []; },
+      complete: () => { this.isLoading = false; }
+    });
+
+    this.homeService.getPrograms().subscribe({
+      next: (res: any) => { this.programs = this.normalizeArrayResp(res); },
+      error: () => { this.programs = []; }
+    });
+
+    this.homeService.getTrainers().subscribe({
+      next: (res: any) => { this.trainers = this.normalizeArrayResp(res); },
+      error: () => { this.trainers = []; }
+    });
   }
 
   search(): void {
     if (!this.term) { this.loadAll(); return; }
-    this.home.searchAll(this.term).subscribe(res => {
-      this.packages = res.packages || [];
-      this.programs = res.programs || [];
-      this.trainers = res.trainers || [];
+    this.isLoading = true;
+    this.homeService.searchAll(this.term).subscribe({
+      next: (res: any) => {
+        this.packages = this.normalizeArrayResp(res?.packages ?? res?.packages?.data ?? res);
+        this.programs = this.normalizeArrayResp(res?.programs ?? []);
+        this.trainers = this.normalizeArrayResp(res?.trainers ?? []);
+        this.isLoading = false;
+      },
+      error: () => { this.isLoading = false; }
     });
   }
+
+  togglePackage(pkg: any): void {
+    this.expandedPackageId = this.expandedPackageId === pkg.id ? null : pkg.id;
+  }
+
+  isPackageExpanded(pkg: any): boolean {
+    return this.expandedPackageId === pkg.id;
+  }
+
+  getProgramTypeLabel(type: number): string {
+    return this.programTypeMap[type] || 'Program';
+  }
+
+  viewProgram(program: any): void {
+    // navigate to program detail if route exists (placeholder)
+    if (program?.id) {
+      this.router.navigate(['/programs', program.id]);
+    }
+  }
+
+  goToRegister(): void { this.router.navigate(['/auth/register']); }
+  goToDashboard(): void { this.router.navigate(['/dashboard']); }
 }
+

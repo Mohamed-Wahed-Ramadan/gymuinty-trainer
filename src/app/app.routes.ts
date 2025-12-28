@@ -12,8 +12,12 @@ import { HomeComponent } from './features/home/home.component';
 export const routes: Routes = [
   {
     path: '',
-    redirectTo: '/auth/login',
+    redirectTo: '/home',
     pathMatch: 'full'
+  },
+  {
+    path: 'home',
+    component: HomeComponent
   },
   {
     path: 'auth',
@@ -57,13 +61,8 @@ export const routes: Routes = [
     component: ProfileComponent
   },
   {
-    path: 'home',
-    canActivate: [authGuard, roleGuard],
-    data: { role: 'Trainer' },
-    component: HomeComponent
-  },
-  {
     path: '**',
-    redirectTo: '/auth/login'
+    redirectTo: '/home'
   }
 ];
+

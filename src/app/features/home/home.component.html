@@ -1,0 +1,200 @@
+<!-- Hero Section -->
+<div class="home-container">
+  <!-- Hero Banner -->
+  <section class="hero-banner">
+    <div class="hero-content">
+      <h1 class="hero-title">Welcome to Gymunity</h1>
+      <p class="hero-subtitle">Your Platform for Fitness Excellence and Professional Training</p>
+      
+      <div class="hero-actions">
+        <button *ngIf="!isLoggedIn" class="btn btn-primary btn-lg" (click)="goToRegister()">
+          <i class="bi bi-pencil-square"></i> Get Started
+        </button>
+        <button *ngIf="isLoggedIn" class="btn btn-primary btn-lg" (click)="goToDashboard()">
+          <i class="bi bi-speedometer2"></i> Go to Dashboard
+        </button>
+      </div>
+    </div>
+    <div class="hero-illustration">
+      <i class="bi bi-heart-pulse"></i>
+    </div>
+  </section>
+
+  <!-- Search Section -->
+  <section class="search-section">
+    <div class="search-container">
+      <div class="search-box">
+        <i class="bi bi-search"></i>
+        <input 
+          type="text" 
+          class="search-input" 
+          placeholder="Search packages, programs, or trainers..." 
+          [(ngModel)]="term"
+          (keyup.enter)="search()"
+        />
+        <button class="btn-search" (click)="search()" [disabled]="isLoading">
+          <i class="bi bi-search"></i> Search
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Main Content -->
+  <div class="home-content">
+    <!-- Loading State -->
+    <div *ngIf="isLoading" class="loading-state">
+      <div class="spinner"></div>
+      <p>Loading...</p>
+    </div>
+
+    <!-- Packages Section -->
+    <section class="section-container" *ngIf="packages.length > 0 && !isLoading">
+      <div class="section-header">
+        <h2 class="section-title">
+          <i class="bi bi-bag-check"></i> Featured Packages
+        </h2>
+        <p class="section-description">Choose from our premium training packages</p>
+      </div>
+      
+      <div class="cards-grid">
+        <div class="card package-card" *ngFor="let p of packages" [@fadeIn]>
+          <div class="card-image-container" *ngIf="p.thumbnailUrl">
+            <img [src]="p.thumbnailUrl" [alt]="p.name" class="card-image" />
+          </div>
+          <div *ngIf="!p.thumbnailUrl" class="card-image-placeholder">
+            <i class="bi bi-image"></i>
+          </div>
+
+          <div class="card-content">
+            <div class="package-top" (click)="togglePackage(p)" style="cursor:pointer">
+              <h3 class="card-title">{{ p.name }}</h3>
+              <div class="package-meta">
+                <span class="package-price">{{ p.priceMonthly | currency }}</span>
+                <button class="btn-view" *ngIf="isLoggedIn">Open</button>
+                <button class="btn-view btn-disabled" *ngIf="!isLoggedIn" [title]="'Login to view this package'">Open</button>
+              </div>
+            </div>
+
+            <p class="card-description">{{ p.description }}</p>
+
+            <div class="package-programs" *ngIf="isPackageExpanded(p)" [@expandCollapse]>
+              <h4 class="programs-title">Programs in this package</h4>
+              <div class="programs-grid">
+                <div class="program-item" *ngFor="let pr of p.programs">
+                  <div class="program-thumb" *ngIf="pr.thumbnailUrl">
+                    <img [src]="pr.thumbnailUrl" [alt]="pr.title" />
+                  </div>
+                  <div class="program-body">
+                    <strong>{{ pr.title }}</strong>
+                    <p class="small muted">{{ pr.durationWeeks }} weeks • {{ getProgramTypeLabel(pr.type) }}</p>
+                    <p class="small">{{ pr.description }}</p>
+                    <div class="program-actions">
+                      <button class="btn-view" (click)="viewProgram(pr)">View Program</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Programs Section -->
+    <section class="section-container" *ngIf="programs.length > 0 && !isLoading">
+      <div class="section-header">
+        <h2 class="section-title">
+          <i class="bi bi-diagram-3"></i> Training Programs
+        </h2>
+        <p class="section-description">Explore our comprehensive training programs</p>
+      </div>
+      
+      <div class="cards-grid">
+        <div class="card program-card" *ngFor="let pr of programs" [@fadeIn]>
+          <div class="card-image-container" *ngIf="pr.thumbnailUrl">
+            <img [src]="pr.thumbnailUrl" [alt]="pr.title" class="card-image" />
+          </div>
+          <div *ngIf="!pr.thumbnailUrl" class="card-image-placeholder">
+            <i class="bi bi-image"></i>
+          </div>
+          
+          <div class="card-content">
+            <h3 class="card-title">{{ pr.title }}</h3>
+            <div class="program-badge" [ngClass]="'type-' + pr.type">
+              {{ getProgramTypeLabel(pr.type) }}
+            </div>
+            <p class="card-description">{{ pr.description }}</p>
+            
+            <div class="program-meta">
+              <span class="meta-item" *ngIf="pr.durationWeeks">
+                <i class="bi bi-calendar"></i> {{ pr.durationWeeks }} weeks
+              </span>
+              <span class="meta-item" *ngIf="pr.trainerUserName">
+                <i class="bi bi-person"></i> {{ pr.trainerUserName }}
+              </span>
+            </div>
+            
+            <div class="card-footer">
+              <button class="btn-view" *ngIf="isLoggedIn">Explore</button>
+              <button class="btn-view btn-disabled" *ngIf="!isLoggedIn" [title]="'Login to explore this program'">Explore</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Trainers Section -->
+    <section class="section-container" *ngIf="trainers.length > 0 && !isLoading">
+      <div class="section-header">
+        <h2 class="section-title">
+          <i class="bi bi-people"></i> Expert Trainers
+        </h2>
+        <p class="section-description">Connect with professional and experienced trainers</p>
+      </div>
+      
+      <div class="cards-grid">
+        <div class="card trainer-card" *ngFor="let t of trainers" [@fadeIn]>
+          <div class="trainer-header">
+            <div class="trainer-avatar">
+              <i class="bi bi-person-fill"></i>
+            </div>
+            <div class="trainer-rating">
+              <i class="bi bi-star-fill"></i>
+              <span>{{ t.ratingAverage || 0 | number:'1.1-1' }}</span>
+            </div>
+          </div>
+          
+          <div class="card-content">
+            <h3 class="card-title">{{ t.userName }}</h3>
+            <p class="card-description">{{ t.bio }}</p>
+            
+            <div class="trainer-stats">
+              <div class="stat">
+                <span class="stat-value">{{ t.yearsExperience || 0 }}</span>
+                <span class="stat-label">Years</span>
+              </div>
+              <div class="stat">
+                <span class="stat-value">{{ t.totalClients || 0 }}</span>
+                <span class="stat-label">Clients</span>
+              </div>
+            </div>
+            
+            <div class="card-footer">
+              <button class="btn-view" *ngIf="isLoggedIn">View Profile</button>
+              <button class="btn-view btn-disabled" *ngIf="!isLoggedIn" [title]="'Login to view trainer profile'">View Profile</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Empty State -->
+    <div class="empty-state" *ngIf="packages.length === 0 && programs.length === 0 && trainers.length === 0 && !isLoading">
+      <div class="empty-icon">
+        <i class="bi bi-inbox"></i>
+      </div>
+      <h3>No Content Available</h3>
+      <p>Please check back later for packages, programs, and trainers.</p>
+    </div>
+  </div>
+</div>
