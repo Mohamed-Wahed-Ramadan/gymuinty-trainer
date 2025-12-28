@@ -1,11 +1,13 @@
 import { Injectable, NgZone } from '@angular/core';
+import { environment } from '../../../environments/environment';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { HubConnection, HubConnectionBuilder, LogLevel } from '@microsoft/signalr';
 
 @Injectable({ providedIn: 'root' })
 export class SignalRService {
   private hubConnection: HubConnection | null = null;
-  private readonly hubUrl = 'https://gymunity-fp-apis.runasp.net/hubs/chat';
+  // Full hub URL using environment (no proxy)
+  private readonly hubUrl = `${environment.apiUrl.replace(/\/api\/?$/, '')}/hubs/chat`;
 
   private isConnectedSubject = new BehaviorSubject<boolean>(false);
   public isConnected$ = this.isConnectedSubject.asObservable();

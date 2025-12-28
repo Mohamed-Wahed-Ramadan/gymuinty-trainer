@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ChatService } from '../../core/services/chat.service';
+import { environment } from '../../../environments/environment';
 import { SignalRService } from '../../core/services/signalr.service';
 import { AuthService } from '../../core/services/auth.service';
 
@@ -97,7 +98,9 @@ export class InboxComponent implements OnInit {
 
   resolveProfile(url: string | null) {
     if (!url) return 'https://via.placeholder.com/40?text=U';
-    return url.startsWith('http') ? url : `https://gymunity-fp-apis.runasp.net/${url}`;
+    if (url.startsWith('http')) return url;
+    const base = environment.apiUrl.replace(/\/$/, '');
+    return `${base}/${url.replace(/^\/+/, '')}`;
   }
 
   loadThreads() {

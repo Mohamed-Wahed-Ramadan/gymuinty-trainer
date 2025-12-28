@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { environment } from '../../../environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { tap, map } from 'rxjs/operators';
@@ -8,7 +9,7 @@ import { LoginRequest, RegisterRequest, AuthResponse, User, GoogleAuthRequest, F
   providedIn: 'root'
 })
 export class AuthService {
-  private readonly API_URL = 'https://gymunity-fp-apis.runasp.net/api';
+  private readonly API_URL = environment.apiUrl;
   private readonly TOKEN_KEY = 'gymunity_trainer_token';
   private readonly USER_KEY = 'gymunity_trainer_user';
   private readonly USER_ID_KEY = 'gymunity_trainer_userId';

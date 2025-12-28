@@ -5,6 +5,7 @@ import { PackageService, PackageResponse, PackageCreateRequest } from '../../../
 import { AuthService } from '../../../core/services/auth.service';
 import { NotificationService } from '../../../core/services/notification.service';
 import { ProgramService, Program } from '../../../core/services/program.service';
+import { TrainerService } from '../../../core/services/trainer.service';
 
 @Component({
   selector: 'app-packages',
@@ -35,7 +36,8 @@ export class PackagesComponent implements OnInit {
     private packageService: PackageService,
     private authService: AuthService,
     private notificationService: NotificationService,
-    private programService: ProgramService
+    private programService: ProgramService,
+    private trainerService: TrainerService
   ) {
     this.userId = this.authService.getUserIdFromToken();
   }
@@ -166,17 +168,47 @@ export class PackagesComponent implements OnInit {
           }
         });
     } else {
-      this.packageService.createPackage(request)
-        .subscribe({
-          next: () => {
-            this.notificationService.success('Success', 'Package created successfully');
-            this.closeModal();
-            this.reload.emit();
-            this.isSaving = false;
+        // Resolve trainer profile id and include it in request
+        if (!this.userId) {
+          this.notificationService.error('Error', 'Unable to identify trainer. Please login again.');
+          this.isSaving = false;
+          return;
+        }
+
+        this.trainerService.getProfileByUserId(this.userId).subscribe({
+          next: profile => {
+            const trainerProfileId = profile?.id;
+            if (!trainerProfileId) {
+              this.notificationService.error('Error', 'Trainer profile not found. Create a trainer profile first.');
+              this.isSaving = false;
+              return;
+            }
+
+            const reqWithTrainer = {
+              ...request,
+              trainerProfileId: trainerProfileId
+            } as any;
+            console.log('Creating package payload with trainerId:', reqWithTrainer);
+            try { console.log('Creating package payload (json):', JSON.stringify(reqWithTrainer)); } catch (e) { console.warn('Could not stringify package payload', e); }
+
+            this.packageService.createPackage(reqWithTrainer)
+              .subscribe({
+                next: () => {
+                  this.notificationService.success('Success', 'Package created successfully');
+                  this.closeModal();
+                  this.reload.emit();
+                  this.isSaving = false;
+                },
+                error: (error: Error) => {
+                  this.notificationService.error('Error', error.message || 'Failed to create package');
+                  console.error('Create error:', error);
+                  this.isSaving = false;
+                }
+              });
           },
-          error: (error: Error) => {
-            this.notificationService.error('Error', error.message || 'Failed to create package');
-            console.error('Create error:', error);
+          error: err => {
+            this.notificationService.error('Error', 'Failed to resolve trainer profile');
+            console.error('Failed to get trainer profile', err);
             this.isSaving = false;
           }
         });

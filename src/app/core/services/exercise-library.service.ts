@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { environment } from '../../../environments/environment';
 import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
@@ -6,7 +7,7 @@ import { Exercise } from '../models/exercise.models';
 
 @Injectable({ providedIn: 'root' })
 export class ExerciseLibraryService {
-  private readonly baseUrl = 'https://gymunity-fp-apis.runasp.net/api/trainer/ExerciseLibrary';
+  private readonly baseUrl = `${environment.apiUrl}/trainer/ExerciseLibrary`;
 
   constructor(private http: HttpClient) {}
 

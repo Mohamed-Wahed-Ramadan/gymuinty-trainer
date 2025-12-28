@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
+import { environment } from '../../../environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
-const BASE = 'https://gymunity-fp-apis.runasp.net/api/Chat';
+const BASE = `${environment.apiUrl}/Chat`;
 
 @Injectable({ providedIn: 'root' })
 export class ChatService {

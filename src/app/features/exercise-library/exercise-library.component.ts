@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Exercise } from '../../core/models/exercise.models';
+import { environment } from '../../../environments/environment';
 import { ExerciseLibraryService } from '../../core/services/exercise-library.service';
 import { AuthService } from '../../core/services/auth.service';
 import { NotificationService } from '../../core/services/notification.service';
@@ -73,10 +74,10 @@ import { NotificationService } from '../../core/services/notification.service';
               <input class="form-control" placeholder="Category" [(ngModel)]="form.category" name="category" />
               <input class="form-control" placeholder="Muscle Group" [(ngModel)]="form.muscleGroup" name="muscleGroup" />
               <input class="form-control" placeholder="Equipment" [(ngModel)]="form.equipment" name="equipment" />
-              <label class="form-label">Thumbnail</label>
-              <input type="file" (change)="onThumbnailChange($event)" />
-              <label class="form-label">Video Demo</label>
-              <input type="file" (change)="onVideoChange($event)" />
+              <label class="form-label">Thumbnail URL</label>
+              <input class="form-control" placeholder="https://..." [(ngModel)]="form.thumbnailUrl" name="thumbnailUrl" />
+              <label class="form-label">Video Demo URL (YouTube)</label>
+              <input class="form-control" placeholder="https://youtube.com/..." [(ngModel)]="form.videoDemoUrl" name="videoDemoUrl" />
             </div>
             <div style="margin-top:8px">
               <button class="btn btn-primary" type="submit">{{ isEditing ? 'Save' : 'Create' }}</button>
@@ -106,9 +107,7 @@ export class ExerciseLibraryComponent implements OnInit {
   selectedExercise: Exercise | null = null;
   showFormModal = false;
   isEditing = false;
-  form: any = { name: '', category: '', muscleGroup: '', equipment: '', isCustom: true };
-  thumbnailFile: File | null = null;
-  videoFile: File | null = null;
+  form: any = { name: '', category: '', muscleGroup: '', equipment: '', isCustom: true, thumbnailUrl: '', videoDemoUrl: '' };
 
   searchTerm = '';
   filterCategory = '';
@@ -153,7 +152,9 @@ export class ExerciseLibraryComponent implements OnInit {
 
   resolveUrl(url?: string | null) {
     if (!url) return '';
-    return url.startsWith('http') ? url : `https://gymunity-fp-apis.runasp.net/${url}`;
+    if (url.startsWith('http')) return url;
+    const base = environment.apiUrl.replace(/\/$/, '');
+    return `${base}/${url.replace(/^\/+/, '')}`;
   }
 
   onSearch() {
@@ -178,22 +179,18 @@ export class ExerciseLibraryComponent implements OnInit {
   addToDay(ex: Exercise) {
     console.log('Add to Day clicked for', ex);
     // Integration point: open program day selector or emit event to parent
-    alert(`Added '${ex.name}' to day (stub).`);
+    alert("Added '" + ex.name + "' to day (stub).");
   }
 
   openCreate() {
     this.isEditing = false;
     this.form = { name: '', category: '', muscleGroup: '', equipment: '', isCustom: true };
-    this.thumbnailFile = null;
-    this.videoFile = null;
     this.showFormModal = true;
   }
 
   openEdit(ex: Exercise) {
     this.isEditing = true;
     this.form = { ...ex };
-    this.thumbnailFile = null;
-    this.videoFile = null;
     this.showFormModal = true;
   }
 
@@ -201,18 +198,10 @@ export class ExerciseLibraryComponent implements OnInit {
     this.showFormModal = false;
   }
 
-  onThumbnailChange(ev: any) {
-    const f = ev.target.files?.[0];
-    if (f) this.thumbnailFile = f;
-  }
-
-  onVideoChange(ev: any) {
-    const f = ev.target.files?.[0];
-    if (f) this.videoFile = f;
-  }
 
   submitForm(ev: Event) {
     ev.preventDefault();
+
     // Basic validation (name, category, muscleGroup required)
     if (!this.form.name || !this.form.category || !this.form.muscleGroup) {
       this.notify.error('Validation', 'Name, Category and Muscle Group are required');
@@ -221,38 +210,43 @@ export class ExerciseLibraryComponent implements OnInit {
 
     const trainerId = this.auth.getUserIdFromToken();
 
-    // If files are present, send FormData (multipart). Otherwise send JSON payload.
-    if ((this.thumbnailFile || this.videoFile)) {
-      const fd = new FormData();
-      fd.append('name', this.form.name || '');
-      fd.append('category', this.form.category || '');
-      fd.append('muscleGroup', this.form.muscleGroup || '');
-      if (this.form.equipment) fd.append('equipment', this.form.equipment);
-      fd.append('isCustom', String(this.form.isCustom ?? true));
-      if (trainerId) fd.append('trainerId', trainerId);
-      if (this.thumbnailFile) fd.append('thumbnailUrl', this.thumbnailFile, this.thumbnailFile.name);
-      if (this.videoFile) fd.append('videoDemoUrl', this.videoFile, this.videoFile.name);
+    // Build JSON payload (API expects JSON). Use URLs from form if provided.
+    const payload: any = {
+      name: this.form.name,
+      category: this.form.category,
+      muscleGroup: this.form.muscleGroup,
+      equipment: this.form.equipment || null,
+      isCustom: this.form.isCustom ?? true
+    };
 
-      if (this.isEditing && this.form.id) {
-        this.svc.update(this.form.id, fd).subscribe({ next: () => { this.notify.success('Saved', 'Exercise updated'); this.loadExercises(); this.closeForm(); }, error: err => { console.error(err); this.notify.error('Error', err.message || err); } });
-      } else {
-        this.svc.create(fd).subscribe({ next: () => { this.notify.success('Created', 'Exercise created'); this.loadExercises(); this.closeForm(); }, error: err => { console.error(err); this.notify.error('Error', err.message || err); } });
-      }
+    if (this.form.thumbnailUrl) { payload.thumbnailUrl = this.form.thumbnailUrl; }
+    if (this.form.videoDemoUrl) { payload.videoDemoUrl = this.form.videoDemoUrl; }
+    if (trainerId) { payload.trainerId = trainerId; }
+
+    if (this.isEditing && this.form.id) {
+      this.svc.update(this.form.id, payload).subscribe({
+        next: () => {
+          this.notify.success('Saved', 'Exercise updated');
+          this.loadExercises();
+          this.closeForm();
+        },
+        error: err => {
+          console.error(err);
+          this.notify.error('Error', err.message || err);
+        }
+      });
     } else {
-      const payload: any = {
-        name: this.form.name,
-        category: this.form.category,
-        muscleGroup: this.form.muscleGroup,
-        equipment: this.form.equipment || null,
-        isCustom: this.form.isCustom ?? true
-      };
-      if (trainerId) payload.trainerId = trainerId;
-
-      if (this.isEditing && this.form.id) {
-        this.svc.update(this.form.id, payload).subscribe({ next: () => { this.notify.success('Saved', 'Exercise updated'); this.loadExercises(); this.closeForm(); }, error: err => { console.error(err); this.notify.error('Error', err.message || err); } });
-      } else {
-        this.svc.create(payload).subscribe({ next: () => { this.notify.success('Created', 'Exercise created'); this.loadExercises(); this.closeForm(); }, error: err => { console.error(err); this.notify.error('Error', err.message || err); } });
-      }
+      this.svc.create(payload).subscribe({
+        next: () => {
+          this.notify.success('Created', 'Exercise created');
+          this.loadExercises();
+          this.closeForm();
+        },
+        error: err => {
+          console.error(err);
+          this.notify.error('Error', err.message || err);
+        }
+      });
     }
   }
 

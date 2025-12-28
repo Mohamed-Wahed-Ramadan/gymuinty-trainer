@@ -2,6 +2,7 @@ import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Program, ProgramService } from '../../../core/services';
+import { TrainerService } from '../../../core/services/trainer.service';
 import { AuthService } from '../../../core/services/auth.service';
 import { NotificationService } from '../../../core/services/notification.service';
 
@@ -28,10 +29,14 @@ export class ProgramsComponent implements OnInit {
     private fb: FormBuilder,
     private programService: ProgramService,
     private authService: AuthService,
+    private trainerService: TrainerService,
     private notificationService: NotificationService
   ) {
     this.userId = this.authService.getUserIdFromToken();
   }
+
+  // inject TrainerService for resolving trainerProfileId
+  
 
   ngOnInit(): void {
     this.initializeForm();
@@ -101,20 +106,48 @@ export class ProgramsComponent implements OnInit {
           }
         });
     } else {
-      this.programService.createProgram(this.userId!, formValue)
-        .subscribe({
-          next: () => {
-            this.notificationService.success('Success', 'Program created successfully');
-            this.closeModal();
-            this.reload.emit();
+      // Need trainerProfileId (backend expects trainerProfileId). Fetch profile by userId then create.
+      if (!this.userId) {
+        this.notificationService.error('Error', 'Unable to identify trainer. Please login again.');
+        this.isSaving = false;
+        return;
+      }
+
+      this.trainerService.getProfileByUserId(this.userId).subscribe({
+        next: profile => {
+          const trainerProfileId = profile?.id;
+          if (!trainerProfileId) {
+            this.notificationService.error('Error', 'Trainer profile not found. Create a trainer profile first.');
             this.isSaving = false;
-          },
-          error: (error) => {
-            this.notificationService.error('Error', 'Failed to create program');
-            console.error(error);
-            this.isSaving = false;
+            return;
           }
-        });
+
+          const payloadForServer = { ...formValue, trainerProfileId };
+          console.log('Creating program payload:', payloadForServer);
+          try { console.log('Creating program payload (json):', JSON.stringify(payloadForServer)); } catch (e) { console.warn('Could not stringify payload', e); }
+
+          this.programService.createProgram(trainerProfileId, formValue).subscribe({
+            next: () => {
+              this.notificationService.success('Success', 'Program created successfully');
+              this.closeModal();
+              this.reload.emit();
+              this.isSaving = false;
+            },
+            error: (error) => {
+              this.notificationService.error('Error', 'Failed to create program');
+              console.error('Create program error:', error);
+              try { console.error('Server response body (json):', JSON.stringify(error?.error)); } catch (e) { console.error('Server response body (raw):', error?.error); }
+              console.error('HTTP status:', error?.status, 'statusText:', error?.statusText);
+              this.isSaving = false;
+            }
+          });
+        },
+        error: err => {
+          this.notificationService.error('Error', 'Failed to resolve trainer profile');
+          console.error('Failed to get trainer profile', err);
+          this.isSaving = false;
+        }
+      });
     }
   }
 
@@ -136,7 +169,16 @@ export class ProgramsComponent implements OnInit {
   }
 
   selectProgram(program: Program): void {
-    if (!program.id) return;
-    this.programService.getProgramDetails(program.id).subscribe({ next: p => { this.programService.setSelectedProgram(p); }, error: err => { console.error('Failed to load program details', err); this.notificationService.error('Error','Failed to load program details'); } });
+    console.log('Program clicked for details:', program);
+    if (!program.id) {
+      console.warn('Program has no id — setting selection directly for debugging', program);
+      this.programService.setSelectedProgram(program);
+      return;
+    }
+
+    this.programService.getProgramDetails(program.id).subscribe({
+      next: p => { this.programService.setSelectedProgram(p); },
+      error: err => { console.error('Failed to load program details', err); this.notificationService.error('Error','Failed to load program details'); }
+    });
   }
 }

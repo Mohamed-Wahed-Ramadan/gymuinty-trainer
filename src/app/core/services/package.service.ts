@@ -177,16 +177,15 @@ export class PackageService {
     return Number.isInteger(id) && id > 0;
   }
 
-  private validateCreateRequest(request: PackageCreateRequest): Omit<PackageCreateRequest, 'trainerId'> {
+  private validateCreateRequest(request: PackageCreateRequest): PackageCreateRequest {
     if (!request.name || request.name.trim().length < 3) {
       throw new Error('Name is required and must be at least 3 characters.');
     }
     if (!request.priceMonthly || request.priceMonthly < 0.01) {
       throw new Error('Monthly price is required and must be at least 0.01.');
     }
-    // Remove trainerId from request - API extracts it from token
-    const { trainerId, ...payload } = request;
-    return payload;
+    // Keep trainerId if provided (allow explicit trainer profile id from frontend)
+    return request;
   }
 
   private handleError(error: HttpErrorResponse) {

@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { environment } from '../../../environments/environment';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
@@ -26,7 +27,7 @@ export interface TrainerProfileResponse {
 
 @Injectable({ providedIn: 'root' })
 export class TrainerService {
-  private readonly baseUrl = 'https://gymunity-fp-apis.runasp.net/api/trainer/TrainerProfile';
+  private readonly baseUrl = `${environment.apiUrl}/trainer/TrainerProfile`;
 
   constructor(private http: HttpClient) {}
 
@@ -93,7 +94,8 @@ export class TrainerService {
   private resolveImageUrl(url: string | null): string | null {
     if (!url) return null;
     if (url.startsWith('http')) return url;
-    return `https://gymunity-fp-apis.runasp.net/${url}`;
+    const base = environment.apiUrl.replace(/\/$/, '');
+    return `${base}/${url.replace(/^\/+/, '')}`;
   }
 
   // Error handling

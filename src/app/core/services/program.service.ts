@@ -78,8 +78,8 @@ export class ProgramService {
       );
   }
 
-  createProgram(trainerId: string, program: Omit<Program, 'id' | 'createdAt' | 'updatedAt'>): Observable<Program> {
-    const payload = { ...program, trainerId };
+  createProgram(trainerProfileId: number | string, program: Omit<Program, 'id' | 'createdAt' | 'updatedAt'>): Observable<Program> {
+    const payload = { ...program, trainerProfileId };
     return this.http.post<Program>(`${this.apiUrl}/Programs`, payload);
   }
 
@@ -145,6 +145,10 @@ export class ProgramService {
 
   getExercisesByDay(dayId: number): Observable<DayExercise[]> {
     return this.http.get<DayExercise[]>(`${this.apiUrl}/DayExercises/by-day/${dayId}`);
+  }
+
+  getDayExerciseById(exerciseId: number): Observable<DayExercise> {
+    return this.http.get<DayExercise>(`${this.apiUrl}/DayExercises/${exerciseId}`);
   }
 
   createDayExercise(exercise: Omit<DayExercise, 'id'>): Observable<DayExercise> {

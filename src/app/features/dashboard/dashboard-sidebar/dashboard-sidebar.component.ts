@@ -55,6 +55,17 @@ export class DashboardSidebarComponent implements OnInit {
             this.programService.getDaysByWeek(w.id).subscribe({
               next: (days) => {
                 this.programs[index].weeks![wi].days = days || [];
+                // For each day, fetch its exercises so sidebar can show counts
+                (this.programs[index].weeks![wi].days || []).forEach((d, di) => {
+                  if (d && d.id) {
+                    this.programService.getExercisesByDay(d.id).subscribe({
+                      next: (exs) => { this.programs[index].weeks![wi].days![di].exercises = exs || []; },
+                      error: (err) => { console.error('Failed to load exercises for day', d.id, err); this.programs[index].weeks![wi].days![di].exercises = []; }
+                    });
+                  } else {
+                    this.programs[index].weeks![wi].days![di].exercises = [];
+                  }
+                });
               },
               error: (err) => console.error('Failed to load days for week', w.id, err)
             });

@@ -62,8 +62,11 @@ export class DashboardComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (programs) => {
-          this.programs = programs;
-          this.isLoadingPrograms = false;
+          // assign asynchronously to avoid ExpressionChangedAfterItHasBeenCheckedError
+          setTimeout(() => {
+            this.programs = programs;
+            this.isLoadingPrograms = false;
+          }, 0);
         },
         error: (error) => {
           console.error('Failed to load programs:', error);
