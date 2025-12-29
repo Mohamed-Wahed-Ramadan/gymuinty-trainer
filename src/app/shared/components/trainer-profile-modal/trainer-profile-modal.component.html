@@ -1,0 +1,157 @@
+<div *ngIf="isOpen" class="modal-overlay" [@fadeIn] (click)="onBackdropClick()">
+  <div class="modal-container" [@modalSlideIn] (click)="$event.stopPropagation()">
+    <!-- Loading State -->
+    <div *ngIf="isLoading" class="loading-container">
+      <div class="spinner"></div>
+      <p>Loading trainer profile...</p>
+    </div>
+
+    <!-- Content -->
+    <div *ngIf="!isLoading && profile" class="modal-content">
+      <!-- Cover Section -->
+      <div class="cover-section" 
+           [style.background]="'linear-gradient(135deg, ' + getBrandingColors().primary + ' 0%, ' + getBrandingColors().secondary + ' 100%)'">
+        <button class="btn-close-fixed" (click)="close()" aria-label="Close">
+          <i class="bi bi-x-lg"></i>
+        </button>
+
+        <div *ngIf="profile.coverImageUrl" class="cover-image">
+          <img [src]="profile.coverImageUrl" [alt]="profile.userName" />
+        </div>
+      </div>
+
+      <!-- Profile Header -->
+      <div class="profile-header">
+        <div class="avatar-section">
+          <div class="avatar-circle">
+            <i class="bi bi-person-fill"></i>
+          </div>
+        </div>
+
+        <div class="profile-intro">
+          <div class="name-row">
+            <h2 class="profile-name">{{ profile.userName }}</h2>
+            <span *ngIf="profile.isVerified" class="verified-badge" title="Verified Trainer">
+              <i class="bi bi-check-circle-fill"></i> Verified
+            </span>
+          </div>
+
+          <p class="handle">{{ profile.handle }}</p>
+          <p class="bio">{{ profile.bio }}</p>
+
+          <div class="rating-section">
+            <div class="rating">
+              <i class="bi bi-star-fill"></i>
+              <span class="rating-value">{{ profile.ratingAverage | number:'1.1-1' }}</span>
+            </div>
+            <div class="rating-text">Based on client reviews</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Stats Section -->
+      <div class="stats-section">
+        <div class="stat-card">
+          <div class="stat-icon">
+            <i class="bi bi-people"></i>
+          </div>
+          <div class="stat-info">
+            <span class="stat-value">{{ profile.totalClients }}</span>
+            <span class="stat-label">Total Clients</span>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon">
+            <i class="bi bi-calendar-event"></i>
+          </div>
+          <div class="stat-info">
+            <span class="stat-value">{{ profile.yearsExperience }}+</span>
+            <span class="stat-label">Years of Experience</span>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon" *ngIf="profile.isVerified; else notVerified">
+            <i class="bi bi-shield-check"></i>
+          </div>
+          <ng-template #notVerified>
+            <div class="stat-icon unverified">
+              <i class="bi bi-shield"></i>
+            </div>
+          </ng-template>
+          <div class="stat-info">
+            <span class="stat-value">{{ profile.isVerified ? 'Yes' : 'No' }}</span>
+            <span class="stat-label">Verified</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Details Section -->
+      <div class="details-section">
+        <!-- Status Section -->
+        <div *ngIf="profile.statusDescription" class="detail-card status-card">
+          <h3 class="detail-title">
+            <i class="bi bi-info-circle"></i> Current Status
+          </h3>
+          <p class="status-text">{{ profile.statusDescription }}</p>
+          <div *ngIf="profile.statusImageUrl" class="status-image">
+            <img [src]="profile.statusImageUrl" [alt]="'Status'" />
+          </div>
+        </div>
+
+        <!-- Info Grid -->
+        <div class="info-grid">
+          <div class="info-item" *ngIf="profile.createdAt">
+            <span class="info-label">
+              <i class="bi bi-calendar3"></i> Joined
+            </span>
+            <span class="info-value">{{ profile.createdAt | date:'short' }}</span>
+          </div>
+
+          <div class="info-item" *ngIf="profile.isVerified && profile.verifiedAt">
+            <span class="info-label">
+              <i class="bi bi-check-circle"></i> Verified Since
+            </span>
+            <span class="info-value">{{ profile.verifiedAt | date:'short' }}</span>
+          </div>
+
+          <div class="info-item" *ngIf="!profile.isSuspended">
+            <span class="info-label">
+              <i class="bi bi-activity"></i> Account Status
+            </span>
+            <span class="info-value status-active">Active</span>
+          </div>
+
+          <div class="info-item" *ngIf="profile.isSuspended">
+            <span class="info-label">
+              <i class="bi bi-exclamation-triangle"></i> Account Status
+            </span>
+            <span class="info-value status-suspended">Suspended</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Video Intro -->
+      <div *ngIf="profile.videoIntroUrl" class="video-section">
+        <h3 class="detail-title">
+          <i class="bi bi-play-circle"></i> Trainer Introduction
+        </h3>
+        <div class="video-container">
+          <video controls class="intro-video">
+            <source [src]="profile.videoIntroUrl" />
+            Your browser does not support the video tag.
+          </video>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="modal-footer" *ngIf="!isLoading && profile">
+      <button class="btn btn-secondary" (click)="close()">Close</button>
+      <button class="btn btn-primary">
+        <i class="bi bi-chat-dots"></i> Contact Trainer
+      </button>
+    </div>
+  </div>
+</div>

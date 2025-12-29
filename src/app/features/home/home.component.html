@@ -135,7 +135,7 @@
             </div>
             
             <div class="card-footer">
-              <button class="btn-view" *ngIf="isLoggedIn">Explore</button>
+              <button class="btn-view" *ngIf="isLoggedIn" (click)="exploreProgram(pr)">Explore</button>
               <button class="btn-view btn-disabled" *ngIf="!isLoggedIn" [title]="'Login to explore this program'">Explore</button>
             </div>
           </div>
@@ -180,7 +180,7 @@
             </div>
             
             <div class="card-footer">
-              <button class="btn-view" *ngIf="isLoggedIn">View Profile</button>
+              <button class="btn-view" *ngIf="isLoggedIn" (click)="viewTrainerProfile(t)">View Profile</button>
               <button class="btn-view btn-disabled" *ngIf="!isLoggedIn" [title]="'Login to view trainer profile'">View Profile</button>
             </div>
           </div>
@@ -198,3 +198,16 @@
     </div>
   </div>
 </div>
+<!-- Program Detail Modal -->
+<app-program-detail-modal 
+  [isOpen]="showProgramModal"
+  [programId]="selectedProgramId"
+  (closeModal)="closeProgramModal()">
+</app-program-detail-modal>
+
+<!-- Trainer Profile Modal -->
+<app-trainer-profile-modal 
+  [isOpen]="showTrainerModal"
+  [trainerId]="selectedTrainerId"
+  (closeModal)="closeTrainerModal()">
+</app-trainer-profile-modal>

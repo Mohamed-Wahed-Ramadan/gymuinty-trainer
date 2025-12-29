@@ -1,0 +1,164 @@
+<div *ngIf="isOpen" class="modal-overlay" [@fadeIn] (click)="onBackdropClick()">
+  <div class="modal-container" [@modalSlideIn] (click)="$event.stopPropagation()">
+    <!-- Header -->
+    <div class="modal-header">
+      <div class="program-title-section">
+        <h2 class="modal-title">{{ program?.title }}</h2>
+        <div class="program-meta-top">
+          <span class="badge" [ngClass]="'badge-type-' + program?.type">
+            <i [class]="'bi ' + getProgramTypeIcon(program?.type)"></i>
+            {{ getProgramTypeLabel(program?.type) }}
+          </span>
+          <span class="duration-badge">
+            <i class="bi bi-calendar3"></i> {{ program?.durationWeeks }} weeks
+          </span>
+        </div>
+      </div>
+      <button class="btn-close" (click)="close()" aria-label="Close">
+        <i class="bi bi-x-lg"></i>
+      </button>
+    </div>
+
+    <!-- Loading State -->
+    <div *ngIf="isLoading" class="loading-container">
+      <div class="spinner"></div>
+      <p>Loading program details...</p>
+    </div>
+
+    <!-- Content -->
+    <div *ngIf="!isLoading && program" class="modal-content">
+      <!-- Program Description Section -->
+      <div class="section">
+        <h3 class="section-title">
+          <i class="bi bi-info-circle"></i> Overview
+        </h3>
+        <p class="description">{{ program.description }}</p>
+        
+        <div class="program-details-grid">
+          <div class="detail-item" *ngIf="program.trainerUserName">
+            <span class="detail-label">
+              <i class="bi bi-person-badge"></i> Trainer
+            </span>
+            <span class="detail-value">{{ program.trainerUserName }}</span>
+          </div>
+          <div class="detail-item" *ngIf="program.price">
+            <span class="detail-label">
+              <i class="bi bi-tag"></i> Price
+            </span>
+            <span class="detail-value">{{ program.price | currency }}</span>
+          </div>
+          <div class="detail-item" *ngIf="program.maxClients">
+            <span class="detail-label">
+              <i class="bi bi-people"></i> Max Clients
+            </span>
+            <span class="detail-value">{{ program.maxClients }}</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label">
+              <i class="bi bi-globe"></i> Visibility
+            </span>
+            <span class="detail-value">{{ program.isPublic ? 'Public' : 'Private' }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Weeks and Days Section -->
+      <div class="section" *ngIf="program.weeks && program.weeks.length > 0">
+        <h3 class="section-title">
+          <i class="bi bi-diagram-3"></i> Program Structure
+        </h3>
+
+        <div class="weeks-container">
+          <div class="week-item" *ngFor="let week of program.weeks">
+            <div class="week-header" (click)="toggleWeek(week.id)">
+              <div class="week-info">
+                <h4 class="week-title">
+                  <i class="bi" [ngClass]="isWeekExpanded(week.id) ? 'bi-chevron-down' : 'bi-chevron-right'"></i>
+                  Week {{ week.weekNumber }}
+                </h4>
+              </div>
+              <span class="days-count">{{ week.days?.length || 0 }} days</span>
+            </div>
+
+            <!-- Days -->
+            <div *ngIf="isWeekExpanded(week.id)" class="week-content">
+              <div class="day-item" *ngFor="let day of week.days">
+                <div class="day-header" (click)="toggleDay(day.id)">
+                  <div class="day-info">
+                    <h5 class="day-title">
+                      <i class="bi" [ngClass]="isDayExpanded(day.id) ? 'bi-chevron-down' : 'bi-chevron-right'"></i>
+                      <span class="day-number">Day {{ day.dayNumber }}</span>
+                      <span class="day-name">{{ day.title }}</span>
+                    </h5>
+                  </div>
+                  <span class="exercises-count">{{ day.exercises?.length || 0 }} exercises</span>
+                </div>
+
+                <!-- Exercises -->
+                <div *ngIf="isDayExpanded(day.id)" class="day-content">
+                  <div *ngIf="day.notes" class="day-notes">
+                    <i class="bi bi-chat-left-text"></i> {{ day.notes }}
+                  </div>
+
+                  <div class="exercises-list">
+                    <div class="exercise-item" *ngFor="let exercise of day.exercises; let idx = index">
+                      <div class="exercise-order">{{ idx + 1 }}</div>
+                      <div class="exercise-details">
+                        <h6 class="exercise-title">Exercise {{ exercise.orderIndex }}</h6>
+                        
+                        <div class="exercise-specs">
+                          <span class="spec" *ngIf="exercise.sets">
+                            <i class="bi bi-square"></i> {{ exercise.sets }} sets
+                          </span>
+                          <span class="spec" *ngIf="exercise.reps">
+                            <i class="bi bi-repeat"></i> {{ exercise.reps }} reps
+                          </span>
+                          <span class="spec" *ngIf="exercise.restSeconds">
+                            <i class="bi bi-hourglass"></i> {{ exercise.restSeconds }}s rest
+                          </span>
+                          <span class="spec" *ngIf="exercise.tempo">
+                            <i class="bi bi-speedometer2"></i> {{ exercise.tempo }}
+                          </span>
+                          <span class="spec" *ngIf="exercise.rpe">
+                            <i class="bi bi-lightning"></i> RPE {{ exercise.rpe }}
+                          </span>
+                          <span class="spec" *ngIf="exercise.percent1RM">
+                            <i class="bi bi-percent"></i> {{ exercise.percent1RM }}% 1RM
+                          </span>
+                        </div>
+
+                        <div *ngIf="exercise.notes" class="exercise-notes">
+                          📝 {{ exercise.notes }}
+                        </div>
+
+                        <div *ngIf="exercise.videoUrl" class="exercise-video">
+                          <a [href]="exercise.videoUrl" target="_blank" class="video-link">
+                            <i class="bi bi-play-circle"></i> Watch Form Video
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Empty State -->
+      <div *ngIf="!program.weeks || program.weeks.length === 0" class="empty-state">
+        <i class="bi bi-inbox"></i>
+        <p>No program structure available yet</p>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="modal-footer">
+      <button class="btn btn-secondary" (click)="close()">Close</button>
+      <button class="btn btn-primary" *ngIf="program">
+        <i class="bi bi-check-circle"></i> Enroll Now
+      </button>
+    </div>
+  </div>
+</div>

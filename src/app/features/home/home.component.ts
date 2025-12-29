@@ -5,11 +5,13 @@ import { HomeService } from '../../core/services/home.service';
 import { AuthService } from '../../core/services/auth.service';
 import { FormsModule } from '@angular/forms';
 import { trigger, transition, style, animate } from '@angular/animations';
+import { ProgramDetailModalComponent } from '../../shared/components/program-detail-modal/program-detail-modal.component';
+import { TrainerProfileModalComponent } from '../../shared/components/trainer-profile-modal/trainer-profile-modal.component';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, ProgramDetailModalComponent, TrainerProfileModalComponent],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css',
   animations: [
@@ -37,6 +39,12 @@ export class HomeComponent implements OnInit {
   trainers: any[] = [];
   isLoggedIn = false;
   isLoading = false;
+
+  // Modal states
+  showProgramModal = false;
+  selectedProgramId: number | null = null;
+  showTrainerModal = false;
+  selectedTrainerId: number | null = null;
 
   // UI state
   expandedPackageId: number | null = null;
@@ -120,11 +128,38 @@ export class HomeComponent implements OnInit {
     return this.programTypeMap[type] || 'Program';
   }
 
+  // Program Modal Methods
+  openProgramModal(program: any): void {
+    this.selectedProgramId = program?.id || null;
+    this.showProgramModal = true;
+  }
+
+  closeProgramModal(): void {
+    this.showProgramModal = false;
+    this.selectedProgramId = null;
+  }
+
   viewProgram(program: any): void {
-    // navigate to program detail if route exists (placeholder)
-    if (program?.id) {
-      this.router.navigate(['/programs', program.id]);
-    }
+    this.openProgramModal(program);
+  }
+
+  exploreProgram(program: any): void {
+    this.openProgramModal(program);
+  }
+
+  // Trainer Profile Modal Methods
+  openTrainerProfile(trainer: any): void {
+    this.selectedTrainerId = trainer?.id || null;
+    this.showTrainerModal = true;
+  }
+
+  closeTrainerModal(): void {
+    this.showTrainerModal = false;
+    this.selectedTrainerId = null;
+  }
+
+  viewTrainerProfile(trainer: any): void {
+    this.openTrainerProfile(trainer);
   }
 
   goToRegister(): void { this.router.navigate(['/auth/register']); }
