@@ -4,9 +4,30 @@ import { Observable, BehaviorSubject, throwError } from 'rxjs';
 import { tap, catchError } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 
+// ==================== INTERFACES ====================
+
+/**
+ * Program reference in Package response
+ */
+export interface ProgramInPackage {
+  id: number;
+  title: string;
+  description: string;
+  type: number;
+  durationWeeks: number;
+  price?: number;
+  isPublic: boolean;
+  maxClients?: number;
+  thumbnailUrl?: string;
+  createdAt: string;
+  trainerProfileId?: number;
+  trainerUserName?: string;
+  trainerHandle?: string;
+}
+
 /**
  * PackageResponse DTO - Complete package information
- * Maps to: ITI.Gymunity.FP.Application/DTOs/Package/PackageResponse.cs
+ * Maps to: ITI.Gymunity.FP.Application/DTOs/Trainer/PackageResponse.cs
  */
 export interface PackageResponse {
   id: number;
@@ -22,6 +43,7 @@ export interface PackageResponse {
   isAnnual: boolean;
   promoCode?: string;
   programIds: number[];
+  programs?: ProgramInPackage[];
 }
 
 /**
@@ -32,10 +54,11 @@ export interface PackageResponse {
  * - priceMonthly: Required, 0.01-100000
  * - priceYearly: Optional, 0.01-100000
  * - promoCode: Optional, 3-20 characters
- * - trainerId: Required
+ * - trainerId/trainerProfileId: Required
  */
 export interface PackageCreateRequest {
-  trainerId: number | string;
+  trainerProfileId?: number | string;
+  trainerId?: number | string;
   name: string;
   description?: string;
   priceMonthly: number;
@@ -47,8 +70,17 @@ export interface PackageCreateRequest {
   promoCode?: string;
 }
 
+/**
+ * V2 Package Create Request - with program names support
+ */
+export interface PackageCreateRequestV2 extends PackageCreateRequest {
+  programNames?: string[];
+}
+
 /** Legacy Package interface for backward compatibility */
 export interface Package extends PackageResponse {}
+
+// ==================== SERVICE ====================
 
 @Injectable({ providedIn: 'root' })
 export class PackageService {
@@ -60,7 +92,7 @@ export class PackageService {
   // ============ API ENDPOINTS ============
 
   /**
-   * Get all packages (public endpoint - no auth required)
+   * Get all packages (public endpoint)
    * GET /api/trainer/Packages
    * Returns: PackageResponse[]
    */
@@ -70,9 +102,9 @@ export class PackageService {
   }
 
   /**
-   * Get package by ID (public endpoint - no auth required)
+   * Get package by ID (public endpoint)
    * GET /api/trainer/Packages/{id}
-   * Returns: PackageResponse
+   * Returns: PackageResponse (includes Programs array)
    */
   getPackageById(packageId: number): Observable<PackageResponse> {
     if (!this.isValidId(packageId)) {
@@ -86,9 +118,9 @@ export class PackageService {
   }
 
   /**
-   * Get packages by trainer (public endpoint - no auth required)
+   * Get packages by trainer (public endpoint)
    * GET /api/trainer/Packages/byTrainer/{trainerId}
-   * Returns: PackageResponse[]
+   * Returns: PackageResponse[] (each includes Programs array)
    */
   getPackagesByTrainer(trainerId: number | string): Observable<PackageResponse[]> {
     return this.http.get<PackageResponse[]>(`${this.apiUrl}/byTrainer/${trainerId}`)
@@ -96,19 +128,31 @@ export class PackageService {
   }
 
   /**
-   * Create new package (requires auth in production)
+   * Create new package
    * POST /api/trainer/Packages
    * Status: 201 Created
    * Returns: PackageResponse
    */
   createPackage(request: Partial<PackageCreateRequest>): Observable<PackageResponse> {
-    const payload = this.validateCreateRequest(request as PackageCreateRequest);
+    const payload = this.normalizeRequest(request);
     return this.http.post<PackageResponse>(this.apiUrl, payload)
       .pipe(catchError(err => this.handleError(err)));
   }
 
   /**
-   * Update package (requires auth in production)
+   * Create package with V2 DTO (supports program names)
+   * POST /api/trainer/Packages
+   * Status: 201 Created
+   * Returns: PackageResponse
+   */
+  createPackageV2(request: Partial<PackageCreateRequestV2>): Observable<PackageResponse> {
+    const payload = this.normalizeRequest(request);
+    return this.http.post<PackageResponse>(this.apiUrl, payload)
+      .pipe(catchError(err => this.handleError(err)));
+  }
+
+  /**
+   * Update package
    * PUT /api/trainer/Packages/{id}
    * Status: 200 OK
    * Returns: PackageResponse
@@ -117,12 +161,13 @@ export class PackageService {
     if (!this.isValidId(packageId)) {
       return throwError(() => new Error('Invalid package ID. Must be a positive integer.'));
     }
-    return this.http.put<PackageResponse>(`${this.apiUrl}/${packageId}`, request)
+    const payload = this.normalizeRequest(request);
+    return this.http.put<PackageResponse>(`${this.apiUrl}/${packageId}`, payload)
       .pipe(catchError(err => this.handleError(err)));
   }
 
   /**
-   * Delete package (soft delete - requires auth in production)
+   * Delete package
    * DELETE /api/trainer/Packages/{id}
    * Status: 204 No Content
    */
@@ -173,19 +218,24 @@ export class PackageService {
 
   // ============ PRIVATE HELPERS ============
 
-  private isValidId(id: number): boolean {
-    return Number.isInteger(id) && id > 0;
+  /**
+   * Normalize request to use trainerProfileId as key
+   * Backend expects trainerProfileId, but allow trainerId for compatibility
+   */
+  private normalizeRequest(request: any): any {
+    const normalized = { ...request };
+    
+    // Use trainerProfileId (backend convention)
+    if (request.trainerId && !request.trainerProfileId) {
+      normalized.trainerProfileId = request.trainerId;
+      delete normalized.trainerId;
+    }
+    
+    return normalized;
   }
 
-  private validateCreateRequest(request: PackageCreateRequest): PackageCreateRequest {
-    if (!request.name || request.name.trim().length < 3) {
-      throw new Error('Name is required and must be at least 3 characters.');
-    }
-    if (!request.priceMonthly || request.priceMonthly < 0.01) {
-      throw new Error('Monthly price is required and must be at least 0.01.');
-    }
-    // Keep trainerId if provided (allow explicit trainer profile id from frontend)
-    return request;
+  private isValidId(id: number): boolean {
+    return Number.isInteger(id) && id > 0;
   }
 
   private handleError(error: HttpErrorResponse) {

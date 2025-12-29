@@ -59,7 +59,7 @@
 
         <!-- Price -->
         <div class="price">
-          <span class="amount">${{ program.price.toFixed(2) }}</span>
+          <span class="amount">${{ program.price ? program.price.toFixed(2) : '0.00' }}</span>
         </div>
 
         <!-- Actions -->
