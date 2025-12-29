@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Program, ProgramService } from '../../../core/services';
 
@@ -16,7 +16,7 @@ export class DashboardSidebarComponent implements OnInit {
   expandedProgram: number | null = null;
   expandedWeek: number | null = null;
 
-  constructor(private programService: ProgramService) {}
+  constructor(private programService: ProgramService, private cdr: ChangeDetectorRef) {}
 
   ngOnInit(): void {}
 
@@ -49,32 +49,34 @@ export class DashboardSidebarComponent implements OnInit {
     this.programService.getWeeksByProgram(programId).subscribe({
       next: (weeks) => {
         this.programs[index].weeks = weeks || [];
+        this.cdr.detectChanges();
         // load days for each week (parallel requests)
         this.programs[index].weeks.forEach((w, wi) => {
           if (w && w.id) {
             this.programService.getDaysByWeek(w.id).subscribe({
               next: (days) => {
                 this.programs[index].weeks![wi].days = days || [];
+                this.cdr.detectChanges();
                 // For each day, fetch its exercises so sidebar can show counts
                 (this.programs[index].weeks![wi].days || []).forEach((d, di) => {
                   if (d && d.id) {
                     this.programService.getExercisesByDay(d.id).subscribe({
-                      next: (exs) => { this.programs[index].weeks![wi].days![di].exercises = exs || []; },
-                      error: (err) => { console.error('Failed to load exercises for day', d.id, err); this.programs[index].weeks![wi].days![di].exercises = []; }
+                      next: (exs) => { this.programs[index].weeks![wi].days![di].exercises = exs || []; this.cdr.detectChanges(); },
+                      error: (err) => { console.error('Failed to load exercises for day', d.id, err); this.programs[index].weeks![wi].days![di].exercises = []; this.cdr.detectChanges(); }
                     });
                   } else {
                     this.programs[index].weeks![wi].days![di].exercises = [];
                   }
                 });
               },
-              error: (err) => console.error('Failed to load days for week', w.id, err)
+              error: (err) => { console.error('Failed to load days for week', w.id, err); this.cdr.detectChanges(); }
             });
           } else {
             this.programs[index].weeks![wi].days = [];
           }
         });
       },
-      error: (error) => console.error('Failed to load program weeks:', error)
+      error: (error) => { console.error('Failed to load program weeks:', error); this.cdr.detectChanges(); }
     });
   }
 

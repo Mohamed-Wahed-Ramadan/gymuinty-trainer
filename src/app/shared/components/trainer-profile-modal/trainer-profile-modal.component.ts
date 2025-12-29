@@ -1,6 +1,8 @@
-import { Component, Input, Output, EventEmitter, OnInit, OnChanges } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit, OnChanges, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TrainerService } from '../../../core/services/trainer.service';
+import { ChatService } from '../../../core/services/chat.service';
+import { Router } from '@angular/router';
 import { trigger, transition, style, animate } from '@angular/animations';
 
 @Component({
@@ -35,7 +37,12 @@ export class TrainerProfileModalComponent implements OnInit, OnChanges {
   profile: any = null;
   isLoading = false;
 
-  constructor(private trainerService: TrainerService) {}
+  constructor(
+    private trainerService: TrainerService,
+    private chatService: ChatService,
+    private router: Router
+    , private cdr: ChangeDetectorRef
+  ) {}
 
   ngOnInit(): void {}
 
@@ -53,10 +60,12 @@ export class TrainerProfileModalComponent implements OnInit, OnChanges {
       next: (data) => {
         this.profile = data;
         this.isLoading = false;
+        this.cdr.detectChanges();
       },
       error: (err) => {
         console.error('Error loading trainer profile:', err);
         this.isLoading = false;
+        this.cdr.detectChanges();
       }
     });
   }
@@ -79,5 +88,30 @@ export class TrainerProfileModalComponent implements OnInit, OnChanges {
       primary: colors[0]?.trim() || '#667eea',
       secondary: colors[1]?.trim() || '#764ba2'
     };
+  }
+
+  contactTrainer(): void {
+    if (!this.profile || !this.profile.userId) return;
+
+    // create or get existing thread and navigate to inbox with threadId
+    this.chatService.createThread(this.profile.userId).subscribe({
+      next: (res) => {
+        const thread = res.data;
+        if (thread && thread.id) {
+          // navigate to inbox and pass threadId in navigation state
+          this.router.navigate(['/inbox'], { state: { threadId: thread.id } });
+          this.close();
+          this.cdr.detectChanges();
+        } else {
+          console.warn('ContactTrainer: no thread returned', res);
+          this.cdr.detectChanges();
+        }
+      },
+      error: (err) => {
+        console.error('ContactTrainer failed', err);
+        alert('Failed to open chat. Please try again.');
+        this.cdr.detectChanges();
+      }
+    });
   }
 }

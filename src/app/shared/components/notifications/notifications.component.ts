@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NotificationService, Notification } from '../../../core/services/notification.service';
 import { Subject } from 'rxjs';
@@ -17,19 +17,21 @@ export class NotificationsComponent implements OnInit, OnDestroy {
   showDropdown = false;
   private destroy$ = new Subject<void>();
 
-  constructor(private notificationService: NotificationService) {}
+  constructor(private notificationService: NotificationService, private cdr: ChangeDetectorRef) {}
 
   ngOnInit(): void {
     this.notificationService.notifications$
       .pipe(takeUntil(this.destroy$))
       .subscribe(notifications => {
         this.notifications = notifications;
+        this.cdr.detectChanges();
       });
 
     this.notificationService.unreadCount$
       .pipe(takeUntil(this.destroy$))
       .subscribe(count => {
         this.unreadCount = count;
+        this.cdr.detectChanges();
       });
   }
 

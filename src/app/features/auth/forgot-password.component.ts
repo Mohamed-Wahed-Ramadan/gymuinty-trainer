@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, ActivatedRoute, RouterLink } from '@angular/router';
@@ -28,6 +28,7 @@ export class ForgotPasswordComponent implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
     private notificationService: NotificationService
+  , private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
@@ -62,6 +63,7 @@ export class ForgotPasswordComponent implements OnInit {
         this.resetToken = params['token'];
         this.resetEmail = decodeURIComponent(params['email']);
         this.step = 'reset';
+        this.cdr.detectChanges();
       }
     });
   }
@@ -100,6 +102,7 @@ export class ForgotPasswordComponent implements OnInit {
         setTimeout(() => {
           this.router.navigate(['/auth/login']);
         }, 3000);
+        this.cdr.detectChanges();
       },
       error: (error) => {
         this.isLoading = false;
@@ -108,6 +111,7 @@ export class ForgotPasswordComponent implements OnInit {
           'Error',
           error?.message || 'Failed to send reset link. Please try again.'
         );
+        this.cdr.detectChanges();
       }
     });
   }
@@ -143,6 +147,7 @@ export class ForgotPasswordComponent implements OnInit {
         setTimeout(() => {
           this.router.navigate(['/dashboard']);
         }, 2000);
+        this.cdr.detectChanges();
       },
       error: (error) => {
         this.isLoading = false;
@@ -151,6 +156,7 @@ export class ForgotPasswordComponent implements OnInit {
           'Error',
           error?.message || 'Failed to reset password. The link may have expired.'
         );
+        this.cdr.detectChanges();
       }
     });
   }

@@ -15,14 +15,27 @@
 
     <!-- Navbar Right -->
     <div class="navbar-right">
+      <!-- Messages Icon (only if logged in) -->
+      <button *ngIf="isLoggedIn" 
+              class="nav-icon messages-icon" 
+              (click)="goToMessages()"
+              title="Messages">
+        <i class="bi bi-chat-dots"></i>
+        <span *ngIf="unreadMessagesCount > 0" class="unread-badge">
+          {{ unreadMessagesCount }}
+        </span>
+      </button>
+
       <!-- Language Toggle -->
-      <button class="language-toggle" (click)="toggleLanguage()" [attr.title]="'Switch to ' + (currentLanguage === 'en' ? 'Arabic' : 'English')">
+      <button class="language-toggle" 
+              (click)="toggleLanguage()" 
+              [attr.title]="'Switch to ' + (currentLanguage === 'en' ? 'Arabic' : 'English')">
         <i class="bi bi-globe"></i>
         <span class="lang-text">{{ currentLanguage === 'en' ? 'AR' : 'EN' }}</span>
       </button>
 
-      <!-- Login Button -->
-      <button class="btn-login" (click)="goToLogin()">
+      <!-- Login Button (only if not logged in) -->
+      <button *ngIf="!isLoggedIn" class="btn-login" (click)="goToLogin()">
         <i class="bi bi-box-arrow-in-right"></i>
         <span>{{ currentLanguage === 'en' ? 'Login' : 'دخول' }}</span>
       </button>

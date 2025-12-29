@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { TrainerService, TrainerProfileResponse } from '../../core/services/trainer.service';
@@ -260,6 +260,7 @@ export class TrainerProfileComponent implements OnInit {
     private fb: FormBuilder,
     private trainerService: TrainerService,
     private auth: AuthService
+  , private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
@@ -289,11 +290,13 @@ export class TrainerProfileComponent implements OnInit {
       next: (profile) => {
         this.profile = profile;
         this.loading = false;
+        this.cdr.detectChanges();
       },
       error: () => {
         // 404 means profile doesn't exist, so show form
         this.profile = null;
         this.loading = false;
+        this.cdr.detectChanges();
       }
     });
   }
@@ -376,11 +379,13 @@ export class TrainerProfileComponent implements OnInit {
         this.imagePreview = null;
         this.selectedFile = null;
         console.log('Profile saved successfully:', profile);
+        this.cdr.detectChanges();
       },
       error: (error) => {
         this.isSubmitting = false;
         this.errorMessage = error.message || 'Failed to save profile. Please try again.';
         console.error('Error saving profile:', error);
+        this.cdr.detectChanges();
       }
     });
   }

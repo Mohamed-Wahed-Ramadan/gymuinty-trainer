@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ProgramService, Program, ProgramWeek, ProgramDay, DayExercise } from '../../../core/services/program.service';
@@ -212,10 +212,10 @@ export class ProgramDetailComponent implements OnInit {
   private exerciseCache: Record<number, Exercise> = {};
   dayExerciseDetail: any | null = null;
 
-  constructor(private svc: ProgramService, private exSvc: ExerciseLibraryService, private notify: NotificationService) {}
+  constructor(private svc: ProgramService, private exSvc: ExerciseLibraryService, private notify: NotificationService, private cdr: ChangeDetectorRef) {}
 
   ngOnInit(): void {
-    this.svc.getSelectedProgram$().subscribe(p => { this.program = p; this.prefetchExercises(); });
+    this.svc.getSelectedProgram$().subscribe(p => { this.program = p; this.prefetchExercises(); this.cdr.detectChanges(); });
   }
 
   closeDetail(): void {
@@ -226,7 +226,7 @@ export class ProgramDetailComponent implements OnInit {
 
   refresh() {
     if (!this.program?.id) return;
-    this.svc.getProgramDetails(this.program.id).subscribe({ next: p => this.program = p, error: () => this.notify.error('Error','Failed to refresh program') });
+    this.svc.getProgramDetails(this.program.id).subscribe({ next: p => { this.program = p; this.cdr.detectChanges(); }, error: () => { this.notify.error('Error','Failed to refresh program'); this.cdr.detectChanges(); } });
   }
 
   private prefetchExercises() {
@@ -236,7 +236,7 @@ export class ProgramDetailComponent implements OnInit {
     (this.program.weeks || []).forEach(w => (w.days || []).forEach(d => (d.exercises || []).forEach(e => { if (e.exerciseId) ids.add(e.exerciseId); })));
     ids.forEach(id => {
       if (!this.exerciseCache[id]) {
-        this.exSvc.getById(id).subscribe({ next: ex => this.exerciseCache[id] = ex, error: () => { /* ignore fetch errors */ } });
+        this.exSvc.getById(id).subscribe({ next: ex => { this.exerciseCache[id] = ex; this.cdr.detectChanges(); }, error: () => { /* ignore fetch errors */ } });
       }
     });
   }
@@ -254,13 +254,13 @@ export class ProgramDetailComponent implements OnInit {
   addWeek() {
     if (!this.program?.id) return;
     const next = (this.program.weeks?.length || 0) + 1;
-    this.svc.createWeek({ programId: this.program.id!, weekNumber: next }).subscribe({ next: () => this.refresh(), error: () => this.notify.error('Error','Failed to create week') });
+    this.svc.createWeek({ programId: this.program.id!, weekNumber: next }).subscribe({ next: () => { this.refresh(); this.cdr.detectChanges(); }, error: () => { this.notify.error('Error','Failed to create week'); this.cdr.detectChanges(); } });
   }
 
   deleteWeek(w: ProgramWeek) {
     if (!w.id) return;
     if (!confirm('Delete week?')) return;
-    this.svc.deleteWeek(w.id).subscribe({ next: () => this.refresh(), error: () => this.notify.error('Error','Failed to delete week') });
+    this.svc.deleteWeek(w.id).subscribe({ next: () => { this.refresh(); this.cdr.detectChanges(); }, error: () => { this.notify.error('Error','Failed to delete week'); this.cdr.detectChanges(); } });
   }
 
   openCreateDay(w: ProgramWeek) {
@@ -284,13 +284,13 @@ export class ProgramDetailComponent implements OnInit {
       title: this.dayForm.title || `Day ${this.dayForm.dayNumber}`,
       notes: this.dayForm.notes || ''
     };
-    this.svc.createDay(payload).subscribe({ next: () => { this.notify.success('Created', 'Day created'); this.cancelCreateDay(); this.refresh(); }, error: () => this.notify.error('Error','Failed to create day') });
+    this.svc.createDay(payload).subscribe({ next: () => { this.notify.success('Created', 'Day created'); this.cancelCreateDay(); this.refresh(); this.cdr.detectChanges(); }, error: () => { this.notify.error('Error','Failed to create day'); this.cdr.detectChanges(); } });
   }
 
   deleteDay(d: ProgramDay) {
     if (!d.id) return;
     if (!confirm('Delete day?')) return;
-    this.svc.deleteDay(d.id).subscribe({ next: () => this.refresh(), error: () => this.notify.error('Error','Failed to delete day') });
+    this.svc.deleteDay(d.id).subscribe({ next: () => { this.refresh(); this.cdr.detectChanges(); }, error: () => { this.notify.error('Error','Failed to delete day'); this.cdr.detectChanges(); } });
   }
 
   openAddExercise(d: ProgramDay) {
@@ -348,14 +348,14 @@ export class ProgramDetailComponent implements OnInit {
       exerciseDataJson: this.addExerciseForm.exerciseDataJson
     };
 
-    this.svc.createDayExercise(payload).subscribe({ next: () => { this.notify.success('Added','Exercise added to day'); this.cancelPrepareAdd(); this.cancelAdd(); this.refresh(); }, error: (err) => { console.error('Failed to create day exercise', err); this.notify.error('Error','Failed to add exercise'); } });
+    this.svc.createDayExercise(payload).subscribe({ next: () => { this.notify.success('Added','Exercise added to day'); this.cancelPrepareAdd(); this.cancelAdd(); this.refresh(); this.cdr.detectChanges(); }, error: (err) => { console.error('Failed to create day exercise', err); this.notify.error('Error','Failed to add exercise'); this.cdr.detectChanges(); } });
   }
 
   viewExerciseDetail(id?: number) {
     if (!id) return;
     this.svc.getDayExerciseById(id).subscribe({
-      next: d => { this.dayExerciseDetail = d; this.ensureExerciseCached(d.exerciseId); },
-      error: err => { console.error('Failed to load day exercise', id, err); this.notify.error('Error','Failed to load exercise details'); }
+      next: d => { this.dayExerciseDetail = d; this.ensureExerciseCached(d.exerciseId); this.cdr.detectChanges(); },
+      error: err => { console.error('Failed to load day exercise', id, err); this.notify.error('Error','Failed to load exercise details'); this.cdr.detectChanges(); }
     });
   }
 
@@ -365,26 +365,26 @@ export class ProgramDetailComponent implements OnInit {
 
   searchExercises() {
     if (!this.exerciseSearch) { this.searchResults = []; return; }
-    this.exSvc.search(this.exerciseSearch).subscribe({ next: r => this.searchResults = r || [], error: () => this.notify.error('Error','Search failed') });
+    this.exSvc.search(this.exerciseSearch).subscribe({ next: r => { this.searchResults = r || []; this.cdr.detectChanges(); }, error: () => { this.notify.error('Error','Search failed'); this.cdr.detectChanges(); } });
   }
 
   confirmAddExercise(ex: any) {
     if (!this.addingToDay || !this.addingToDay.id) return;
     const order = (this.addingToDay.exercises?.length || 0) + 1;
     const payload: Omit<DayExercise,'id'> = { programDayId: this.addingToDay.id!, exerciseId: ex.id, orderIndex: order, sets: '3', reps: '12', restSeconds: 60 };
-    this.svc.createDayExercise(payload).subscribe({ next: () => { this.notify.success('Added','Exercise added to day'); this.cancelAdd(); this.refresh(); }, error: () => this.notify.error('Error','Failed to add exercise') });
+    this.svc.createDayExercise(payload).subscribe({ next: () => { this.notify.success('Added','Exercise added to day'); this.cancelAdd(); this.refresh(); this.cdr.detectChanges(); }, error: () => { this.notify.error('Error','Failed to add exercise'); this.cdr.detectChanges(); } });
   }
 
   removeExercise(ex: DayExercise) {
     if (!ex.id) return; if (!confirm('Remove exercise from day?')) return;
-    this.svc.deleteDayExercise(ex.id).subscribe({ next: () => this.refresh(), error: () => this.notify.error('Error','Failed to remove') });
+    this.svc.deleteDayExercise(ex.id).subscribe({ next: () => { this.refresh(); this.cdr.detectChanges(); }, error: () => { this.notify.error('Error','Failed to remove'); this.cdr.detectChanges(); } });
   }
 
   // helper to ensure exercise metadata is cached
   private ensureExerciseCached(exId?: number) {
     if (!exId) return;
     if (!this.exerciseCache[exId]) {
-      this.exSvc.getById(exId).subscribe({ next: ex => this.exerciseCache[exId] = ex, error: () => {} });
+      this.exSvc.getById(exId).subscribe({ next: ex => { this.exerciseCache[exId] = ex; this.cdr.detectChanges(); }, error: () => {} });
     }
   }
 }

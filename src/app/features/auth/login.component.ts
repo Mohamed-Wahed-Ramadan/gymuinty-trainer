@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
@@ -31,6 +31,7 @@ export class LoginComponent implements OnInit {
     private authService: AuthService,
     private router: Router,
     private notificationService: NotificationService
+  , private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
@@ -89,12 +90,14 @@ export class LoginComponent implements OnInit {
 
         this.notificationService.success('Success', 'Welcome back to Gymunity!');
         this.router.navigate(['/dashboard']);
+        this.cdr.detectChanges();
       },
       error: (error) => {
         this.isLoading = false;
         console.error('Login error:', error);
         const errorMessage = error?.error?.message || 'Invalid email/username or password';
         this.notificationService.error('Login Failed', errorMessage);
+        this.cdr.detectChanges();
       }
     });
   }
@@ -130,12 +133,14 @@ export class LoginComponent implements OnInit {
 
         this.notificationService.success('Success', 'Signed in with Google');
         this.router.navigate(['/dashboard']);
+        this.cdr.detectChanges();
       },
       error: (error) => {
         this.isLoading = false;
         console.error('Google Auth error:', error);
         const errorMessage = error?.error?.message || 'Google Sign-In failed';
         this.notificationService.error('Authentication Error', errorMessage);
+        this.cdr.detectChanges();
       }
     });
   }

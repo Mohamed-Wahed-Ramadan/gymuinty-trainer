@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Exercise } from '../../core/models/exercise.models';
@@ -118,7 +118,12 @@ export class ExerciseLibraryComponent implements OnInit {
   muscleGroups: string[] = [];
   equipmentList: string[] = [];
 
-  constructor(private svc: ExerciseLibraryService, private auth: AuthService, private notify: NotificationService) {}
+  constructor(
+    private svc: ExerciseLibraryService,
+    private auth: AuthService,
+    private notify: NotificationService,
+    private cdr: ChangeDetectorRef
+  ) {}
 
   ngOnInit(): void {
     this.loadExercises();
@@ -131,8 +136,13 @@ export class ExerciseLibraryComponent implements OnInit {
         this.exercises = data || [];
         this.populateFilters();
         this.applyFilters();
+        this.cdr.detectChanges();
       },
-      error: err => { console.error('Failed to load exercises', err); this.notify.error('Error', 'Failed to load exercises'); }
+      error: err => {
+        console.error('Failed to load exercises', err);
+        this.notify.error('Error', 'Failed to load exercises');
+        this.cdr.detectChanges();
+      }
     });
   }
 
@@ -159,8 +169,21 @@ export class ExerciseLibraryComponent implements OnInit {
 
   onSearch() {
     const trainerId = this.auth.getUserIdFromToken();
-    if (!this.searchTerm) this.applyFilters();
-    else this.svc.search(this.searchTerm, trainerId).subscribe({ next: data => { this.filteredExercises = data; }, error: err => { console.error(err); this.notify.error('Error', 'Search failed'); } });
+    if (!this.searchTerm) {
+      this.applyFilters();
+    } else {
+      this.svc.search(this.searchTerm, trainerId).subscribe({
+        next: data => {
+          this.filteredExercises = data;
+          this.cdr.detectChanges();
+        },
+        error: err => {
+          console.error(err);
+          this.notify.error('Error', 'Search failed');
+          this.cdr.detectChanges();
+        }
+      });
+    }
   }
 
   applyFilters() {
@@ -229,10 +252,12 @@ export class ExerciseLibraryComponent implements OnInit {
           this.notify.success('Saved', 'Exercise updated');
           this.loadExercises();
           this.closeForm();
+          this.cdr.detectChanges();
         },
         error: err => {
           console.error(err);
           this.notify.error('Error', err.message || err);
+          this.cdr.detectChanges();
         }
       });
     } else {
@@ -241,10 +266,12 @@ export class ExerciseLibraryComponent implements OnInit {
           this.notify.success('Created', 'Exercise created');
           this.loadExercises();
           this.closeForm();
+          this.cdr.detectChanges();
         },
         error: err => {
           console.error(err);
           this.notify.error('Error', err.message || err);
+          this.cdr.detectChanges();
         }
       });
     }
@@ -252,7 +279,16 @@ export class ExerciseLibraryComponent implements OnInit {
 
   deleteExercise(ex: Exercise) {
     if (!confirm(`Delete '${ex.name}'? This cannot be undone.`)) return;
-    this.svc.delete(ex.id).subscribe({ next: () => { this.loadExercises(); }, error: err => console.error(err) });
+    this.svc.delete(ex.id).subscribe({
+      next: () => {
+        this.loadExercises();
+        this.cdr.detectChanges();
+      },
+      error: err => {
+        console.error(err);
+        this.cdr.detectChanges();
+      }
+    });
   }
 }
 

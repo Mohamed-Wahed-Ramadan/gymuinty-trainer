@@ -1,27 +1,47 @@
 import { Injectable, NgZone } from '@angular/core';
 import { environment } from '../../../environments/environment';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Subject } from 'rxjs';
 import { HubConnection, HubConnectionBuilder, LogLevel } from '@microsoft/signalr';
+import {
+  ChatMessage,
+  TypingIndicatorEvent,
+  OnlineStatusEvent,
+  MessageReadEvent,
+  ThreadReadEvent
+} from '../models/chat.models';
 
 @Injectable({ providedIn: 'root' })
 export class SignalRService {
   private hubConnection: HubConnection | null = null;
-  // Full hub URL using environment (no proxy)
-  private readonly hubUrl = `${environment.apiUrl.replace(/\/api\/?$/, '')}/hubs/chat`;
+  private readonly hubUrl = `${environment.apiUrl.replace(/\/api\/?$/, '')}/chatHub`;
 
   private isConnectedSubject = new BehaviorSubject<boolean>(false);
   public isConnected$ = this.isConnectedSubject.asObservable();
 
-  private messageReceivedSubject = new BehaviorSubject<any | null>(null);
+  private messageReceivedSubject = new Subject<ChatMessage>();
   public messageReceived$ = this.messageReceivedSubject.asObservable();
 
-  private threadEventSubject = new BehaviorSubject<any | null>(null);
-  public threadEvents$ = this.threadEventSubject.asObservable();
+  private userTypingSubject = new Subject<TypingIndicatorEvent>();
+  public userTyping$ = this.userTypingSubject.asObservable();
+
+  private userOnlineSubject = new Subject<OnlineStatusEvent>();
+  public userOnline$ = this.userOnlineSubject.asObservable();
+
+  private messageReadSubject = new Subject<MessageReadEvent>();
+  public messageRead$ = this.messageReadSubject.asObservable();
+
+  private threadReadSubject = new Subject<ThreadReadEvent>();
+  public threadRead$ = this.threadReadSubject.asObservable();
 
   constructor(private zone: NgZone) {}
 
+  /**
+   * Connect to SignalR Hub
+   */
   connect(token: string): Promise<void> {
-    if (this.hubConnection) return Promise.resolve();
+    if (this.hubConnection) {
+      return Promise.resolve();
+    }
 
     this.hubConnection = new HubConnectionBuilder()
       .withUrl(`${this.hubUrl}?access_token=${encodeURIComponent(token)}`)
@@ -31,7 +51,8 @@ export class SignalRService {
 
     this.registerHandlers();
 
-    return this.hubConnection.start()
+    return this.hubConnection
+      .start()
       .then(() => this.isConnectedSubject.next(true))
       .catch(err => {
         console.error('SignalR connection error:', err);
@@ -40,73 +61,118 @@ export class SignalRService {
       });
   }
 
+  /**
+   * Disconnect from SignalR Hub
+   */
   disconnect(): Promise<void> {
-    if (!this.hubConnection) return Promise.resolve();
-    return this.hubConnection.stop().then(() => {
-      this.hubConnection = null;
-      this.isConnectedSubject.next(false);
-    });
+    if (!this.hubConnection) {
+      return Promise.resolve();
+    }
+    return this.hubConnection
+      .stop()
+      .then(() => {
+        this.hubConnection = null;
+        this.isConnectedSubject.next(false);
+      });
   }
 
-  private registerHandlers() {
-    if (!this.hubConnection) return;
+  /**
+   * Register event handlers
+   */
+  private registerHandlers(): void {
+    if (!this.hubConnection) {
+      return;
+    }
 
-    this.hubConnection.on('MessageReceived', (message: any) => {
+    // MessageReceived - رسالة جديدة
+    this.hubConnection.on('MessageReceived', (message: ChatMessage) => {
       this.zone.run(() => this.messageReceivedSubject.next(message));
     });
 
-    this.hubConnection.on('UserJoinedThread', (ev: any) => {
-      this.zone.run(() => this.threadEventSubject.next({ type: 'UserJoinedThread', payload: ev }));
+    // UserOnline - مستخدم دخل أونلاين
+    this.hubConnection.on('UserOnline', (event: OnlineStatusEvent) => {
+      this.zone.run(() => this.userOnlineSubject.next(event));
     });
 
-    this.hubConnection.on('UserLeftThread', (ev: any) => {
-      this.zone.run(() => this.threadEventSubject.next({ type: 'UserLeftThread', payload: ev }));
+    // UserOffline - مستخدم خرج أوفلاين
+    this.hubConnection.on('UserOffline', (event: OnlineStatusEvent) => {
+      this.zone.run(() => this.userOnlineSubject.next(event));
     });
 
-    this.hubConnection.on('UserTyping', (ev: any) => {
-      this.zone.run(() => this.threadEventSubject.next({ type: 'UserTyping', payload: ev }));
+    // UserTyping - المستخدم بيكتب
+    this.hubConnection.on('UserTyping', (event: TypingIndicatorEvent) => {
+      this.zone.run(() => this.userTypingSubject.next(event));
     });
 
-    this.hubConnection.on('UserStoppedTyping', (ev: any) => {
-      this.zone.run(() => this.threadEventSubject.next({ type: 'UserStoppedTyping', payload: ev }));
+    // MessageMarkedAsRead - رسالة اتعلمت مقروءة
+    this.hubConnection.on('MessageMarkedAsRead', (event: MessageReadEvent) => {
+      this.zone.run(() => this.messageReadSubject.next(event));
     });
 
-    this.hubConnection.on('MessageMarkedAsRead', (ev: any) => {
-      this.zone.run(() => this.threadEventSubject.next({ type: 'MessageMarkedAsRead', payload: ev }));
-    });
-
-    this.hubConnection.on('ThreadMarkedAsRead', (ev: any) => {
-      this.zone.run(() => this.threadEventSubject.next({ type: 'ThreadMarkedAsRead', payload: ev }));
+    // ThreadMarkedAsRead - محادثة اتعلمت مقروءة
+    this.hubConnection.on('ThreadMarkedAsRead', (event: ThreadReadEvent) => {
+      this.zone.run(() => this.threadReadSubject.next(event));
     });
   }
 
-  // Methods that invoke server methods
-  joinThread(threadId: number) {
-    return this.hubConnection?.invoke('JoinThread', threadId);
+  /**
+   * Join Thread
+   */
+  joinThread(threadId: number): Promise<any> | undefined {
+    if (!this.hubConnection) {
+      return undefined;
+    }
+    return this.hubConnection.invoke('JoinThread', threadId);
   }
 
-  leaveThread(threadId: number) {
-    return this.hubConnection?.invoke('LeaveThread', threadId);
+  /**
+   * Leave Thread
+   */
+  leaveThread(threadId: number): Promise<any> | undefined {
+    if (!this.hubConnection) {
+      return undefined;
+    }
+    return this.hubConnection.invoke('LeaveThread', threadId);
   }
 
-  sendMessage(threadId: number, messageRequest: any) {
-    return this.hubConnection?.invoke('SendMessage', threadId, messageRequest);
+  /**
+   * Notify Typing
+   */
+  notifyTyping(threadId: number): Promise<any> | undefined {
+    if (!this.hubConnection) {
+      return undefined;
+    }
+    return this.hubConnection.invoke('UserTyping', threadId);
   }
 
-  userTyping(threadId: number) {
-    return this.hubConnection?.invoke('UserTyping', threadId);
+  /**
+   * Notify Stopped Typing
+   */
+  notifyStoppedTyping(threadId: number): Promise<any> | undefined {
+    if (!this.hubConnection) {
+      return undefined;
+    }
+    return this.hubConnection.invoke('UserStoppedTyping', threadId);
   }
 
-  userStoppedTyping(threadId: number) {
-    return this.hubConnection?.invoke('UserStoppedTyping', threadId);
+  /**
+   * Mark Message as Read via SignalR
+   */
+  markMessageAsReadSignalR(messageId: number, threadId: number): Promise<any> | undefined {
+    if (!this.hubConnection) {
+      return undefined;
+    }
+    return this.hubConnection.invoke('MarkMessageAsRead', messageId, threadId);
   }
 
-  markMessageAsRead(messageId: number, threadId: number) {
-    return this.hubConnection?.invoke('MarkMessageAsRead', messageId, threadId);
-  }
-
-  markThreadAsRead(threadId: number) {
-    return this.hubConnection?.invoke('MarkThreadAsRead', threadId);
+  /**
+   * Mark Thread as Read via SignalR
+   */
+  markThreadAsReadSignalR(threadId: number): Promise<any> | undefined {
+    if (!this.hubConnection) {
+      return undefined;
+    }
+    return this.hubConnection.invoke('MarkThreadAsRead', threadId);
   }
 }
 

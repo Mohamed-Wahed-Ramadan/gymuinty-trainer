@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { HomeService } from '../../core/services/home.service';
@@ -7,6 +7,7 @@ import { FormsModule } from '@angular/forms';
 import { trigger, transition, style, animate } from '@angular/animations';
 import { ProgramDetailModalComponent } from '../../shared/components/program-detail-modal/program-detail-modal.component';
 import { TrainerProfileModalComponent } from '../../shared/components/trainer-profile-modal/trainer-profile-modal.component';
+import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-home',
@@ -61,11 +62,13 @@ export class HomeComponent implements OnInit {
     private homeService: HomeService,
     private authService: AuthService,
     private router: Router
+  , private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
     this.authService.isAuthenticated$.subscribe(isAuth => {
       this.isLoggedIn = isAuth;
+      this.cdr.detectChanges();
     });
 
     this.loadAll();
@@ -83,22 +86,26 @@ export class HomeComponent implements OnInit {
   loadAll(): void {
     this.isLoading = true;
 
-    this.homeService.getPackages().subscribe({
-      next: (res: any) => {
-        this.packages = this.normalizeArrayResp(res);
+    forkJoin({
+      packages: this.homeService.getPackages(),
+      programs: this.homeService.getPrograms(),
+      trainers: this.homeService.getTrainers()
+    }).subscribe({
+      next: (results: any) => {
+        this.packages = this.normalizeArrayResp(results.packages);
+        this.programs = this.normalizeArrayResp(results.programs);
+        this.trainers = this.normalizeArrayResp(results.trainers);
+        this.isLoading = false;
+        this.cdr.detectChanges();
       },
-      error: () => { this.packages = []; },
-      complete: () => { this.isLoading = false; }
-    });
-
-    this.homeService.getPrograms().subscribe({
-      next: (res: any) => { this.programs = this.normalizeArrayResp(res); },
-      error: () => { this.programs = []; }
-    });
-
-    this.homeService.getTrainers().subscribe({
-      next: (res: any) => { this.trainers = this.normalizeArrayResp(res); },
-      error: () => { this.trainers = []; }
+      error: (err) => {
+        console.error('Error loading data:', err);
+        this.packages = [];
+        this.programs = [];
+        this.trainers = [];
+        this.isLoading = false;
+        this.cdr.detectChanges();
+      }
     });
   }
 
@@ -111,8 +118,9 @@ export class HomeComponent implements OnInit {
         this.programs = this.normalizeArrayResp(res?.programs ?? []);
         this.trainers = this.normalizeArrayResp(res?.trainers ?? []);
         this.isLoading = false;
+        this.cdr.detectChanges();
       },
-      error: () => { this.isLoading = false; }
+      error: () => { this.isLoading = false; this.cdr.detectChanges(); }
     });
   }
 

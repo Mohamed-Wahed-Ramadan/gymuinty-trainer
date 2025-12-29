@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Program, ProgramService } from '../../../core/services';
@@ -30,7 +30,8 @@ export class ProgramsComponent implements OnInit {
     private programService: ProgramService,
     private authService: AuthService,
     private trainerService: TrainerService,
-    private notificationService: NotificationService
+    private notificationService: NotificationService,
+    private cdr: ChangeDetectorRef
   ) {
     this.userId = this.authService.getUserIdFromToken();
   }
@@ -98,11 +99,13 @@ export class ProgramsComponent implements OnInit {
             this.closeModal();
             this.reload.emit();
             this.isSaving = false;
+            this.cdr.detectChanges();
           },
           error: (error) => {
             this.notificationService.error('Error', 'Failed to update program');
             console.error(error);
             this.isSaving = false;
+            this.cdr.detectChanges();
           }
         });
     } else {
@@ -119,6 +122,7 @@ export class ProgramsComponent implements OnInit {
           if (!trainerProfileId) {
             this.notificationService.error('Error', 'Trainer profile not found. Create a trainer profile first.');
             this.isSaving = false;
+            this.cdr.detectChanges();
             return;
           }
 
@@ -132,6 +136,7 @@ export class ProgramsComponent implements OnInit {
               this.closeModal();
               this.reload.emit();
               this.isSaving = false;
+              this.cdr.detectChanges();
             },
             error: (error) => {
               this.notificationService.error('Error', 'Failed to create program');
@@ -139,6 +144,7 @@ export class ProgramsComponent implements OnInit {
               try { console.error('Server response body (json):', JSON.stringify(error?.error)); } catch (e) { console.error('Server response body (raw):', error?.error); }
               console.error('HTTP status:', error?.status, 'statusText:', error?.statusText);
               this.isSaving = false;
+              this.cdr.detectChanges();
             }
           });
         },
@@ -146,6 +152,7 @@ export class ProgramsComponent implements OnInit {
           this.notificationService.error('Error', 'Failed to resolve trainer profile');
           console.error('Failed to get trainer profile', err);
           this.isSaving = false;
+          this.cdr.detectChanges();
         }
       });
     }
@@ -159,10 +166,12 @@ export class ProgramsComponent implements OnInit {
         next: () => {
           this.notificationService.success('Success', 'Program deleted successfully');
           this.reload.emit();
+          this.cdr.detectChanges();
         },
         error: (error) => {
           this.notificationService.error('Error', 'Failed to delete program');
           console.error(error);
+          this.cdr.detectChanges();
         }
       });
     }
@@ -177,8 +186,8 @@ export class ProgramsComponent implements OnInit {
     }
 
     this.programService.getProgramDetails(program.id).subscribe({
-      next: p => { this.programService.setSelectedProgram(p); },
-      error: err => { console.error('Failed to load program details', err); this.notificationService.error('Error','Failed to load program details'); }
+      next: p => { this.programService.setSelectedProgram(p); this.cdr.detectChanges(); },
+      error: err => { console.error('Failed to load program details', err); this.notificationService.error('Error','Failed to load program details'); this.cdr.detectChanges(); }
     });
   }
 }

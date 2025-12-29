@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { PackageService, PackageResponse, PackageCreateRequest } from '../../../core/services';
@@ -37,7 +37,8 @@ export class PackagesComponent implements OnInit {
     private authService: AuthService,
     private notificationService: NotificationService,
     private programService: ProgramService,
-    private trainerService: TrainerService
+    private trainerService: TrainerService,
+    private cdr: ChangeDetectorRef
   ) {
     this.userId = this.authService.getUserIdFromToken();
   }
@@ -55,10 +56,12 @@ export class PackagesComponent implements OnInit {
       next: (data) => {
         this.programs = data || [];
         this.isLoadingPrograms = false;
+        this.cdr.detectChanges();
       },
       error: (err) => {
         console.error('Failed to load programs', err);
         this.isLoadingPrograms = false;
+        this.cdr.detectChanges();
       }
     });
   }
@@ -160,11 +163,13 @@ export class PackagesComponent implements OnInit {
             this.closeModal();
             this.reload.emit();
             this.isSaving = false;
+            this.cdr.detectChanges();
           },
           error: (error: Error) => {
             this.notificationService.error('Error', error.message || 'Failed to update package');
             console.error('Update error:', error);
             this.isSaving = false;
+            this.cdr.detectChanges();
           }
         });
     } else {
@@ -181,6 +186,7 @@ export class PackagesComponent implements OnInit {
             if (!trainerProfileId) {
               this.notificationService.error('Error', 'Trainer profile not found. Create a trainer profile first.');
               this.isSaving = false;
+              this.cdr.detectChanges();
               return;
             }
 
@@ -198,11 +204,13 @@ export class PackagesComponent implements OnInit {
                   this.closeModal();
                   this.reload.emit();
                   this.isSaving = false;
+                  this.cdr.detectChanges();
                 },
                 error: (error: Error) => {
                   this.notificationService.error('Error', error.message || 'Failed to create package');
                   console.error('Create error:', error);
                   this.isSaving = false;
+                  this.cdr.detectChanges();
                 }
               });
           },
@@ -210,6 +218,7 @@ export class PackagesComponent implements OnInit {
             this.notificationService.error('Error', 'Failed to resolve trainer profile');
             console.error('Failed to get trainer profile', err);
             this.isSaving = false;
+            this.cdr.detectChanges();
           }
         });
     }
@@ -223,10 +232,12 @@ export class PackagesComponent implements OnInit {
         next: () => {
           this.notificationService.success('Success', 'Package deleted successfully');
           this.reload.emit();
+          this.cdr.detectChanges();
         },
         error: (error: Error) => {
           this.notificationService.error('Error', error.message || 'Failed to delete package');
           console.error(error);
+          this.cdr.detectChanges();
         }
       });
     }
@@ -244,10 +255,12 @@ export class PackagesComponent implements OnInit {
         const status = pkg.isActive ? 'deactivated' : 'activated';
         this.notificationService.success('Success', `Package ${status} successfully`);
         this.reload.emit();
+        this.cdr.detectChanges();
       },
       error: (error: Error) => {
         this.notificationService.error('Error', error.message || 'Failed to toggle package status');
         console.error(error);
+        this.cdr.detectChanges();
       }
     });
   }

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
@@ -25,6 +25,7 @@ export class RegisterComponent implements OnInit {
     private authService: AuthService,
     private router: Router,
     private notificationService: NotificationService
+  , private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
@@ -101,6 +102,7 @@ export class RegisterComponent implements OnInit {
         setTimeout(() => {
           this.router.navigate(['/profile']);
         }, 2000);
+        this.cdr.detectChanges();
       },
       error: (error) => {
         this.isLoading = false;
@@ -108,6 +110,7 @@ export class RegisterComponent implements OnInit {
         // Show specific error messages based on backend response
         const errorMessage = error?.error?.message || error?.message || 'Registration failed. Please try again.';
         this.notificationService.error('Registration Failed', errorMessage);
+        this.cdr.detectChanges();
       }
     });
   }

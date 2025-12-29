@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, OnInit, OnChanges } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit, OnChanges, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ProgramService } from '../../../core/services/program.service';
 import { trigger, transition, style, animate } from '@angular/animations';
@@ -44,7 +44,7 @@ export class ProgramDetailModalComponent implements OnInit, OnChanges {
     4: 'Challenge'
   };
 
-  constructor(private programService: ProgramService) {}
+  constructor(private programService: ProgramService, private cdr: ChangeDetectorRef) {}
 
   ngOnInit(): void {}
 
@@ -62,10 +62,12 @@ export class ProgramDetailModalComponent implements OnInit, OnChanges {
       next: (data) => {
         this.program = data;
         this.isLoading = false;
+        this.cdr.detectChanges();
       },
       error: (err) => {
         console.error('Error loading program details:', err);
         this.isLoading = false;
+        this.cdr.detectChanges();
       }
     });
   }

@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { ActivatedRoute } from '@angular/router';
@@ -37,7 +37,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
     private packageService: PackageService,
     private authService: AuthService,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private cdr: ChangeDetectorRef
   ) {
     this.userId = this.authService.getUserIdFromToken();
   }
@@ -47,6 +48,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.route.queryParams.pipe(takeUntil(this.destroy$)).subscribe(params => {
       const tab = params['tab'];
       if (tab === 'packages' || tab === 'programs') this.activeTab = tab;
+      this.cdr.detectChanges();
     });
     if (!this.userId) {
       this.router.navigate(['/auth/login']);
@@ -66,11 +68,13 @@ export class DashboardComponent implements OnInit, OnDestroy {
           setTimeout(() => {
             this.programs = programs;
             this.isLoadingPrograms = false;
+            this.cdr.detectChanges();
           }, 0);
         },
         error: (error) => {
           console.error('Failed to load programs:', error);
           this.isLoadingPrograms = false;
+          this.cdr.detectChanges();
         }
       });
   }
@@ -85,10 +89,12 @@ export class DashboardComponent implements OnInit, OnDestroy {
         next: (packages) => {
           this.packages = packages;
           this.isLoadingPackages = false;
+          this.cdr.detectChanges();
         },
         error: (error) => {
           console.error('Failed to load packages:', error);
           this.isLoadingPackages = false;
+          this.cdr.detectChanges();
         }
       });
   }
