@@ -1,0 +1,61 @@
+<div class="chat-list-container">
+  <!-- Header -->
+  <div class="chat-list-header">
+    <h5 class="mb-0">
+      <i class="bi bi-chat-dots"></i> Messages
+    </h5>
+    <button class="btn btn-sm btn-bton rounded-circle" (click)="onNewChat.emit()">
+      <i class="bi bi-plus"></i>
+    </button>
+  </div>
+
+  <!-- Search Bar -->
+  <div class="search-box mb-3">
+    <input 
+      type="text" 
+      class="form-control form-control-sm"
+      placeholder="Search chats..."
+      [(ngModel)]="searchQuery"
+      (ngModelChange)="filterChats()">
+  </div>
+
+  <!-- Chat List -->
+  <div class="chat-list-scroll">
+    <div *ngIf="filteredChats.length === 0" class="empty-state">
+      <i class="bi bi-chat-left"></i>
+      <p>No chats yet</p>
+    </div>
+
+    <div *ngFor="let thread of filteredChats" 
+         (click)="onSelectThread.emit(thread)"
+         [class.active]="selectedThreadId === thread.id"
+         class="chat-item">
+      
+      <!-- Avatar & Info -->
+      <div class="chat-item-avatar">
+        <img [src]="thread.otherUserProfilePhoto || './avatar.png'" 
+             alt="{{ thread.otherUserName }}"
+             class="rounded-circle">
+        <span *ngIf="isUserOnline(thread.otherUserId)" class="online-badge"></span>
+      </div>
+
+      <div class="chat-item-content">
+        <div class="chat-item-header">
+          <h6 class="chat-item-name">{{ thread.otherUserName }}</h6>
+          <span class="chat-time">{{ thread.lastMessageAt | date:'short' }}</span>
+        </div>
+        <p class="chat-item-preview mb-0">Last message preview...</p>
+      </div>
+
+      <!-- Unread Badge -->
+      <div class="chat-item-badge" *ngIf="thread.unreadCount > 0">
+        <span class="badge bg-danger rounded-pill">{{ thread.unreadCount }}</span>
+      </div>
+
+      <!-- Priority Star (for trainers) -->
+      <div *ngIf="thread.isPriority" class="priority-star">
+        <i class="bi bi-star-fill text-warning"></i>
+      </div>
+    </div>
+  </div>
+</div>

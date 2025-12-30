@@ -1,5 +1,5 @@
 .login-container {
-  min-height: 100vh;
+  min-height: 91vh;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -180,24 +180,6 @@
   margin: 20px 0;
   color: #999;
   font-size: 13px;
-}
-
-.divider::before,
-.divider::after {
-  content: '';
-  display: inline-block;
-  width: 40%;
-  height: 1px;
-  background: #ddd;
-  vertical-align: middle;
-}
-
-.divider::before {
-  margin-right: 10px;
-}
-
-.divider::after {
-  margin-left: 10px;
 }
 
 .login-footer {

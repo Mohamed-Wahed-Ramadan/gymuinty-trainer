@@ -7,7 +7,9 @@
 
 /* Hero Banner Section */
 .hero-banner {
-  background: linear-gradient(135deg, #4A90E2 0%, #8B5FBF 100%);
+background: 
+  linear-gradient(to right, rgb(217, 233, 255) 40%, rgb(255, 230, 217) 80%, rgb(255, 217, 217) 100%),
+  linear-gradient(90deg, rgba(0, 0, 0, 0) 50%, rgba(0, 0, 0, 0.1) 100%);
   padding: 80px 30px;
   display: flex;
   align-items: center;
@@ -125,7 +127,7 @@
   background: white;
   border-radius: 12px;
   border: 2px solid #e0e0e0;
-  padding: 0 20px;
+  padding: 0 5px;
   gap: 12px;
   transition: all 0.3s ease;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
@@ -156,10 +158,12 @@
 }
 
 .btn-search {
-  background: linear-gradient(135deg, #4A90E2 0%, #8B5FBF 100%);
+background: 
+  linear-gradient(to right, rgb(217, 233, 255) 40%, rgb(255, 230, 217) 80%, rgb(255, 217, 217) 100%),
+  linear-gradient(90deg, rgba(0, 0, 0, 0) 50%, rgba(0, 0, 0, 0.1) 100%);
   color: white;
   border: none;
-  padding: 10px 24px;
+  padding: 5px 15px;
   border-radius: 8px;
   font-weight: 600;
   cursor: pointer;
@@ -348,8 +352,10 @@
 }
 
 .btn-view {
-  background: linear-gradient(135deg, #4A90E2 0%, #8B5FBF 100%);
-  color: white;
+background: 
+  linear-gradient(to right, rgb(217, 233, 255) 40%, rgb(255, 230, 217) 80%, rgb(255, 217, 217) 100%),
+  linear-gradient(90deg, rgba(0, 0, 0, 0) 50%, rgba(0, 0, 0, 0.1) 100%);
+  color: rgb(116, 114, 114);
   border: none;
   padding: 8px 16px;
   border-radius: 6px;
@@ -668,11 +674,11 @@
   .search-section {
     padding: 30px 20px;
   }
-
+/* 
   .search-box {
     flex-direction: column;
     padding: 16px;
-  }
+  } */
 
   .home-content {
     padding: 30px 20px;
@@ -713,12 +719,12 @@
     padding: 20px 16px;
   }
 
-  .search-box {
+  /* .search-box {
     gap: 8px;
-  }
+  } */
 
   .search-input {
-    font-size: 14px;
+    font-size: 10px;
   }
 
   .home-content {

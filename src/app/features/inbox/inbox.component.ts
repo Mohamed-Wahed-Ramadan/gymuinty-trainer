@@ -48,7 +48,7 @@ import { NewChatModalComponent } from '../../shared/components/new-chat-modal/ne
                   <i class="bi bi-chat-left-dots"></i>
                   <h3>No Chat Selected</h3>
                   <p>Select a conversation from the list to start messaging</p>
-                  <button class="btn btn-primary" (click)="openNewChatModal()">
+                  <button class="btn btn-bton" (click)="openNewChatModal()">
                     <i class="bi bi-plus-circle"></i> Start New Chat
                   </button>
                 </div>
@@ -150,6 +150,11 @@ import { NewChatModalComponent } from '../../shared/components/new-chat-modal/ne
       color: #999;
       margin-bottom: 20px;
     }
+
+    .btn-bton{
+    /* color: rgb(217, 233, 255); */
+    background-color: rgb(182, 208, 246);
+}
 
     .loading-overlay {
       position: fixed;

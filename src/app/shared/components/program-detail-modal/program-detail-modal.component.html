@@ -3,18 +3,18 @@
     <!-- Header -->
     <div class="modal-header">
       <div class="program-title-section">
-        <h2 class="modal-title">{{ program?.title }}</h2>
+        <h2 class="modal-title text-black">{{ program?.title }}</h2>
         <div class="program-meta-top">
-          <span class="badge" [ngClass]="'badge-type-' + program?.type">
+          <span class="badge text-black" [ngClass]="'badge-type-' + program?.type">
             <i [class]="'bi ' + getProgramTypeIcon(program?.type)"></i>
             {{ getProgramTypeLabel(program?.type) }}
           </span>
-          <span class="duration-badge">
+          <span class="duration-badge text-black">
             <i class="bi bi-calendar3"></i> {{ program?.durationWeeks }} weeks
           </span>
         </div>
       </div>
-      <button class="btn-close" (click)="close()" aria-label="Close">
+      <button class="btn-close text-black" (click)="close()" aria-label="Close">
         <i class="bi bi-x-lg"></i>
       </button>
     </div>
@@ -156,7 +156,7 @@
     <!-- Footer -->
     <div class="modal-footer">
       <button class="btn btn-secondary" (click)="close()">Close</button>
-      <button class="btn btn-primary" *ngIf="program && !hideEnroll">
+      <button class="btn btn-bton" *ngIf="program && !hideEnroll">
         <i class="bi bi-check-circle"></i> Enroll Now
       </button>
     </div>

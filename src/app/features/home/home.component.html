@@ -24,7 +24,7 @@
   <section class="search-section">
     <div class="search-container">
       <div class="search-box">
-        <i class="bi bi-search"></i>
+        <!-- <i class="bi bi-search"></i> -->
         <input 
           type="text" 
           class="search-input" 
@@ -32,7 +32,7 @@
           [(ngModel)]="term"
           (keyup.enter)="search()"
         />
-        <button class="btn-search" (click)="search()" [disabled]="isLoading">
+        <button class="btn-search text-black" (click)="search()" [disabled]="isLoading">
           <i class="bi bi-search"></i> Search
         </button>
       </div>
@@ -70,7 +70,7 @@
               <h3 class="card-title">{{ p.name }}</h3>
               <div class="package-meta">
                 <span class="package-price">{{ p.priceMonthly | currency }}</span>
-                <button class="btn-view" *ngIf="isLoggedIn">Open</button>
+                <button class="btn-view " *ngIf="isLoggedIn">Open</button>
                 <button class="btn-view btn-disabled" *ngIf="!isLoggedIn" [title]="'Login to view this package'">Open</button>
               </div>
             </div>

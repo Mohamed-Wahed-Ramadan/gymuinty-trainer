@@ -2,17 +2,11 @@
   <div class="navbar-container">
     <!-- Logo/Brand -->
     <div class="navbar-brand" routerLink="/home">
-      <span class="logo-icon">
+      <span class="logo-icon text-black">
         <i class="bi bi-heart-pulse"></i>
       </span>
-      <span class="brand-text">Gymunity</span>
+      <span class="brand-text text-black">Gymunity</span>
     </div>
-
-    <!-- Navbar Center (could add menu items here if needed) -->
-    <div class="navbar-center">
-      <!-- Reserved for future menu items -->
-    </div>
-
     <!-- Navbar Right -->
     <div class="navbar-right">
       <!-- Messages Icon (only if logged in) -->
@@ -27,7 +21,7 @@
       </button>
 
       <!-- Language Toggle -->
-      <button class="language-toggle" 
+      <button class="language-toggle text-black" 
               (click)="toggleLanguage()" 
               [attr.title]="'Switch to ' + (currentLanguage === 'en' ? 'Arabic' : 'English')">
         <i class="bi bi-globe"></i>

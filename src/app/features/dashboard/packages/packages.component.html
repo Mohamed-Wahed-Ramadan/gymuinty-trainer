@@ -28,7 +28,7 @@
     <div *ngFor="let pkg of packages" class="package-card" [class.inactive]="!pkg.isActive">
       <!-- Thumbnail -->
       <div class="card-image">
-        <img [src]="pkg.thumbnailUrl || 'https://via.placeholder.com/300x150'" 
+        <img [src]="pkg.thumbnailUrl || './memo.png'" 
              [alt]="pkg.name"
              class="thumbnail">
         <div *ngIf="!pkg.isActive" class="inactive-badge">Inactive</div>
