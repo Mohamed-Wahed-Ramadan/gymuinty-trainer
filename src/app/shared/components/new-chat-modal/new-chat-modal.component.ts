@@ -13,7 +13,9 @@ import { Subject } from 'rxjs';
       <div class="modal-panel">
         <div class="modal-header">
           <h5>Start New Chat</h5>
-          <button class="btn-close" aria-label="Close" (click)="close()"></button>
+          <button class="btn-close" aria-label="Close" (click)="close()">
+            <i class="bi bi-x-lg" aria-hidden="true"></i>
+          </button>
         </div>
 
         <div class="modal-body">
@@ -103,6 +105,12 @@ import { Subject } from 'rxjs';
       background: transparent;
       border: none;
       font-size: 18px;
+      color: #444;
+      padding: 4px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
     }
     `
   ]

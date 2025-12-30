@@ -2,9 +2,11 @@
   <!-- Header -->
   <div class="chat-detail-header">
     <div class="header-content">
-      <img [src]="thread.otherUserProfilePhoto || './avatar.png'"
-           alt="{{ thread.otherUserName }}"
-           class="header-avatar">
+      <img
+  [src]="thread.otherUserProfilePhoto || './avatar.png'"
+  (error)="setAvatarFallback($event)"
+  alt="{{ thread.otherUserName }}"
+  class="message-avatar">
       <div class="header-info">
         <h6 class="mb-0">{{ thread.otherUserName }}</h6>
         <small [class]="isOtherUserOnline ? 'text-success' : 'text-muted'">
@@ -30,33 +32,41 @@
       <p>Start a conversation</p>
     </div>
 
-    <div *ngFor="let message of messages" 
-         [class.own-message]="isOwnMessage(message)"
-         class="message-wrapper">
-      
+    <div *ngFor="let item of displayMessages" [class.own-message]="item.side === 'mine'" class="message-wrapper">
       <div class="message-group">
-        <!-- Other user avatar (only for their messages) -->
-        <img *ngIf="!isOwnMessage(message)"
-             [src]="message.senderProfilePhoto || './avatar.png'"
-             alt="{{ message.senderName }}"
+        <!-- Avatar (use sender profile or thread.otherUserProfilePhoto fallback) -->
+           <img *ngIf="item.side === 'other'"
+             [src]="item.message.senderProfilePhoto || thread.otherUserProfilePhoto || './avatar.png'"
+             (error)="setAvatarFallback($event)"
+             alt="{{ item.message.senderName }}"
              class="message-avatar">
-        
+
+        <!-- For own messages show avatar on right if available -->
+        <img *ngIf="item.side === 'mine'"
+             [src]="item.message.senderProfilePhoto || './avatar.png'"
+             (error)="setAvatarFallback($event)"
+             alt="{{ item.message.senderName }}"
+             class="message-avatar">
+
+        <!-- Sender name -->
+        <div class="message-sender" [class.own]="item.side === 'mine'">{{ item.message.senderName || (item.side === 'mine' ? (currentUserName || '') : '') }}</div>
+
         <!-- Message bubble -->
-        <div class="message-bubble" [ngClass]="isOwnMessage(message) ? 'own' : 'other'">
+        <div class="message-bubble" [ngClass]="item.side === 'mine' ? 'own' : 'other'">
           <div class="message-content">
-            <p class="mb-0">{{ message.content }}</p>
-            
+            <p class="mb-0">{{ item.message.content }}</p>
+
             <!-- Media if exists -->
-            <img *ngIf="message.mediaUrl && isImageType(message.type)"
-                 [src]="message.mediaUrl || './avatar.png'"
+            <img *ngIf="item.message.mediaUrl && isImageType(item.message.type)"
+                 [src]="item.message.mediaUrl || './avatar.png'"
+                 (error)="setAvatarFallback($event)"
                  alt="Media"
                  class="message-media">
           </div>
-          
+
           <small class="message-time">
-            {{ message.createdAt | date:'HH:mm' }}
-            <i *ngIf="isOwnMessage(message) && message.isRead" 
-               class="bi bi-check2-all text-primary ms-1"></i>
+            {{ item.message.createdAt | date:'HH:mm' }}
+            <i *ngIf="item.side === 'mine' && item.message.isRead" class="bi bi-check2-all text-primary ms-1"></i>
           </small>
         </div>
       </div>

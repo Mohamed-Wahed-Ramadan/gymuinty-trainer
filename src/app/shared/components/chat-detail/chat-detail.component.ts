@@ -2,6 +2,7 @@ import { Component, OnInit,SimpleChanges , OnDestroy, Input, Output, EventEmitte
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ChatService } from '../../../core/services/chat.service';
+import { AuthService } from '../../../core/services/auth.service';
 import { SignalRService } from '../../../core/services/signalr.service';
 import { ChatMessage, ChatThread, MessageType, SendMessageRequest } from '../../../core/models/chat.models';
 import { Subject } from 'rxjs';
@@ -31,11 +32,17 @@ export class ChatDetailComponent implements OnInit, OnDestroy, AfterViewChecked,
   private typingTimeout: any;
   private destroy$ = new Subject<void>();
   private shouldScroll = false;
+  // Classified message arrays and unified display list
+  myMessages: ChatMessage[] = [];
+  otherMessages: ChatMessage[] = [];
+  displayMessages: { message: ChatMessage; side: 'mine' | 'other' }[] = [];
+  currentUserName: string | null = null;
 
   constructor(
     private chatService: ChatService,
-    private signalRService: SignalRService
-    , private cdr: ChangeDetectorRef
+    private signalRService: SignalRService,
+    private authService: AuthService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
@@ -69,6 +76,24 @@ export class ChatDetailComponent implements OnInit, OnDestroy, AfterViewChecked,
       });
 
     this.shouldScroll = true;
+    // get current username from AuthService/local storage
+    try {
+      const u = this.authService.getCurrentUser();
+      if (u) {
+        this.currentUserName = (u.userName && String(u.userName).trim()) ? String(u.userName).trim() : (u.name ? String(u.name).trim() : null);
+      } else {
+        // fallback: try localStorage key used by AuthService
+        const raw = localStorage.getItem('gymunity_trainer_user');
+        if (raw) {
+          try {
+            const parsed = JSON.parse(raw);
+            this.currentUserName = parsed.userName || parsed.name || null;
+          } catch (e) { /* ignore */ }
+        }
+      }
+    } catch (e) {
+      this.currentUserName = null;
+    }
   }
 
   ngAfterViewChecked(): void {
@@ -144,7 +169,40 @@ export class ChatDetailComponent implements OnInit, OnDestroy, AfterViewChecked,
   ngOnChanges(changes: SimpleChanges): void {
   if (changes['messages']) {
     this.shouldScroll = true;
+    // Organize messages only after API response assigned to `messages`
+    this.organizeMessages();
   }
 }
+
+  // Organize messages into myMessages / otherMessages and prepare display list (preserve order)
+  organizeMessages(): void {
+    this.myMessages = [];
+    this.otherMessages = [];
+    this.displayMessages = [];
+
+    const curName = this.currentUserName ? String(this.currentUserName).trim().toLowerCase() : null;
+    for (const m of this.messages || []) {
+      const senderName = m.senderName ? String(m.senderName).trim() : '';
+      const isMineByName = curName && senderName && senderName.toLowerCase() === curName;
+      const isMineById = this.currentUserId && m.senderId === this.currentUserId;
+      const side: 'mine' | 'other' = (isMineByName || isMineById) ? 'mine' : 'other';
+      if (side === 'mine') this.myMessages.push(m); else this.otherMessages.push(m);
+      this.displayMessages.push({ message: m, side });
+    }
+
+    // Persist separated arrays per thread id (optional storage)
+    try {
+      const key = this.thread?.id != null ? `thread_${this.thread.id}` : 'thread_global';
+      localStorage.setItem(`myMessages_${key}`, JSON.stringify(this.myMessages));
+      localStorage.setItem(`otherMessages_${key}`, JSON.stringify(this.otherMessages));
+    } catch (e) {
+      // ignore storage errors
+    }
+  }
+
+  // Avatar error fallback handler
+  setAvatarFallback(event: any): void {
+    try { event.target.src = './avatar.png'; } catch (e) { /* ignore */ }
+  }
 
 }

@@ -127,15 +127,28 @@ background:
 }
 
 .message-bubble.other {
-  background: rgb(255, 230, 217);
+  background: #e6f5ea; /* green background for other user's messages */
   border: none;
-  color: #333;
+  color: #0b3e1a;
+  border-radius: 12px 12px 12px 0;
 }
 
 .message-bubble.own {
-  background: rgb(217, 233, 255);
+  background: #ff4d4f; /* red background for my messages */
   border: none;
-  color: #333;
+  color: #fff;
+  border-radius: 12px 12px 0 12px;
+}
+
+.message-sender {
+  font-size: 12px;
+  font-weight: 600;
+  margin-bottom: 6px;
+  color: #0b3e1a;
+}
+.message-wrapper.own-message .message-sender {
+  color: rgba(255,255,255,0.95);
+  text-align: right;
 }
 
 @keyframes slideIn {

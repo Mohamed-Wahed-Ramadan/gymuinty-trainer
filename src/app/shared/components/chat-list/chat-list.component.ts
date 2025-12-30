@@ -74,4 +74,10 @@ export class ChatListComponent implements OnInit, OnDestroy, OnChanges {
     this.destroy$.next();
     this.destroy$.complete();
   }
+
+    // Avatar error fallback handler
+  setAvatarFallback(event: any): void {
+    try { event.target.src = './avatar.png'; } catch (e) { /* ignore */ }
+  }
+
 }
