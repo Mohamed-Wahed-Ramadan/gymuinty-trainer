@@ -17,6 +17,7 @@ import { TranslationService } from './core/services/translation.service';
 export class App implements OnInit {
   protected readonly title = signal('Gymunity Trainer');
   protected isSidebarOpen = signal(true);
+  protected isSidebarCollapsed = signal(true);
   protected isLoggedIn = signal(false);
   protected currentRoute = signal('');
 
@@ -43,8 +44,8 @@ export class App implements OnInit {
     });
   }
 
-  toggleSidebar(): void {
-    this.isSidebarOpen.update(state => !state);
+  onSidebarCollapsed(collapsed: boolean): void {
+    this.isSidebarCollapsed.set(collapsed);
   }
 
   goHome(): void {

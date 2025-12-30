@@ -1,47 +1,52 @@
-<aside [class.open]="isOpen" class="sidebar">
+<aside [class.open]="isOpen || overlayActive" [class.collapsed]="collapsed && !overlayActive" [class.overlay]="overlayActive" class="sidebar">
   <div class="sidebar-header">
-    <h2 class="sidebar-title">Gymunity</h2>
-    <button class="toggle-btn" (click)="toggleSidebar()">
-      <i class="bi bi-x-lg"></i>
-    </button>
+    <h2 class="sidebar-title">
+      <i class="bi bi-heart-pulse sidebar-logo" [class.hidden]="!(collapsed && !overlayActive)"></i>
+      <span class="sidebar-title-text" [class.hidden]="collapsed && !overlayActive" (click)="goTo('/home')" role="button" tabindex="0">Gymunity</span>
+    </h2>
+    <div class="header-controls">
+      <button class="collapse-toggle" title="Toggle sidebar" (click)="toggleCollapse($event)">
+        <i class="bi" [ngClass]="collapsed ? 'bi-chevron-right' : 'bi-chevron-left'"></i>
+      </button>
+    </div>
   </div>
 
   <nav class="sidebar-nav">
     <ul class="nav-list">
       <li class="nav-item">
-        <a (click)="goTo('/dashboard')" class="nav-link" role="button">
-          <i class="bi bi-speedometer2"></i>
-          <span>Dashboard</span>
+        <a (click)="goTo('/dashboard')" class="nav-link" role="button" [title]="'Dashboard'">
+              <i class="bi bi-speedometer2"></i>
+              <span class="nav-label">Dashboard</span>
         </a>
       </li>
       <li class="nav-item">
-        <a (click)="goTo('programs')" class="nav-link" role="button">
+        <a (click)="goTo('programs')" class="nav-link" role="button" [title]="'Programs'">
           <i class="bi bi-collection"></i>
-          <span>Programs</span>
+          <span class="nav-label">Programs</span>
         </a>
       </li>
       <li class="nav-item">
-        <a (click)="goTo('packages')" class="nav-link" role="button">
+        <a (click)="goTo('packages')" class="nav-link" role="button" [title]="'Packages'">
           <i class="bi bi-box"></i>
-          <span>Packages</span>
+          <span class="nav-label">Packages</span>
         </a>
       </li>
       <li class="nav-item">
-        <a href="/exercise-library" class="nav-link">
-          <i class="bi bi-heart-pulse me-2"></i>
-          <span>Exercises</span>
+        <a href="/exercise-library" class="nav-link" [title]="'Exercises'">
+          <i class="bi bi-heart-pulse"></i>
+          <span class="nav-label">Exercises</span>
         </a>
       </li>
       <li class="nav-item">
-        <a href="/inbox" class="nav-link">
+        <a href="/inbox" class="nav-link" [title]="'Messages'">
           <i class="bi bi-chat-dots"></i>
-          <span>Messages</span>
+          <span class="nav-label">Messages</span>
         </a>
       </li>
       <li class="nav-item">
-        <a href="/profile" class="nav-link">
+        <a href="/profile" class="nav-link" [title]="'Profile'">
           <i class="bi bi-person"></i>
-          <span>Profile</span>
+          <span class="nav-label">Profile</span>
         </a>
       </li>
     </ul>
@@ -50,7 +55,7 @@
   <div class="sidebar-footer">
     <button class="logout-btn" (click)="logout()">
       <i class="bi bi-box-arrow-right"></i>
-      <span>Logout</span>
+      <span class="sidebar-logout-label">Logout</span>
     </button>
   </div>
 </aside>

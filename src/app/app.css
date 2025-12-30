@@ -8,19 +8,19 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  margin-left: 250px;
+  margin-left: 0;
   transition: margin-left 0.3s ease;
   overflow-y: auto;
 }
 
-.main-content.sidebar-open {
+/* When authenticated and sidebar present, apply left margin */
+.main-content.with-sidebar {
   margin-left: 250px;
 }
 
-.main-content.with-navbar {
-  margin-left: 0;
+.main-content.with-sidebar.sidebar-collapsed {
+  margin-left: 64px;
 }
-
 .app-header {
   background: white;
   border-bottom: 1px solid #e0e0e0;
@@ -100,7 +100,7 @@
 
 @media (max-width: 768px) {
   .main-content {
-    margin-left: 0;
+    margin-left: 64px;
   }
 
   .app-header {

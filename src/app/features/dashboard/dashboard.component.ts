@@ -5,7 +5,6 @@ import { ActivatedRoute } from '@angular/router';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { AuthService, ProgramService, PackageService, Program, Package } from '../../core/services';
-import { DashboardSidebarComponent } from './dashboard-sidebar/dashboard-sidebar.component';
 import { ProgramsComponent } from './programs/programs.component';
 import { PackagesComponent } from './packages/packages.component';
 import { ProgramDetailComponent } from './program-detail/program-detail.component';
@@ -15,7 +14,6 @@ import { ProgramDetailComponent } from './program-detail/program-detail.componen
   standalone: true,
   imports: [
     CommonModule,
-    DashboardSidebarComponent,
     ProgramsComponent,
     PackagesComponent,
     ProgramDetailComponent

@@ -5,11 +5,12 @@ import { Program, ProgramService } from '../../../core/services';
 import { TrainerService } from '../../../core/services/trainer.service';
 import { AuthService } from '../../../core/services/auth.service';
 import { NotificationService } from '../../../core/services/notification.service';
+import { ProgramDetailModalComponent } from '../../../shared/components/program-detail-modal/program-detail-modal.component';
 
 @Component({
   selector: 'app-programs',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, ProgramDetailModalComponent],
   templateUrl: './programs.component.html',
   styleUrls: ['./programs.component.css']
 })
@@ -24,6 +25,8 @@ export class ProgramsComponent implements OnInit {
   selectedProgram: Program | null = null;
   userId: string | null = null;
   isSaving = false;
+  showProgramModal = false;
+  modalProgramId: number | null = null;
 
   constructor(
     private fb: FormBuilder,
@@ -189,5 +192,16 @@ export class ProgramsComponent implements OnInit {
       next: p => { this.programService.setSelectedProgram(p); this.cdr.detectChanges(); },
       error: err => { console.error('Failed to load program details', err); this.notificationService.error('Error','Failed to load program details'); this.cdr.detectChanges(); }
     });
+  }
+
+  openProgramModal(program: Program): void {
+    if (!program?.id) return;
+    this.modalProgramId = program.id;
+    this.showProgramModal = true;
+  }
+
+  closeProgramModal(): void {
+    this.showProgramModal = false;
+    this.modalProgramId = null;
   }
 }

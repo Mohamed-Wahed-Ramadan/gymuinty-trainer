@@ -63,10 +63,13 @@
 
         <!-- Actions -->
         <div class="card-actions">
-          <button class="btn btn-sm btn-outline" (click)="openEditModal(pkg)" title="Edit package">
+          <button class="btn btn-sm btn-warning" (click)="openEditModal(pkg)" title="Edit package">
             <i class="bi bi-pencil"></i> Edit
           </button>
-          <button class="btn btn-sm btn-outline-warning" (click)="toggleActiveStatus(pkg)" [title]="pkg.isActive ? 'Deactivate' : 'Activate'">
+          <button class="btn btn-sm btn-primary" (click)="openProgramModalFromPackage(pkg)" title="View package program details">
+            <i class="bi bi-eye"></i> Details
+          </button>
+          <button class="btn btn-sm btn-orange-500" (click)="toggleActiveStatus(pkg)" [title]="pkg.isActive ? 'Deactivate' : 'Activate'">
             <i class="bi" [ngClass]="pkg.isActive ? 'bi-pause' : 'bi-play'"></i> {{ pkg.isActive ? 'Deactivate' : 'Activate' }}
           </button>
           <button class="btn btn-sm btn-danger" (click)="deletePackage(pkg)" title="Delete package">
@@ -76,6 +79,14 @@
       </div>
     </div>
   </div>
+
+    <!-- Program Detail Modal (reuse Home modal) -->
+    <app-program-detail-modal
+      [isOpen]="showProgramModal"
+      [programId]="selectedProgramId"
+      [hideEnroll]="true"
+      (closeModal)="closeProgramModal()">
+    </app-program-detail-modal>
 </div>
 
 <!-- Modal -->

@@ -5,18 +5,15 @@
   <!-- Sidebar for authenticated users -->
   <app-sidebar
     *ngIf="isLoggedIn()"
-    [isOpen]="isSidebarOpen()"
-    (toggle)="toggleSidebar()">
+    [isOpen]="true"
+    (collapsedChange)="onSidebarCollapsed($event)">
   </app-sidebar>
 
   <!-- Main Content -->
-  <main [class.sidebar-open]="isSidebarOpen() && isLoggedIn()" [class.with-navbar]="!isLoggedIn()" class="main-content">
+  <main [class.with-sidebar]="isLoggedIn()" [class.sidebar-collapsed]="isSidebarCollapsed() && isLoggedIn()" [class.with-navbar]="!isLoggedIn()" class="main-content">
     <!-- Header for authenticated users -->
     <header *ngIf="isLoggedIn()" class="app-header">
       <div class="header-left">
-        <button class="menu-toggle" (click)="toggleSidebar()">
-          <i class="bi bi-list"></i>
-        </button>
         <h1 class="page-title">{{ title() }}</h1>
       </div>
       <div class="header-right">

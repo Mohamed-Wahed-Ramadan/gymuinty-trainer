@@ -33,7 +33,7 @@
              class="thumbnail">
         <div class="card-overlay">
           <button class="btn btn-sm btn-primary" 
-                  (click)="selectProgram(program)">
+                  (click)="openProgramModal(program)">
             View Details
           </button>
         </div>
@@ -207,3 +207,11 @@
     </form>
   </div>
 </div>
+
+<!-- Program Detail Modal -->
+<app-program-detail-modal 
+  [isOpen]="showProgramModal" 
+  [programId]="modalProgramId" 
+  [hideEnroll]="false"
+  (closeModal)="closeProgramModal()">
+</app-program-detail-modal>

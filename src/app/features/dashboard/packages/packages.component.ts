@@ -6,11 +6,12 @@ import { AuthService } from '../../../core/services/auth.service';
 import { NotificationService } from '../../../core/services/notification.service';
 import { ProgramService, Program } from '../../../core/services/program.service';
 import { TrainerService } from '../../../core/services/trainer.service';
+import { ProgramDetailModalComponent } from '../../../shared/components/program-detail-modal/program-detail-modal.component';
 
 @Component({
   selector: 'app-packages',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, ProgramDetailModalComponent],
   templateUrl: './packages.component.html',
   styleUrls: ['./packages.component.css']
 })
@@ -25,6 +26,9 @@ export class PackagesComponent implements OnInit {
   selectedPackage: PackageResponse | null = null;
   userId: string | null = null;
   isSaving = false;
+  // Program detail modal state (reuse same modal as Home)
+  showProgramModal = false;
+  selectedProgramId: number | null = null;
 
   // Programs dropdown
   programs: Program[] = [];
@@ -64,6 +68,30 @@ export class PackagesComponent implements OnInit {
         this.cdr.detectChanges();
       }
     });
+  }
+
+  openProgramModalById(programId: number | null): void {
+    if (!programId) return;
+    this.selectedProgramId = programId;
+    this.showProgramModal = true;
+    this.cdr.detectChanges();
+  }
+
+  openProgramModalFromPackage(pkg: PackageResponse): void {
+    // prefer first program id if available
+    const ids = pkg?.programIds || [];
+    const id = Array.isArray(ids) && ids.length > 0 ? ids[0] : null;
+    if (!id) {
+      this.notificationService.error('No Programs', 'This package has no programs to view');
+      return;
+    }
+    this.openProgramModalById(id);
+  }
+
+  closeProgramModal(): void {
+    this.showProgramModal = false;
+    this.selectedProgramId = null;
+    this.cdr.detectChanges();
   }
 
   initializeForm(): void {

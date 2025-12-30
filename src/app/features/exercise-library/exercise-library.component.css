@@ -1,0 +1,177 @@
+.exercise-library { padding: 24px; }
+.controls { display:flex; gap:12px; margin-bottom:16px; flex-wrap:wrap; align-items:center }
+.search-group { display:flex; gap:8px; align-items:center }
+.search-input { min-width:260px; }
+.btn-search { height:40px; }
+.filters { display:flex; gap:8px; align-items:center }
+.filter-select { min-width:160px; }
+
+.grid { display:flex; flex-wrap:wrap; gap:16px }
+.card { 
+  width:300px; 
+  border:1px solid #e3dee7ff; 
+  border-radius:8px; 
+  overflow:hidden; 
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  display:flex;
+  flex-direction:column;
+  background:white;
+  transition: all 0.3s ease;
+}
+.card:hover {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  transform: translateY(-4px);
+}
+.card img { 
+  width:100%; 
+  height:200px;
+  object-fit:cover;
+}
+.card-body { 
+  padding:16px;
+  flex:1;
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+  background: linear-gradient(rgb(217, 233, 255) 40%, rgb(255, 230, 217) 80%, rgb(255, 217, 217) 100%), linear-gradient(90deg, rgba(0, 0, 0, 0) 50%, rgba(0, 0, 0, 0.1) 100%);
+  background-repeat: no-repeat;
+  background-size: cover, cover;
+}
+.card-title { 
+  font-size:18px; 
+  margin:0 0 6px 0;
+  font-weight:600;
+  color:#212529;
+}
+.meta { 
+  font-size:13px; 
+  color:#6c757d; 
+  margin-bottom:8px;
+  flex-grow:1;
+}
+.action-row { 
+  display:flex; 
+  gap:8px; 
+  margin-top:auto;
+  flex-wrap:wrap;
+}
+
+.btn {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 6px;
+  font-size: 13px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+}
+
+.btn i {
+  font-size: 15px;
+  display: inline-flex;
+}
+
+.btn-action {
+  padding: 8px 12px;
+  font-size: 13px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 36px;
+}
+
+.btn-primary {
+  background: #007bff;
+  color: white;
+}
+
+.btn-primary:hover {
+  background: #0056b3;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 86, 179, 0.3);
+}
+
+.btn-success {
+  background: #28a745;
+  color: white;
+}
+
+.btn-success:hover {
+  background: #1e7e34;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(30, 126, 52, 0.3);
+}
+
+.btn-warning {
+  background: #ffc107;
+  color: #212529;
+}
+
+.btn-warning:hover {
+  background: #ffb300;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(255, 179, 0, 0.3);
+}
+
+.btn-danger {
+  background: #dc3545;
+  color: white;
+}
+
+.btn-danger:hover {
+  background: #bb2d3b;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(187, 45, 59, 0.3);
+}
+
+.btn-secondary {
+  background: #6c757d;
+  color: white;
+}
+
+.btn-secondary:hover {
+  background: #5a6268;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(90, 98, 104, 0.3);
+}
+
+.modal { position:fixed; inset:0; background:rgba(0,0,0,0.5); display:flex; align-items:center; justify-content:center }
+.modal-content { background:#fff; padding:16px; width:760px; max-width:95%; border-radius:8px }
+.close { float:right; border:none; background:transparent; font-size:20px }
+
+/* Mobile adjustments */
+@media (max-width: 768px) {
+  .exercise-library { padding: 12px; }
+  .controls { flex-direction: column; align-items: stretch; gap: 10px; }
+  .search-group { width: 100%; }
+  .search-input { min-width: 0; width: 100%; }
+  .filters { flex-direction: column; align-items: stretch; gap: 8px; }
+  .filter-select { min-width: 0; width: 100%; }
+
+  .grid { display: flex; flex-direction: column; gap: 12px; }
+  .card { width: 100%; display: flex; flex-direction: column; align-items: center; }
+  .card img { width:100%; height:100%; }
+  .card-body { padding: 12px; flex: 1 1 auto;  width: 100%;}
+  .card-title { font-size:16px; }
+  .meta { font-size:12px; }
+  .action-row { display:flex; gap:8px; flex-wrap:wrap; }
+
+  .modal-content { width: 95%; max-width: 600px; padding: 12px; }
+}
+
+/* Icon styles */
+.btn i {
+  margin-right: 6px;
+  font-size: 14px;
+}

@@ -129,6 +129,9 @@
   display: flex;
   flex-direction: column;
   gap: 12px;
+  background: linear-gradient(rgb(217, 233, 255) 40%, rgb(255, 230, 217) 80%, rgb(255, 217, 217) 100%), linear-gradient(90deg, rgba(0, 0, 0, 0) 50%, rgba(0, 0, 0, 0.1) 100%);
+  background-repeat: no-repeat;
+  background-size: cover, cover;
 }
 
 .card-content h3 {
@@ -371,13 +374,15 @@
 }
 
 .btn-outline {
-  background: transparent;
-  border: 1px solid #dee2e6;
-  color: #495057;
+  background: #ffc107;
+  border: 1px solid #ffc107;
+  color: #212529;
+  transition: all 0.2s;
 }
 
 .btn-outline:hover:not(:disabled) {
-  background: #f8f9fa;
+  background: #e0a800;
+  border-color: #e0a800;
 }
 
 .btn-sm {

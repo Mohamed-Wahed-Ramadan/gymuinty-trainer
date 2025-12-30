@@ -11,95 +11,8 @@ import { NotificationService } from '../../core/services/notification.service';
   selector: 'app-exercise-library',
   standalone: true,
   imports: [CommonModule, FormsModule],
-  template: `
-    <div class="exercise-library">
-      <h1>Exercise Library</h1>
-
-      <div style="margin-bottom:12px">
-        <button class="btn btn-success" (click)="openCreate()">+ New Exercise</button>
-      </div>
-
-      <div class="controls">
-        <input class="form-control" placeholder="Search exercises..." [(ngModel)]="searchTerm" (ngModelChange)="onSearch()" />
-        <select class="form-select" [(ngModel)]="filterCategory" (change)="applyFilters()">
-          <option value="">All Categories</option>
-          <option *ngFor="let c of categories" [value]="c">{{ c }}</option>
-        </select>
-        <select class="form-select" [(ngModel)]="filterMuscle" (change)="applyFilters()">
-          <option value="">All Muscle Groups</option>
-          <option *ngFor="let m of muscleGroups" [value]="m">{{ m }}</option>
-        </select>
-        <select class="form-select" [(ngModel)]="filterEquipment" (change)="applyFilters()">
-          <option value="">All Equipment</option>
-          <option *ngFor="let e of equipmentList" [value]="e">{{ e }}</option>
-        </select>
-      </div>
-
-      <div class="grid">
-        <div class="card" *ngFor="let ex of filteredExercises">
-          <img *ngIf="ex.thumbnailUrl" [src]="resolveUrl(ex.thumbnailUrl)" alt="{{ ex.name }}" />
-          <div class="card-body">
-            <h4>{{ ex.name }}</h4>
-            <p class="meta">{{ ex.category }} · {{ ex.muscleGroup }} · {{ ex.equipment }}</p>
-            <button class="btn btn-sm btn-primary" (click)="openDetail(ex)">Details</button>
-            <button class="btn btn-sm btn-outline-success ms-2" (click)="addToDay(ex)">Add to Day</button>
-            <button class="btn btn-sm btn-outline-secondary ms-2" (click)="openEdit(ex)">Edit</button>
-            <button class="btn btn-sm btn-danger ms-2" (click)="deleteExercise(ex)">Delete</button>
-          </div>
-        </div>
-      </div>
-
-      <div class="modal" *ngIf="selectedExercise">
-        <div class="modal-content">
-          <button class="close" (click)="closeDetail()">×</button>
-          <h3>{{ selectedExercise.name }}</h3>
-          <p>{{ selectedExercise.category }} · {{ selectedExercise.muscleGroup }}</p>
-          <div *ngIf="selectedExercise.videoDemoUrl">
-            <video width="100%" controls [src]="selectedExercise.videoDemoUrl"></video>
-          </div>
-          <div class="actions">
-            <button class="btn btn-primary" (click)="addToDay(selectedExercise)">Add to Day</button>
-          </div>
-        </div>
-      </div>
-
-      <!-- Create / Edit Modal -->
-      <div class="modal" *ngIf="showFormModal">
-        <div class="modal-content">
-          <button class="close" (click)="closeForm()">×</button>
-          <h3>{{ isEditing ? 'Edit Exercise' : 'Create Exercise' }}</h3>
-          <form (submit)="submitForm($event)">
-            <div style="display:flex; gap:8px; flex-wrap:wrap">
-              <input class="form-control" placeholder="Name" [(ngModel)]="form.name" name="name" required />
-              <input class="form-control" placeholder="Category" [(ngModel)]="form.category" name="category" />
-              <input class="form-control" placeholder="Muscle Group" [(ngModel)]="form.muscleGroup" name="muscleGroup" />
-              <input class="form-control" placeholder="Equipment" [(ngModel)]="form.equipment" name="equipment" />
-              <label class="form-label">Thumbnail URL</label>
-              <input class="form-control" placeholder="https://..." [(ngModel)]="form.thumbnailUrl" name="thumbnailUrl" />
-              <label class="form-label">Video Demo URL (YouTube)</label>
-              <input class="form-control" placeholder="https://youtube.com/..." [(ngModel)]="form.videoDemoUrl" name="videoDemoUrl" />
-            </div>
-            <div style="margin-top:8px">
-              <button class="btn btn-primary" type="submit">{{ isEditing ? 'Save' : 'Create' }}</button>
-              <button class="btn btn-secondary ms-2" type="button" (click)="closeForm()">Cancel</button>
-            </div>
-          </form>
-        </div>
-      </div>
-    </div>
-  `,
-  styles: [`
-    .exercise-library { padding: 24px; }
-    .controls { display:flex; gap:8px; margin-bottom:16px; flex-wrap:wrap }
-    .grid { display:flex; flex-wrap:wrap; gap:12px }
-    .card { width:220px; border:1px solid #eee; border-radius:6px; overflow:hidden }
-    .card img { width:100%; height:120px; object-fit:cover }
-    .card-body { padding:8px }
-    .meta { font-size:12px; color:#666 }
-    .modal { position:fixed; inset:0; background:rgba(0,0,0,0.5); display:flex; align-items:center; justify-content:center }
-    .modal-content { background:#fff; padding:16px; width:720px; max-width:95%; border-radius:6px }
-    .close { float:right; border:none; background:transparent; font-size:20px }
-  `]
+  templateUrl: './exercise-library.component.html',
+  styleUrl: './exercise-library.component.css'
 })
 export class ExerciseLibraryComponent implements OnInit {
   exercises: Exercise[] = [];
@@ -183,6 +96,37 @@ export class ExerciseLibraryComponent implements OnInit {
           this.cdr.detectChanges();
         }
       });
+    }
+  }
+
+  /**
+   * Run the full search using current searchTerm and dropdown filters.
+   * If searchTerm is provided we call the API search and then apply
+   * category/muscle/equipment filters to the returned results.
+   * Otherwise we simply apply the local filters to the loaded exercises.
+   */
+  searchAll() {
+    const trainerId = this.auth.getUserIdFromToken();
+    if (this.searchTerm && this.searchTerm.trim()) {
+      this.svc.search(this.searchTerm.trim(), trainerId).subscribe({
+        next: data => {
+          // apply dropdown filters on top of search results
+          let list = data || [];
+          if (this.filterCategory) list = list.filter((e: any) => e.category === this.filterCategory);
+          if (this.filterMuscle) list = list.filter((e: any) => e.muscleGroup === this.filterMuscle);
+          if (this.filterEquipment) list = list.filter((e: any) => e.equipment === this.filterEquipment);
+          this.filteredExercises = list;
+          this.cdr.detectChanges();
+        },
+        error: err => {
+          console.error(err);
+          this.notify.error('Error', 'Search failed');
+          this.cdr.detectChanges();
+        }
+      });
+    } else {
+      // no search term — just apply local filters
+      this.applyFilters();
     }
   }
 

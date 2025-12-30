@@ -31,6 +31,7 @@ export class ProgramDetailModalComponent implements OnInit, OnChanges {
   @Input() isOpen = false;
   @Input() programId: number | null = null;
   @Output() closeModal = new EventEmitter<void>();
+  @Input() hideEnroll = false;
 
   program: any = null;
   isLoading = false;
