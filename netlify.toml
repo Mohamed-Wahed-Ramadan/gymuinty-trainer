@@ -1,0 +1,12 @@
+[build]
+  command = "npm run build:prod"
+  publish = "dist/gymunity-trainer"
+
+[context.production.environment]
+# Set runtime environment variables in Netlify UI if needed
+# API_URL = "https://gymunity-fp-apis.runasp.net/api"
+# GOOGLE_CLIENT_ID = "YOUR_CLIENT_ID.apps.googleusercontent.com"
+
+[dev]
+  command = "npm start"
+  port = 4301
