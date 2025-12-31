@@ -5,8 +5,8 @@ import { ChatService } from '../../../core/services/chat.service';
 import { AuthService } from '../../../core/services/auth.service';
 import { SignalRService } from '../../../core/services/signalr.service';
 import { ChatMessage, ChatThread, MessageType, SendMessageRequest } from '../../../core/models/chat.models';
-import { Subject } from 'rxjs';
-import { takeUntil, debounceTime } from 'rxjs/operators';
+import { Subject, interval } from 'rxjs';
+import { takeUntil, debounceTime, switchMap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-chat-detail',
@@ -33,6 +33,7 @@ export class ChatDetailComponent implements OnInit, OnDestroy, AfterViewChecked,
   private typingTimeout: any;
   private destroy$ = new Subject<void>();
   private shouldScroll = false;
+  private pollingSubscription: any = null;
   // Classified message arrays and unified display list
   myMessages: ChatMessage[] = [];
   otherMessages: ChatMessage[] = [];
@@ -94,6 +95,58 @@ export class ChatDetailComponent implements OnInit, OnDestroy, AfterViewChecked,
       }
     } catch (e) {
       this.currentUserName = null;
+    }
+
+    // Start polling for new messages every 1.5 seconds
+    this.startMessagePolling();
+  }
+
+  /**
+   * Start polling for new messages every 1.5 seconds
+   */
+  private startMessagePolling(): void {
+    if (!this.thread?.id) return;
+
+    this.pollingSubscription = interval(1500)
+      .pipe(
+        switchMap(() => this.chatService.getThreadMessages(this.thread!.id)),
+        takeUntil(this.destroy$)
+      )
+      .subscribe({
+        next: (response) => {
+          if (response.data && response.data.length > 0) {
+            const newMessages = response.data;
+            
+            // Only update if message count or last message ID changed
+            const oldCount = this.messages.length;
+            const newCount = newMessages.length;
+            const oldLastId = this.messages.length > 0 ? this.messages[this.messages.length - 1].id : null;
+            const newLastId = newMessages.length > 0 ? newMessages[newMessages.length - 1].id : null;
+            
+            // Only update if there are actually new messages
+            if (newCount > oldCount || newLastId !== oldLastId) {
+              this.messages = newMessages;
+              this.organizeMessages();
+              this.cdr.detectChanges();
+              
+              // Auto-scroll if user is near the bottom (within 7px)
+              setTimeout(() => this.checkAndAutoScroll(), 0);
+            }
+          }
+        },
+        error: (error) => {
+          console.warn('Polling error:', error);
+        }
+      });
+  }
+
+  /**
+   * Stop polling when thread closes
+   */
+  private stopMessagePolling(): void {
+    if (this.pollingSubscription) {
+      this.pollingSubscription.unsubscribe();
+      this.pollingSubscription = null;
     }
   }
 
@@ -160,7 +213,44 @@ export class ChatDetailComponent implements OnInit, OnDestroy, AfterViewChecked,
     }
   }
 
+  /**
+   * Check distance between messages container and input field
+   * If distance is <= 7px, auto-scroll to bottom
+   */
+  private checkAndAutoScroll(): void {
+    try {
+      if (!this.messagesContainer?.nativeElement) return;
+
+      const container = this.messagesContainer.nativeElement;
+      const containerRect = container.getBoundingClientRect();
+      const containerBottom = containerRect.bottom;
+
+      // Find input element (usually next element or in parent)
+      let inputElement = document.querySelector('textarea[placeholder*="message"]') ||
+                        document.querySelector('textarea[placeholder*="Message"]') ||
+                        document.querySelector('input[placeholder*="message"]') ||
+                        document.querySelector('input[placeholder*="Message"]');
+
+      if (!inputElement) {
+        // Fallback: scroll to bottom anyway
+        this.scrollToBottom();
+        return;
+      }
+
+      const inputRect = inputElement.getBoundingClientRect();
+      const distance = inputRect.top - containerBottom;
+
+      // If distance is small (within 7px), scroll to bottom
+      if (distance <= 7 && distance >= -7) {
+        this.scrollToBottom();
+      }
+    } catch (err) {
+      console.warn('Error checking auto-scroll:', err);
+    }
+  }
+
   ngOnDestroy(): void {
+    this.stopMessagePolling();
     this.destroy$.next();
     this.destroy$.complete();
     clearTimeout(this.typingTimer);

@@ -47,12 +47,20 @@
       <button class="close" (click)="closeDetail()">×</button>
       <h3>{{ selectedExercise.name }}</h3>
       <p>{{ selectedExercise.category }} · {{ selectedExercise.muscleGroup }}</p>
-      <div *ngIf="selectedExercise.videoDemoUrl">
-        <video width="100%" controls [src]="selectedExercise.videoDemoUrl"></video>
-      </div>
-      <div class="actions">
-        <button class="btn btn-primary" (click)="addToDay(selectedExercise)"><i class="bi bi-plus-circle"></i> Add to Day</button>
-      </div>
+         <div style="text-align:center; margin:18px 0;">
+           <a *ngIf="selectedExercise.videoDemoUrl"
+              [href]="selectedExercise.videoDemoUrl"
+              target="_blank"
+              rel="noopener"
+              class="btn btn-primary"
+              style="display:inline-flex; align-items:center; gap:8px;">
+             <i class="bi bi-play-circle"></i>
+             Watch Exercise Video
+           </a>
+           <div *ngIf="!selectedExercise.videoDemoUrl" style="margin-top:12px;color:#666;">
+             <p>No video available</p>
+           </div>
+         </div>
     </div>
   </div>
 
