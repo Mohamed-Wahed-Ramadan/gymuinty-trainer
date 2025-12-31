@@ -1,6 +1,7 @@
+
 [build]
   command = "npm run build:prod"
-  publish = "dist/gymunity-trainer"
+  publish = "dist/gymunity-trainer/browser"
 
 [context.production.environment]
 # Set runtime environment variables in Netlify UI if needed
@@ -10,3 +11,8 @@
 [dev]
   command = "npm start"
   port = 4301
+
+[[redirects]]
+  from = "/*"
+  to = "/"
+  status = 200
