@@ -457,6 +457,8 @@ export class InboxComponent implements OnInit, OnDestroy {
         next: (response) => {
           if (response.data) {
             this.messages.push(response.data);
+            // Force change detection by creating a new array reference
+            this.messages = [...this.messages];
             this.cdr.detectChanges();
             // Scroll to bottom is handled by chat-detail component
           }
@@ -497,6 +499,9 @@ export class InboxComponent implements OnInit, OnDestroy {
     if (this.selectedThreadId === message.threadId) {
       // Message for the open thread: append and mark read
       this.messages.push(message);
+      // Force change detection by creating a new array reference
+      this.messages = [...this.messages];
+      this.cdr.detectChanges();
       this.markThreadAsRead(message.threadId);
       return;
     }
@@ -510,6 +515,9 @@ export class InboxComponent implements OnInit, OnDestroy {
       // move thread to top
       this.threads.splice(idx, 1);
       this.threads.unshift(thread);
+      // Force change detection by creating a new array reference
+      this.threads = [...this.threads];
+      this.cdr.detectChanges();
     } else {
       // Only reload when we truly don't have the thread locally
       this.loadChats();

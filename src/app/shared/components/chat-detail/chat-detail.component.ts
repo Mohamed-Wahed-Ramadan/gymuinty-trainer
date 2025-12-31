@@ -1,4 +1,4 @@
-import { Component, OnInit,SimpleChanges , OnDestroy, Input, Output, EventEmitter, ViewChild, ElementRef, AfterViewChecked, ChangeDetectorRef, OnChanges } from '@angular/core';
+import { Component, OnInit,SimpleChanges , OnDestroy, Input, Output, EventEmitter, ViewChild, ElementRef, AfterViewChecked, ChangeDetectorRef, OnChanges, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ChatService } from '../../../core/services/chat.service';
@@ -13,7 +13,8 @@ import { takeUntil, debounceTime } from 'rxjs/operators';
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './chat-detail.component.html',
-  styleUrls: ['./chat-detail.component.css']
+  styleUrls: ['./chat-detail.component.css'],
+  changeDetection: ChangeDetectionStrategy.Default
 })
 export class ChatDetailComponent implements OnInit, OnDestroy, AfterViewChecked, OnChanges {
   @Input() thread: ChatThread | null = null;
@@ -171,6 +172,7 @@ export class ChatDetailComponent implements OnInit, OnDestroy, AfterViewChecked,
     this.shouldScroll = true;
     // Organize messages only after API response assigned to `messages`
     this.organizeMessages();
+    this.cdr.detectChanges();
   }
 }
 
@@ -198,6 +200,7 @@ export class ChatDetailComponent implements OnInit, OnDestroy, AfterViewChecked,
     } catch (e) {
       // ignore storage errors
     }
+    this.cdr.detectChanges();
   }
 
   // Avatar error fallback handler
