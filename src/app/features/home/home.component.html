@@ -59,7 +59,10 @@
       <div class="cards-grid">
         <div class="card package-card" *ngFor="let p of packages" [@fadeIn]>
           <div class="card-image-container" *ngIf="p.thumbnailUrl">
-            <img [src]="p.thumbnailUrl" [alt]="p.name" class="card-image" />
+            <!-- <img [src]="p.thumbnailUrl" [alt]="p.name" class="card-image" /> -->
+            <img [src]="p.thumbnailUrl || '/memo.png'" 
+             [alt]="p.name"
+             class="card-image">
           </div>
           <div *ngIf="!p.thumbnailUrl" class="card-image-placeholder">
             <i class="bi bi-image"></i>
