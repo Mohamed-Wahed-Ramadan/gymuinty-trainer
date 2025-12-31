@@ -174,6 +174,7 @@ export class PackagesComponent implements OnInit {
       priceYearly: formValue.priceYearly,
       promoCode: formValue.promoCode,
       isActive: formValue.isActive,
+      thumbnailUrl: formValue.thumbnailUrl,
       programIds: this.selectedProgramIds
       // NOTE: trainerId is extracted from auth token, not sent in request
     };
