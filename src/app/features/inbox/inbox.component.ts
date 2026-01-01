@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ChatService } from '../../core/services/chat.service';
 import { SignalRService } from '../../core/services/signalr.service';
 import { AuthService } from '../../core/services/auth.service';
+import { TrainerService, SubscriberResponse } from '../../core/services/trainer.service';
 import { Router } from '@angular/router';
 import { ChatThread, ChatMessage, SendMessageRequest, MessageType } from '../../core/models/chat.models';
 import { ChatListComponent } from '../../shared/components/chat-list/chat-list.component';
@@ -20,10 +21,17 @@ import { NewChatModalComponent } from '../../shared/components/new-chat-modal/ne
       <!-- Header -->
       <div class="inbox-header">
         <div class="container-fluid">
-          <h2 class="mb-0">
-            <i class="bi bi-chat-dots"></i> Messages
-          </h2>
-          <small class="text-muted">Your conversations and chats</small>
+          <div class="header-top">
+            <div>
+              <h2 class="mb-0">
+                <i class="bi bi-chat-dots"></i> Messages
+              </h2>
+              <small class="text-muted">Your conversations and chats</small>
+            </div>
+            <button class="btn btn-sm btn-outline-primary" (click)="openSubscribersModal()" title="View Subscribers">
+              <i class="bi bi-people"></i> My Subscribers
+            </button>
+          </div>
         </div>
       </div>
 
@@ -70,6 +78,54 @@ import { NewChatModalComponent } from '../../shared/components/new-chat-modal/ne
       <!-- New Chat Modal -->
       <app-new-chat-modal *ngIf="showNewChatModal" (onClose)="onNewChatModalClose()" (onSelectTrainer)="onTrainerSelected($event)"></app-new-chat-modal>
 
+      <!-- Subscribers Modal -->
+      <div *ngIf="showSubscribersModal" class="subscribers-modal-overlay" (click)="closeSubscribersModal()">
+        <div class="subscribers-modal" (click)="$event.stopPropagation()">
+          <div class="modal-header">
+            <h5 class="modal-title">My Subscribers</h5>
+            <button type="button" class="btn-close" (click)="closeSubscribersModal()"></button>
+          </div>
+          <div class="modal-body">
+            <div *ngIf="subscribersLoading" class="text-center py-5">
+              <div class="spinner-border" role="status">
+                <span class="visually-hidden">Loading...</span>
+              </div>
+            </div>
+            <div *ngIf="!subscribersLoading && subscribers.length === 0" class="alert alert-info">
+              No active subscribers yet.
+            </div>
+            <div *ngIf="!subscribersLoading && subscribers.length > 0" class="table-responsive">
+              <table class="table table-hover mb-0">
+                <thead>
+                  <tr>
+                    <th>Client</th>
+                    <th>Email</th>
+                    <th>Package</th>
+                    <th>Start Date</th>
+                    <th>End Date</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let sub of subscribers">
+                    <td><strong>{{ sub.clientName }}</strong></td>
+                    <td>{{ sub.clientEmail }}</td>
+                    <td>{{ sub.packageName }}</td>
+                    <td>{{ formatDate(sub.subscriptionStartDate) }}</td>
+                    <td>{{ formatDate(sub.subscriptionEndDate) }}</td>
+                    <td>
+                      <span [ngClass]="'badge badge-' + getStatusClass(sub.status)">
+                        {{ sub.status }}
+                      </span>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <!-- Loading Indicator -->
       
     </div>
@@ -98,6 +154,17 @@ import { NewChatModalComponent } from '../../shared/components/new-chat-modal/ne
       margin-bottom: 4px;
     }
 
+    .header-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 20px;
+    }
+
+    .header-top button {
+      margin-top: 6px;
+    }
+
     .inbox-header i {
       color: #667eea;
     }
@@ -110,6 +177,8 @@ import { NewChatModalComponent } from '../../shared/components/new-chat-modal/ne
 
     .inbox-content .row {
       margin: 0;
+      height: 100%;
+      min-height: 0;
     }
 
     .inbox-content .col-lg-4,
@@ -180,6 +249,93 @@ import { NewChatModalComponent } from '../../shared/components/new-chat-modal/ne
       border-radius: 50%;
     }
 
+    /* Subscribers Modal Styles */
+    .subscribers-modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1100;
+    }
+
+    .subscribers-modal {
+      background: white;
+      border-radius: 8px;
+      width: 90%;
+      max-width: 900px;
+      max-height: 80vh;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    }
+
+    .subscribers-modal .modal-header {
+      padding: 20px;
+      border-bottom: 1px solid #e9ecef;
+      background: #f8f9fa;
+    }
+
+    .subscribers-modal .modal-header .modal-title {
+      margin: 0;
+      font-weight: 600;
+      color: #333;
+    }
+
+    .subscribers-modal .modal-body {
+      flex: 1;
+      overflow-y: auto;
+      padding: 20px;
+    }
+
+    .subscribers-modal table {
+      font-size: 14px;
+    }
+
+    .subscribers-modal table thead {
+      background: #f8f9fa;
+      position: sticky;
+      top: 0;
+    }
+
+    .subscribers-modal table th {
+      padding: 12px;
+      font-weight: 600;
+      color: #555;
+      border-bottom: 2px solid #e9ecef;
+    }
+
+    .subscribers-modal table td {
+      padding: 12px;
+      vertical-align: middle;
+    }
+
+    .subscribers-modal table tbody tr:hover {
+      background: #f5f5f5;
+    }
+
+    .badge-success {
+      background-color: #28a745 !important;
+    }
+
+    .badge-warning {
+      background-color: #ffc107 !important;
+      color: #333 !important;
+    }
+
+    .badge-danger {
+      background-color: #dc3545 !important;
+    }
+
+    .badge-secondary {
+      background-color: #6c757d !important;
+    }
+
     /* Responsive Design */
     @media (max-width: 991px) {
       .inbox-content .col-lg-4,
@@ -226,6 +382,11 @@ export class InboxComponent implements OnInit, OnDestroy {
   selectedThreadId: number | null = null;
   selectedThread: ChatThread | null = null;
 
+  // Subscribers data
+  subscribers: SubscriberResponse[] = [];
+  subscribersLoading = false;
+  showSubscribersModal = false;
+
   // User info
   currentUserId: string | null = null;
 
@@ -243,6 +404,7 @@ export class InboxComponent implements OnInit, OnDestroy {
     private chatService: ChatService,
     private signalRService: SignalRService,
     private authService: AuthService,
+    private trainerService: TrainerService,
     private router: Router,
     private cdr: ChangeDetectorRef
   ) {}
@@ -595,6 +757,78 @@ export class InboxComponent implements OnInit, OnDestroy {
     this.signalRService.disconnect().catch(() => {});
     this.destroy$.next();
     this.destroy$.complete();
+  }
+
+  /**
+   * Open subscribers modal and load subscribers
+   */
+  openSubscribersModal(): void {
+    this.showSubscribersModal = true;
+    this.loadSubscribers();
+  }
+
+  /**
+   * Close subscribers modal
+   */
+  closeSubscribersModal(): void {
+    this.showSubscribersModal = false;
+  }
+
+  /**
+   * Load subscribers from backend
+   */
+  private loadSubscribers(): void {
+    this.subscribersLoading = true;
+    this.trainerService.getSubscribers()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (subscribers) => {
+          this.subscribers = subscribers;
+          this.subscribersLoading = false;
+          this.cdr.detectChanges();
+        },
+        error: (error) => {
+          console.error('Failed to load subscribers:', error);
+          this.subscribersLoading = false;
+          this.cdr.detectChanges();
+        }
+      });
+  }
+
+  /**
+   * Format date string to local timezone
+   */
+  formatDate(dateString: string): string {
+    try {
+      const date = new Date(dateString);
+      return date.toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric'
+      });
+    } catch (e) {
+      return dateString;
+    }
+  }
+
+  /**
+   * Get badge class based on subscription status
+   */
+  getStatusClass(status: string): string {
+    const statusLower = status?.toLowerCase() || '';
+    switch (statusLower) {
+      case 'active':
+        return 'success';
+      case 'unpaid':
+        return 'warning';
+      case 'canceled':
+      case 'cancelled':
+        return 'danger';
+      case 'expired':
+        return 'secondary';
+      default:
+        return 'secondary';
+    }
   }
 }
 

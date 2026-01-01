@@ -22,8 +22,161 @@ import { AuthService } from '../../core/services/auth.service';
               <p *ngIf="profile.ratingAverage"><strong>Rating:</strong> {{ profile.ratingAverage }}/5.0</p>
               <p *ngIf="profile.totalClients"><strong>Total Clients:</strong> {{ profile.totalClients }}</p>
               <img *ngIf="profile.coverImageUrl" [src]="profile.coverImageUrl" alt="Cover" class="cover-img" />
+
+              <!-- Status Section -->
+              <div class="status-section mt-4 pt-4 border-top">
+                <h4 class="mb-3">
+                  <i class="bi bi-chat-fill status-icon"></i> Status
+                </h4>
+                <div class="status-display">
+                  <div *ngIf="profile.statusImageUrl" class="status-image-container">
+                    <img [src]="profile.statusImageUrl" alt="Status" class="status-image" />
+                  </div>
+                  <div *ngIf="!profile.statusImageUrl" class="status-placeholder">
+                    <i class="bi bi-image"></i>
+                  </div>
+                  <div class="status-text">
+                    <p *ngIf="profile.statusDescription" class="status-description">
+                      {{ profile.statusDescription }}
+                    </p>
+                    <p *ngIf="!profile.statusDescription" class="text-muted">
+                      No status set yet
+                    </p>
+                  </div>
+                </div>
+
+                <!-- Status Update / View Buttons -->
+                <div class="status-actions mt-3">
+                  <button 
+                    type="button"
+                    class="btn btn-outline-primary btn-sm"
+                    (click)="openStatusModal()"
+                  >
+                    <i class="bi bi-pencil"></i> Update Status
+                  </button>
+                  <button
+                    type="button"
+                    class="btn btn-outline-secondary btn-sm ms-2"
+                    (click)="openStatusViewer()"
+                    [disabled]="!profile?.statusImageUrl && !profile?.statusDescription"
+                  >
+                    <i class="bi bi-eye"></i> Show Status
+                  </button>
+                </div>
+              </div>
             </div>
-            <button class="btn btn-primary mt-3" (click)="editProfile()">Edit Profile</button>
+
+            <!-- Status Modal -->
+            <div *ngIf="showStatusModal" class="modal-backdrop">
+              <div class="modal-panel">
+                <div class="modal-header">
+                  <h5>Update Your Status</h5>
+                  <button class="btn-close" (click)="closeStatusModal()">
+                    <i class="bi bi-x-lg"></i>
+                  </button>
+                </div>
+
+                <div class="modal-body">
+                  <form [formGroup]="statusForm" (ngSubmit)="updateStatus()">
+                    <!-- Status Image -->
+                    <div class="form-group">
+                      <label for="statusImage" class="form-label">Status Image (Optional)</label>
+                      <input 
+                        type="file" 
+                        id="statusImage"
+                        class="form-control"
+                        (change)="onStatusImageSelect($event)"
+                        accept="image/jpeg,image/jpg,image/png,image/gif,image/webp"
+                      />
+                      <small class="form-text">Max 5MB. JPG, PNG, GIF, WebP</small>
+
+                      <!-- Preview -->
+                      <div *ngIf="statusImagePreview" class="image-preview mt-2">
+                        <img [src]="statusImagePreview" alt="Status preview" class="preview-img" />
+                      </div>
+                    </div>
+
+                    <!-- Status Description -->
+                    <div class="form-group mt-3">
+                      <label for="statusDescription" class="form-label">Status Description (Optional)</label>
+                      <textarea 
+                        id="statusDescription"
+                        class="form-control"
+                        rows="3"
+                        formControlName="statusDescription"
+                        maxlength="200"
+                        placeholder="What are you up to?"
+                      ></textarea>
+                      <small class="form-text">
+                        {{ statusForm.get('statusDescription')?.value?.length || 0 }}/200
+                      </small>
+                    </div>
+
+                    <!-- Error -->
+                    <div *ngIf="statusErrorMessage" class="alert alert-danger alert-sm mt-3">
+                      {{ statusErrorMessage }}
+                    </div>
+
+                    <!-- Actions -->
+                    <div class="modal-actions mt-4">
+                      <button 
+                        type="submit"
+                        class="btn btn-primary"
+                        [disabled]="isUpdatingStatus"
+                      >
+                        <span *ngIf="!isUpdatingStatus">
+                          <i class="bi bi-check-circle"></i> Update Status
+                        </span>
+                        <span *ngIf="isUpdatingStatus">
+                          <span class="spinner-border spinner-border-sm me-2"></span>
+                          Updating...
+                        </span>
+                      </button>
+                      <button 
+                        type="button"
+                        class="btn btn-secondary ms-2"
+                        (click)="closeStatusModal()"
+                        [disabled]="isUpdatingStatus"
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+
+            <!-- Status Viewer Modal (large preview) -->
+            <div *ngIf="showBigStatus" class="modal-backdrop">
+              <div class="modal-panel">
+                <div class="modal-header">
+                  <h5>Status</h5>
+                  <button class="btn-close" (click)="closeStatusViewer()">
+                    <i class="bi bi-x-lg"></i>
+                  </button>
+                </div>
+
+                <div class="modal-body text-center">
+                  <div *ngIf="profile?.statusImageUrl" class="mb-3">
+                    <img [src]="profile?.statusImageUrl" alt="Status" style="max-width:100%; height:auto; border-radius:8px;" />
+                  </div>
+                  <div *ngIf="profile?.statusDescription" class="status-description">
+                    {{ profile.statusDescription }}
+                  </div>
+                </div>
+
+                <div class="modal-actions mt-3">
+                  <button type="button" class="btn btn-secondary" (click)="closeStatusViewer()">Close</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="action-buttons mt-4">
+              <button class="btn btn-primary" (click)="editProfile()">
+                <i class="bi bi-pencil"></i> Edit Profile
+              </button>
+            </div>
           </div>
         </ng-container>
 
@@ -243,28 +396,179 @@ import { AuthService } from '../../core/services/auth.service';
     .text-danger {
       color: #dc3545;
     }
+
+    .status-section {
+      margin-top: 20px;
+      padding-top: 20px;
+      border-top: 1px solid #ddd;
+    }
+
+    .status-icon {
+      color: #667eea;
+      font-size: 18px;
+      margin-right: 8px;
+    }
+
+    .status-display {
+      background: #f8f9fa;
+      padding: 16px;
+      border-radius: 8px;
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+    }
+
+    .status-image-container {
+      flex-shrink: 0;
+    }
+
+    .status-image {
+      width: 80px;
+      height: 80px;
+      border-radius: 8px;
+      object-fit: cover;
+    }
+
+    .status-placeholder {
+      width: 80px;
+      height: 80px;
+      background: #ddd;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #999;
+      font-size: 32px;
+      flex-shrink: 0;
+    }
+
+    .status-text {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .status-description {
+      margin: 0;
+      word-wrap: break-word;
+      white-space: pre-wrap;
+    }
+
+    .status-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .btn-sm {
+      padding: 6px 12px;
+      font-size: 13px;
+    }
+
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.45);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1050;
+    }
+
+    .modal-panel {
+      width: 500px;
+      max-width: 95%;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+      overflow: hidden;
+    }
+
+    .modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 20px;
+      border-bottom: 1px solid #eee;
+    }
+
+    .modal-header h5 {
+      margin: 0;
+      font-weight: 600;
+    }
+
+    .modal-body {
+      padding: 20px;
+      max-height: 70vh;
+      overflow-y: auto;
+    }
+
+    .modal-actions {
+      display: flex;
+      gap: 8px;
+      justify-content: flex-end;
+    }
+
+    .btn-close {
+      background: transparent;
+      border: none;
+      font-size: 20px;
+      color: #666;
+      padding: 0;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .btn-close:hover {
+      color: #333;
+    }
+
+    .alert-sm {
+      padding: 8px 12px;
+      font-size: 13px;
+    }
+
+    .preview-img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 6px;
+      max-height: 200px;
+    }
+
+    .action-buttons {
+      display: flex;
+      gap: 8px;
+    }
   `]
 })
 export class TrainerProfileComponent implements OnInit {
   profileForm!: FormGroup;
+  statusForm!: FormGroup;
   profile: TrainerProfileResponse | null = null;
   loading = true;
   isSubmitting = false;
   isEditing = false;
+  isUpdatingStatus = false;
   errorMessage = '';
+  statusErrorMessage = '';
   imagePreview: string | null = null;
+  statusImagePreview: string | null = null;
+  showStatusModal = false;
+  showBigStatus = false;
 
   private selectedFile: File | null = null;
+  private selectedStatusFile: File | null = null;
 
   constructor(
     private fb: FormBuilder,
     private trainerService: TrainerService,
-    private auth: AuthService
-  , private cdr: ChangeDetectorRef
+    private auth: AuthService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
     this.initializeForm();
+    this.initializeStatusForm();
     this.loadProfile();
   }
 
@@ -275,6 +579,12 @@ export class TrainerProfileComponent implements OnInit {
       yearsExperience: [0, [Validators.required, Validators.min(0), Validators.max(50)]],
       videoIntroUrl: ['', []],
       brandingColors: ['', []]
+    });
+  }
+
+  private initializeStatusForm(): void {
+    this.statusForm = this.fb.group({
+      statusDescription: ['', [Validators.maxLength(200)]]
     });
   }
 
@@ -412,6 +722,127 @@ export class TrainerProfileComponent implements OnInit {
     this.imagePreview = null;
     this.selectedFile = null;
     this.initializeForm();
+  }
+
+  // Status Update Methods
+  openStatusModal(): void {
+    this.showStatusModal = true;
+    this.statusErrorMessage = '';
+    this.statusImagePreview = null;
+    this.selectedStatusFile = null;
+    this.statusForm.reset();
+    if (this.profile?.statusDescription) {
+      this.statusForm.patchValue({
+        statusDescription: this.profile.statusDescription
+      });
+    }
+  }
+
+  closeStatusModal(): void {
+    this.showStatusModal = false;
+    this.statusErrorMessage = '';
+    this.statusImagePreview = null;
+    this.selectedStatusFile = null;
+    this.statusForm.reset();
+  }
+
+  openStatusViewer(): void {
+    this.showBigStatus = true;
+  }
+
+  closeStatusViewer(): void {
+    this.showBigStatus = false;
+  }
+
+  onStatusImageSelect(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (!input.files || !input.files[0]) return;
+
+    const file = input.files[0];
+    this.statusErrorMessage = '';
+
+    // Validate file size (5MB)
+    const maxSize = 5 * 1024 * 1024;
+    if (file.size > maxSize) {
+      this.statusErrorMessage = `File size exceeds 5MB limit.`;
+      return;
+    }
+
+    // Validate file type
+    const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
+    if (!validTypes.includes(file.type)) {
+      this.statusErrorMessage = `Invalid file type. Accepted: JPG, PNG, GIF, WebP`;
+      return;
+    }
+
+    this.selectedStatusFile = file;
+
+    // Show preview
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      this.statusImagePreview = e.target?.result as string;
+      this.cdr.detectChanges();
+    };
+    reader.readAsDataURL(file);
+  }
+
+  updateStatus(): void {
+    if (!this.profile) return;
+
+    this.isUpdatingStatus = true;
+    this.statusErrorMessage = '';
+
+    const formData = new FormData();
+    
+    if (this.selectedStatusFile) {
+      formData.append('StatusImage', this.selectedStatusFile);
+    }
+
+    const description = this.statusForm.get('statusDescription')?.value || '';
+    if (description) {
+      formData.append('StatusDescription', description);
+    }
+
+    this.trainerService.updateStatus(this.profile.id, formData).subscribe({
+      next: (updatedProfile) => {
+        this.isUpdatingStatus = false;
+        this.profile = updatedProfile;
+        this.closeStatusModal();
+        this.cdr.detectChanges();
+      },
+      error: (error) => {
+        this.isUpdatingStatus = false;
+        this.statusErrorMessage = error.message || 'Failed to update status. Please try again.';
+        this.cdr.detectChanges();
+      }
+    });
+  }
+
+  clearStatus(): void {
+    if (!this.profile) return;
+
+    if (!confirm('Are you sure you want to clear your status?')) {
+      return;
+    }
+
+    this.isUpdatingStatus = true;
+
+    // Send empty status to clear
+    const formData = new FormData();
+    formData.append('StatusDescription', '');
+
+    this.trainerService.updateStatus(this.profile.id, formData).subscribe({
+      next: (updatedProfile) => {
+        this.isUpdatingStatus = false;
+        this.profile = updatedProfile;
+        this.cdr.detectChanges();
+      },
+      error: (error) => {
+        this.isUpdatingStatus = false;
+        console.error('Error clearing status:', error);
+        this.cdr.detectChanges();
+      }
+    });
   }
 
   // Getters for form controls

@@ -1,6 +1,7 @@
 import { Component, EventEmitter, OnInit, Output, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { HomeService } from '../../../core/services/home.service';
+import { TrainerService, SubscriberResponse } from '../../../core/services/trainer.service';
+import { AuthService } from '../../../core/services/auth.service';
 import { takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 
@@ -19,29 +20,31 @@ import { Subject } from 'rxjs';
         </div>
 
         <div class="modal-body">
-          <div *ngIf="isLoading" class="py-3 text-center">Loading trainers...</div>
+          <div *ngIf="isLoading" class="py-3 text-center">Loading clients...</div>
 
-          <ul *ngIf="!isLoading && trainers.length" class="list-group list-group-flush">
-            <li *ngFor="let t of trainers" class="list-group-item d-flex align-items-center justify-content-between">
+          <ul *ngIf="!isLoading && subscribers.length" class="list-group list-group-flush">
+            <li *ngFor="let subscriber of subscribers" class="list-group-item d-flex align-items-center justify-content-between">
               <div class="d-flex align-items-center gap-2">
-                <img *ngIf="t.statusImageUrl" [src]="t.statusImageUrl" class="avatar-sm rounded-circle" alt="photo" />
-                <img *ngIf="!t.statusImageUrl && t.coverImageUrl" [src]="t.coverImageUrl" class="avatar-sm rounded-circle" alt="photo" />
-                <div class="avatar-placeholder" *ngIf="!t.statusImageUrl && !t.coverImageUrl">
+                <div class="avatar-placeholder">
                   <i class="bi bi-person-fill"></i>
                 </div>
                 <div>
-                  <div class="fw-semibold">{{ t.userName || t.displayName || t.handle || 'Trainer' }}</div>
-                  <div class="text-muted small">{{ t.handle || t.userId }}</div>
+                  <div class="fw-semibold">{{ subscriber.clientName }}</div>
+                  <div class="text-muted small">{{ subscriber.clientEmail }}</div>
+                  <div class="text-muted smaller">Package: {{ subscriber.packageName }}</div>
+                  <div class="badge" [ngClass]="getStatusBadgeClass(subscriber.status)">
+                    {{ subscriber.status }}
+                  </div>
                 </div>
               </div>
               <div>
-                <button class="btn btn-sm btn-primary" (click)="selectTrainer(t)">Contact</button>
+                <button class="btn btn-sm btn-primary" (click)="selectSubscriber(subscriber)">Contact</button>
               </div>
             </li>
           </ul>
 
-          <div *ngIf="!isLoading && !trainers.length" class="text-center text-muted py-3">
-            {{ errorMessage ? 'Error loading trainers' : 'No trainers available.' }}
+          <div *ngIf="!isLoading && !subscribers.length" class="text-center text-muted py-3">
+            {{ errorMessage ? 'Error loading clients' : 'No clients available.' }}
           </div>
         </div>
 
@@ -99,6 +102,40 @@ import { Subject } from 'rxjs';
       justify-content: center;
       color: #999;
       font-size: 20px;
+      flex-shrink: 0;
+    }
+
+    .badge {
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 600;
+      margin-top: 4px;
+      display: inline-block;
+    }
+
+    .badge-active {
+      background: #d4edda;
+      color: #155724;
+    }
+
+    .badge-unpaid {
+      background: #fff3cd;
+      color: #856404;
+    }
+
+    .badge-canceled {
+      background: #f8d7da;
+      color: #721c24;
+    }
+
+    .badge-expired {
+      background: #e2e3e5;
+      color: #383d41;
+    }
+
+    .smaller {
+      font-size: 12px;
     }
 
     .btn-close {
@@ -119,55 +156,84 @@ export class NewChatModalComponent implements OnInit {
   @Output() onSelectTrainer = new EventEmitter<any>();
   @Output() onClose = new EventEmitter<void>();
 
-  trainers: any[] = [];
+  subscribers: SubscriberResponse[] = [];
   isLoading = false;
   errorMessage = '';
 
   private destroy$ = new Subject<void>();
 
-  constructor(private homeService: HomeService, private cdr: ChangeDetectorRef) {}
+  constructor(
+    private trainerService: TrainerService,
+    private authService: AuthService,
+    private cdr: ChangeDetectorRef
+  ) {}
 
   ngOnInit(): void {
-    this.loadTrainers();
+    this.loadSubscribers();
   }
 
-  private normalizeArrayResp(data: any): any[] {
-    if (!data) return [];
-    if (Array.isArray(data)) return data;
-    if (Array.isArray(data.data)) return data.data;
-    if (Array.isArray(data.value)) return data.value;
-    if (Array.isArray(data.result)) return data.result;
-    return [];
-  }
+  private loadSubscribers(): void {
+    // Get trainer profile ID from the service or auth
+    const userId = this.authService.getUserIdFromToken?.();
+    if (!userId) {
+      this.errorMessage = 'Unable to identify user';
+      this.isLoading = false;
+      this.cdr.detectChanges();
+      return;
+    }
 
-  private loadTrainers(): void {
     this.isLoading = true;
     this.errorMessage = '';
-    this.homeService.getTrainers()
+
+    // Get subscribers directly using the new endpoint
+    this.trainerService.getSubscribers()
       .pipe(takeUntil(this.destroy$))
       .subscribe({
-        next: (res) => {
-          console.log('Trainers response:', res);
-          this.trainers = this.normalizeArrayResp(res);
-          console.log('Normalized trainers:', this.trainers);
+        next: (subscribers: SubscriberResponse[]) => {
+          console.log('Subscribers:', subscribers);
+          this.subscribers = subscribers || [];
           this.isLoading = false;
           this.cdr.detectChanges();
         },
-        error: (err) => {
-          console.error('Failed to load trainers:', err);
-          this.errorMessage = err?.message || 'Error loading trainers';
-          this.trainers = [];
+        error: (err: any) => {
+          console.error('Failed to load subscribers:', err);
+          this.errorMessage = 'Error loading clients';
+          this.subscribers = [];
           this.isLoading = false;
           this.cdr.detectChanges();
         }
       });
   }
 
-  selectTrainer(t: any) {
-    this.onSelectTrainer.emit(t);
+  getStatusBadgeClass(status: string): string {
+    const statusLower = status?.toLowerCase() || '';
+    switch (statusLower) {
+      case 'active':
+        return 'badge-active';
+      case 'unpaid':
+        return 'badge-unpaid';
+      case 'canceled':
+        return 'badge-canceled';
+      case 'expired':
+        return 'badge-expired';
+      default:
+        return 'badge-expired';
+    }
   }
 
-  close() {
+  selectSubscriber(subscriber: SubscriberResponse): void {
+    // Convert subscriber to a contact object for the chat
+    const contactData = {
+      userId: subscriber.clientId,  // clientId is the AppUser GUID
+      clientName: subscriber.clientName,
+      clientEmail: subscriber.clientEmail,
+      packageName: subscriber.packageName,
+      subscriptionStatus: subscriber.status
+    };
+    this.onSelectTrainer.emit(contactData);
+  }
+
+  close(): void {
     this.onClose.emit();
   }
 }

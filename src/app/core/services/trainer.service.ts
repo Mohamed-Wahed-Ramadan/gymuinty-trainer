@@ -25,6 +25,27 @@ export interface TrainerProfileResponse {
   statusDescription: string | null;
 }
 
+export interface SubscriberResponse {
+  clientId: string;
+  clientName: string;
+  clientEmail: string;
+  packageName: string;
+  subscriptionStartDate: string;
+  subscriptionEndDate: string;
+  status: SubscriptionStatus;
+}
+
+export enum SubscriptionStatus {
+  Active = 'Active',
+  Unpaid = 'Unpaid',
+  Canceled = 'Canceled',
+  Expired = 'Expired'
+}
+
+export interface UpdateStatusRequest {
+  statusDescription?: string;
+}
+
 @Injectable({ providedIn: 'root' })
 export class TrainerService {
   private readonly baseUrl = `${environment.apiUrl}/trainer/TrainerProfile`;
@@ -72,6 +93,14 @@ export class TrainerService {
     return this.http.put<TrainerProfileResponse>(`${this.baseUrl}/Status/${profileId}`, formData)
       .pipe(
         map(profile => this.resolveImageUrls(profile)),
+        catchError(this.handleError)
+      );
+  }
+
+  // Get subscribers by trainer profile ID
+  getSubscribers(): Observable<SubscriberResponse[]> {
+    return this.http.get<SubscriberResponse[]>(`${this.baseUrl}/subscribers`)
+      .pipe(
         catchError(this.handleError)
       );
   }
