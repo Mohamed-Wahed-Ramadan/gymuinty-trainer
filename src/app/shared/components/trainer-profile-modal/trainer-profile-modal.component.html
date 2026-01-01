@@ -132,16 +132,15 @@
         </div>
       </div>
 
-      <!-- Video Intro -->
+      <!-- Video Intro (button link to external video if provided) -->
       <div *ngIf="profile.videoIntroUrl" class="video-section">
         <h3 class="detail-title">
           <i class="bi bi-play-circle"></i> Trainer Introduction
         </h3>
-        <div class="video-container">
-          <video controls class="intro-video">
-            <source [src]="profile.videoIntroUrl" />
-            Your browser does not support the video tag.
-          </video>
+        <div class="video-actions">
+          <a [href]="profile.videoIntroUrl" target="_blank" rel="noopener noreferrer" class="btn btn-primary">
+            <i class="bi bi-play-circle"></i> Watch Introduction
+          </a>
         </div>
       </div>
     </div>
