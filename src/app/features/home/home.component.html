@@ -5,7 +5,7 @@
     <div class="hero-content">
       <h1 class="hero-title">Welcome to Gymunity</h1>
       <p class="hero-subtitle">Your Platform for Fitness Excellence and Professional Training</p>
-      
+
       <div class="hero-actions">
         <button *ngIf="!isLoggedIn" class="btn btn-primary btn-lg" (click)="goToRegister()">
           <i class="bi bi-pencil-square"></i> Get Started
@@ -25,13 +25,8 @@
     <div class="search-container">
       <div class="search-box">
         <!-- <i class="bi bi-search"></i> -->
-        <input 
-          type="text" 
-          class="search-input" 
-          placeholder="Search packages, programs, or trainers..." 
-          [(ngModel)]="term"
-          (keyup.enter)="search()"
-        />
+        <input type="text" class="search-input" placeholder="Search packages, programs, or trainers..."
+          [(ngModel)]="term" (keyup.enter)="search()" />
         <button class="btn-search text-black" (click)="search()" [disabled]="isLoading">
           <i class="bi bi-search"></i> Search
         </button>
@@ -55,14 +50,12 @@
         </h2>
         <p class="section-description">Choose from our premium training packages</p>
       </div>
-      
+
       <div class="cards-grid">
         <div class="card package-card" *ngFor="let p of packages" [@fadeIn]>
           <div class="card-image-container" *ngIf="p.thumbnailUrl">
             <!-- <img [src]="p.thumbnailUrl" [alt]="p.name" class="card-image" /> -->
-            <img [src]="p.thumbnailUrl || '/memo.png'" 
-             [alt]="p.name"
-             class="card-image">
+            <img [src]="p.thumbnailUrl || '/memo.png'" [alt]="p.name" class="card-image">
           </div>
           <div *ngIf="!p.thumbnailUrl" class="card-image-placeholder">
             <i class="bi bi-image"></i>
@@ -74,7 +67,8 @@
               <div class="package-meta">
                 <span class="package-price">{{ p.priceMonthly | currency }}</span>
                 <button class="btn-view " *ngIf="isLoggedIn">Open</button>
-                <button class="btn-view btn-disabled" *ngIf="!isLoggedIn" [title]="'Login to view this package'">Open</button>
+                <button class="btn-view btn-disabled" *ngIf="!isLoggedIn"
+                  [title]="'Login to view this package'">Open</button>
               </div>
             </div>
 
@@ -111,7 +105,7 @@
         </h2>
         <p class="section-description">Explore our comprehensive training programs</p>
       </div>
-      
+
       <div class="cards-grid">
         <div class="card program-card" *ngFor="let pr of programs" [@fadeIn]>
           <div class="card-image-container" *ngIf="pr.thumbnailUrl">
@@ -120,14 +114,14 @@
           <div *ngIf="!pr.thumbnailUrl" class="card-image-placeholder">
             <i class="bi bi-image"></i>
           </div>
-          
+
           <div class="card-content">
             <h3 class="card-title">{{ pr.title }}</h3>
             <div class="program-badge" [ngClass]="'type-' + pr.type">
               {{ getProgramTypeLabel(pr.type) }}
             </div>
             <p class="card-description">{{ pr.description }}</p>
-            
+
             <div class="program-meta">
               <span class="meta-item" *ngIf="pr.durationWeeks">
                 <i class="bi bi-calendar"></i> {{ pr.durationWeeks }} weeks
@@ -136,10 +130,11 @@
                 <i class="bi bi-person"></i> {{ pr.trainerUserName }}
               </span>
             </div>
-            
+
             <div class="card-footer">
               <button class="btn-view" *ngIf="isLoggedIn" (click)="exploreProgram(pr)">Explore</button>
-              <button class="btn-view btn-disabled" *ngIf="!isLoggedIn" [title]="'Login to explore this program'">Explore</button>
+              <button class="btn-view btn-disabled" *ngIf="!isLoggedIn"
+                [title]="'Login to explore this program'">Explore</button>
             </div>
           </div>
         </div>
@@ -154,7 +149,7 @@
         </h2>
         <p class="section-description">Connect with professional and experienced trainers</p>
       </div>
-      
+
       <div class="cards-grid">
         <div class="card trainer-card" *ngFor="let t of trainers" [@fadeIn]>
           <div class="trainer-header">
@@ -166,11 +161,11 @@
               <span>{{ t.ratingAverage || 0 | number:'1.1-1' }}</span>
             </div>
           </div>
-          
+
           <div class="card-content">
             <h3 class="card-title">{{ t.userName }}</h3>
             <p class="card-description">{{ t.bio }}</p>
-            
+
             <div class="trainer-stats">
               <div class="stat">
                 <span class="stat-value">{{ t.yearsExperience || 0 }}</span>
@@ -181,10 +176,11 @@
                 <span class="stat-label">Clients</span>
               </div>
             </div>
-            
+
             <div class="card-footer">
               <button class="btn-view" *ngIf="isLoggedIn" (click)="viewTrainerProfile(t)">View Profile</button>
-              <button class="btn-view btn-disabled" *ngIf="!isLoggedIn" [title]="'Login to view trainer profile'">View Profile</button>
+              <button class="btn-view btn-disabled" *ngIf="!isLoggedIn" [title]="'Login to view trainer profile'">View
+                Profile</button>
             </div>
           </div>
         </div>
@@ -192,7 +188,8 @@
     </section>
 
     <!-- Empty State -->
-    <div class="empty-state" *ngIf="packages.length === 0 && programs.length === 0 && trainers.length === 0 && !isLoading">
+    <div class="empty-state"
+      *ngIf="packages.length === 0 && programs.length === 0 && trainers.length === 0 && !isLoading">
       <div class="empty-icon">
         <i class="bi bi-inbox"></i>
       </div>
@@ -202,15 +199,14 @@
   </div>
 </div>
 <!-- Program Detail Modal -->
-<app-program-detail-modal 
-  [isOpen]="showProgramModal"
-  [programId]="selectedProgramId"
+<app-program-detail-modal [isOpen]="showProgramModal" [programId]="selectedProgramId"
   (closeModal)="closeProgramModal()">
 </app-program-detail-modal>
 
 <!-- Trainer Profile Modal -->
-<app-trainer-profile-modal 
-  [isOpen]="showTrainerModal"
-  [trainerId]="selectedTrainerId"
+<app-trainer-profile-modal [isOpen]="showTrainerModal" [trainerId]="selectedTrainerId"
   (closeModal)="closeTrainerModal()">
 </app-trainer-profile-modal>
+
+<!-- Chatbot Widget -->
+<app-chatbot-widget></app-chatbot-widget>

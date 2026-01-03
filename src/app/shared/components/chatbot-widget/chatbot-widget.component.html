@@ -1,0 +1,84 @@
+<!-- Chatbot Widget Container -->
+<div class="chatbot-widget" [class.open]="isOpen">
+    <!-- Chat Window -->
+    <div class="chat-window" [class.active]="isOpen">
+        <!-- Chat Header -->
+        <div class="chat-header">
+            <div class="header-content">
+                <div class="header-avatar">
+                    <i class="bi bi-robot"></i>
+                </div>
+                <div class="header-info">
+                    <h3 class="chat-title">Gymunity Assistant</h3>
+                    <span class="status-indicator">
+                        <span class="status-dot"></span>
+                        Online
+                    </span>
+                </div>
+            </div>
+            <div class="header-actions">
+                <button class="action-btn" (click)="clearChat()" title="Clear chat">
+                    <i class="bi bi-trash3"></i>
+                </button>
+                <button class="action-btn close-btn" (click)="toggleChat()" title="Close">
+                    <i class="bi bi-x-lg"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Chat Messages -->
+        <div class="chat-messages">
+            <div *ngFor="let message of messages" class="message" [class.user-message]="message.type === 'user'"
+                [class.bot-message]="message.type === 'bot'">
+
+                <div class="message-avatar" *ngIf="message.type === 'bot'">
+                    <i class="bi bi-robot"></i>
+                </div>
+
+                <div class="message-content">
+                    <div class="message-bubble" [class.loading]="message.isLoading">
+                        <span *ngIf="!message.isLoading" class="message-text">{{ message.text }}</span>
+                        <div *ngIf="message.isLoading" class="typing-indicator">
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                        </div>
+                    </div>
+                    <span class="message-time">{{ message.timestamp | date:'short' }}</span>
+                </div>
+            </div>
+
+            <!-- Suggested Questions (shown when empty) -->
+            <div *ngIf="messages.length === 1" class="suggested-questions">
+                <p class="suggestions-label">الأسئلة المقترحة:</p>
+                <div class="suggestions-list">
+                    <button *ngFor="let question of suggestedQuestions" class="suggestion-btn"
+                        (click)="selectSuggestedQuestion(question)">
+                        <i class="bi bi-chat-left-dots"></i>
+                        {{ question }}
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Chat Input -->
+        <div class="chat-input-area">
+            <div class="input-wrapper">
+                <input type="text" class="chat-input" placeholder="اسأل عن الباكدجات والأسعار..."
+                    [(ngModel)]="userInput" (keyup.enter)="sendMessage()" [disabled]="isLoading" />
+                <button class="send-btn" (click)="sendMessage()" [disabled]="!userInput.trim() || isLoading"
+                    title="Send message">
+                    <i class="bi bi-send-fill"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Floating Button -->
+    <button class="chatbot-fab" (click)="toggleChat()" [class.hidden]="isOpen" title="Open chat">
+        <div class="fab-icon">
+            <i class="bi bi-chat-dots"></i>
+        </div>
+        <div class="fab-pulse"></div>
+    </button>
+</div>

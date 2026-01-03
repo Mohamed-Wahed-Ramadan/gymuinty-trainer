@@ -7,12 +7,13 @@ import { FormsModule } from '@angular/forms';
 import { trigger, transition, style, animate } from '@angular/animations';
 import { ProgramDetailModalComponent } from '../../shared/components/program-detail-modal/program-detail-modal.component';
 import { TrainerProfileModalComponent } from '../../shared/components/trainer-profile-modal/trainer-profile-modal.component';
+import { ChatbotWidgetComponent } from '../../shared/components/chatbot-widget/chatbot-widget.component';
 import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, FormsModule, ProgramDetailModalComponent, TrainerProfileModalComponent],
+  imports: [CommonModule, FormsModule, ProgramDetailModalComponent, TrainerProfileModalComponent, ChatbotWidgetComponent],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css',
   animations: [
