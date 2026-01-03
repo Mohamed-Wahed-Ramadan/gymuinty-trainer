@@ -8,6 +8,7 @@ import { ExerciseLibraryComponent } from './features/exercise-library/exercise-l
 import { InboxComponent } from './features/inbox/inbox.component';
 import { ProfileComponent } from './features/profile/profile.component';
 import { HomeComponent } from './features/home/home.component';
+import { AccountSettingsComponent } from './features/dashboard/account-settings/account-settings.component';
 
 export const routes: Routes = [
   {
@@ -41,6 +42,12 @@ export const routes: Routes = [
     canActivate: [authGuard, roleGuard],
     data: { role: 'Trainer' },
     component: DashboardComponent
+  },
+  {
+    path: 'dashboard/settings',
+    canActivate: [authGuard, roleGuard],
+    data: { role: 'Trainer' },
+    component: AccountSettingsComponent
   },
   {
     path: 'exercise-library',

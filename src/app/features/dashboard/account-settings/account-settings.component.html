@@ -1,0 +1,248 @@
+<div class="account-settings-container">
+    <!-- Settings Header -->
+    <div class="settings-header">
+        <h2>⚙️ Account Settings</h2>
+        <p class="subtitle">Manage your account and security settings</p>
+    </div>
+
+    <!-- Tabs Navigation -->
+    <div class="settings-tabs">
+        <button class="tab-btn" [class.active]="activeTab === 'update-profile'" (click)="switchTab('update-profile')">
+            <i class="bi bi-person"></i> Update Profile
+        </button>
+        <button class="tab-btn" [class.active]="activeTab === 'change-password'" (click)="switchTab('change-password')">
+            <i class="bi bi-lock"></i> Change Password
+        </button>
+        <button class="tab-btn" [class.active]="activeTab === 'reset-password'" (click)="switchTab('reset-password')">
+            <i class="bi bi-arrow-repeat"></i> Reset Password
+        </button>
+        <button class="tab-btn danger" [class.active]="activeTab === 'delete-profile'"
+            (click)="switchTab('delete-profile')">
+            <i class="bi bi-trash"></i> Delete Profile
+        </button>
+    </div>
+
+    <!-- Success/Error Messages -->
+    <div *ngIf="successMessage" class="alert alert-success">
+        {{ successMessage }}
+    </div>
+    <div *ngIf="errorMessage" class="alert alert-danger">
+        {{ errorMessage }}
+    </div>
+
+    <!-- Tab Content -->
+    <div class="tab-content">
+
+        <!-- Update Profile Tab -->
+        <div *ngIf="activeTab === 'update-profile'" class="tab-pane active">
+            <form [formGroup]="updateProfileForm" (ngSubmit)="submitUpdateProfile()" class="settings-form">
+                <div class="form-group">
+                    <label for="fullName">Full Name *</label>
+                    <input type="text" id="fullName" class="form-control" formControlName="fullName"
+                        placeholder="Enter your full name"
+                        [class.is-invalid]="updateProfileForm.get('fullName')?.invalid && updateProfileForm.get('fullName')?.touched">
+                    <small class="error-text" *ngIf="updateProfileForm.get('fullName')?.errors?.['required']">
+                        Full name is required
+                    </small>
+                    <small class="error-text" *ngIf="updateProfileForm.get('fullName')?.errors?.['minlength']">
+                        Full name must be at least 3 characters
+                    </small>
+                </div>
+
+                <div class="form-group">
+                    <label for="userName">Username *</label>
+                    <input type="text" id="userName" class="form-control" formControlName="userName"
+                        placeholder="Enter your username"
+                        [class.is-invalid]="updateProfileForm.get('userName')?.invalid && updateProfileForm.get('userName')?.touched">
+                    <small class="error-text" *ngIf="updateProfileForm.get('userName')?.errors?.['required']">
+                        Username is required
+                    </small>
+                    <small class="error-text" *ngIf="updateProfileForm.get('userName')?.errors?.['minlength']">
+                        Username must be at least 3 characters
+                    </small>
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email *</label>
+                    <input type="email" id="email" class="form-control" formControlName="email"
+                        placeholder="Enter your email"
+                        [class.is-invalid]="updateProfileForm.get('email')?.invalid && updateProfileForm.get('email')?.touched">
+                    <small class="error-text" *ngIf="updateProfileForm.get('email')?.errors?.['required']">
+                        Email is required
+                    </small>
+                    <small class="error-text" *ngIf="updateProfileForm.get('email')?.errors?.['email']">
+                        Please enter a valid email address
+                    </small>
+                </div>
+
+                <div class="form-group">
+                    <label for="profilePhoto">Profile Photo (Optional)</label>
+                    <input type="file" id="profilePhoto" class="form-control" (change)="onFileSelected($event)"
+                        accept="image/*">
+                    <small class="text-muted">Accepted formats: JPG, PNG, GIF (Max 5MB)</small>
+                </div>
+
+                <button type="submit" class="btn btn-primary" [disabled]="isLoading || updateProfileForm.invalid">
+                    <span *ngIf="!isLoading">💾 Save Changes</span>
+                    <span *ngIf="isLoading">⏳ Saving...</span>
+                </button>
+            </form>
+        </div>
+
+        <!-- Change Password Tab -->
+        <div *ngIf="activeTab === 'change-password'" class="tab-pane active">
+            <form [formGroup]="changePasswordForm" (ngSubmit)="submitChangePassword()" class="settings-form">
+                <div class="form-group">
+                    <label for="currentPassword">Current Password *</label>
+                    <input type="password" id="currentPassword" class="form-control" formControlName="currentPassword"
+                        placeholder="Enter your current password"
+                        [class.is-invalid]="changePasswordForm.get('currentPassword')?.invalid && changePasswordForm.get('currentPassword')?.touched">
+                    <small class="error-text" *ngIf="changePasswordForm.get('currentPassword')?.errors?.['required']">
+                        Current password is required
+                    </small>
+                </div>
+
+                <div class="form-group">
+                    <label for="newPassword">New Password *</label>
+                    <input type="password" id="newPassword" class="form-control" formControlName="newPassword"
+                        placeholder="Enter new password (min 8 chars, uppercase, lowercase, digit, special char)"
+                        [class.is-invalid]="changePasswordForm.get('newPassword')?.invalid && changePasswordForm.get('newPassword')?.touched">
+                    <small class="error-text" *ngIf="changePasswordForm.get('newPassword')?.errors?.['required']">
+                        New password is required
+                    </small>
+                    <small class="error-text" *ngIf="changePasswordForm.get('newPassword')?.errors?.['minlength']">
+                        Password must be at least 8 characters
+                    </small>
+                    <small class="error-text" *ngIf="changePasswordForm.get('newPassword')?.errors?.['weakPassword']">
+                        Password must contain uppercase, lowercase, digit, and special character
+                    </small>
+                </div>
+
+                <div class="form-group">
+                    <label for="confirmNewPassword">Confirm New Password *</label>
+                    <input type="password" id="confirmNewPassword" class="form-control"
+                        formControlName="confirmNewPassword" placeholder="Confirm your new password"
+                        [class.is-invalid]="changePasswordForm.get('confirmNewPassword')?.invalid && changePasswordForm.get('confirmNewPassword')?.touched">
+                    <small class="error-text"
+                        *ngIf="changePasswordForm.get('confirmNewPassword')?.errors?.['required']">
+                        Password confirmation is required
+                    </small>
+                    <small class="error-text" *ngIf="changePasswordForm.errors?.['passwordMismatch']">
+                        Passwords do not match
+                    </small>
+                </div>
+
+                <button type="submit" class="btn btn-primary" [disabled]="isLoading || changePasswordForm.invalid">
+                    <span *ngIf="!isLoading">🔒 Change Password</span>
+                    <span *ngIf="isLoading">⏳ Updating...</span>
+                </button>
+            </form>
+        </div>
+
+        <!-- Reset Password Tab -->
+        <div *ngIf="activeTab === 'reset-password'" class="tab-pane active">
+            <form [formGroup]="resetPasswordForm" (ngSubmit)="submitResetPassword()" class="settings-form">
+                <div class="form-info">
+                    <p>Use this to reset your password with a reset token from your email.</p>
+                </div>
+
+                <div class="form-group">
+                    <label for="resetEmail">Email *</label>
+                    <input type="email" id="resetEmail" class="form-control" formControlName="email"
+                        placeholder="Enter your email"
+                        [class.is-invalid]="resetPasswordForm.get('email')?.invalid && resetPasswordForm.get('email')?.touched">
+                    <small class="error-text" *ngIf="resetPasswordForm.get('email')?.errors?.['required']">
+                        Email is required
+                    </small>
+                    <small class="error-text" *ngIf="resetPasswordForm.get('email')?.errors?.['email']">
+                        Please enter a valid email address
+                    </small>
+                </div>
+
+                <div class="form-group">
+                    <label for="resetToken">Reset Token *</label>
+                    <input type="text" id="resetToken" class="form-control" formControlName="token"
+                        placeholder="Paste the token from your reset email"
+                        [class.is-invalid]="resetPasswordForm.get('token')?.invalid && resetPasswordForm.get('token')?.touched">
+                    <small class="error-text" *ngIf="resetPasswordForm.get('token')?.errors?.['required']">
+                        Reset token is required
+                    </small>
+                </div>
+
+                <div class="form-group">
+                    <label for="resetNewPassword">New Password *</label>
+                    <input type="password" id="resetNewPassword" class="form-control" formControlName="newPassword"
+                        placeholder="Enter new password (min 8 chars, uppercase, lowercase, digit, special char)"
+                        [class.is-invalid]="resetPasswordForm.get('newPassword')?.invalid && resetPasswordForm.get('newPassword')?.touched">
+                    <small class="error-text" *ngIf="resetPasswordForm.get('newPassword')?.errors?.['required']">
+                        New password is required
+                    </small>
+                    <small class="error-text" *ngIf="resetPasswordForm.get('newPassword')?.errors?.['minlength']">
+                        Password must be at least 8 characters
+                    </small>
+                    <small class="error-text" *ngIf="resetPasswordForm.get('newPassword')?.errors?.['weakPassword']">
+                        Password must contain uppercase, lowercase, digit, and special character
+                    </small>
+                </div>
+
+                <div class="form-group">
+                    <label for="resetConfirmPassword">Confirm New Password *</label>
+                    <input type="password" id="resetConfirmPassword" class="form-control"
+                        formControlName="confirmNewPassword" placeholder="Confirm your new password"
+                        [class.is-invalid]="resetPasswordForm.get('confirmNewPassword')?.invalid && resetPasswordForm.get('confirmNewPassword')?.touched">
+                    <small class="error-text" *ngIf="resetPasswordForm.get('confirmNewPassword')?.errors?.['required']">
+                        Password confirmation is required
+                    </small>
+                    <small class="error-text" *ngIf="resetPasswordForm.errors?.['passwordMismatch']">
+                        Passwords do not match
+                    </small>
+                </div>
+
+                <button type="submit" class="btn btn-primary" [disabled]="isLoading || resetPasswordForm.invalid">
+                    <span *ngIf="!isLoading">🔄 Reset Password</span>
+                    <span *ngIf="isLoading">⏳ Resetting...</span>
+                </button>
+            </form>
+        </div>
+
+        <!-- Delete Profile Tab -->
+        <div *ngIf="activeTab === 'delete-profile'" class="tab-pane active">
+            <div class="delete-profile-section">
+                <div class="delete-warning">
+                    <h3>⚠️ Delete Your Account</h3>
+                    <p class="warning-text">
+                        This action is permanent and cannot be undone. All your data will be deleted from our system.
+                    </p>
+                </div>
+
+                <div *ngIf="!showDeleteConfirmation" class="delete-action">
+                    <p>Are you sure you want to delete your account?</p>
+                    <button type="button" class="btn btn-danger" (click)="showDeleteConfirmation = true">
+                        🗑️ Delete My Account
+                    </button>
+                </div>
+
+                <div *ngIf="showDeleteConfirmation" class="delete-confirmation">
+                    <div class="confirmation-box">
+                        <h4>🔴 Confirm Account Deletion</h4>
+                        <p class="confirmation-text">
+                            This will permanently delete your account and all associated data. This cannot be undone.
+                        </p>
+                        <div class="confirmation-actions">
+                            <button type="button" class="btn btn-danger" [disabled]="isLoading"
+                                (click)="submitDeleteProfile()">
+                                <span *ngIf="!isLoading">Yes, Delete My Account</span>
+                                <span *ngIf="isLoading">⏳ Deleting...</span>
+                            </button>
+                            <button type="button" class="btn btn-secondary" [disabled]="isLoading"
+                                (click)="cancelDelete()">
+                                Cancel
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>

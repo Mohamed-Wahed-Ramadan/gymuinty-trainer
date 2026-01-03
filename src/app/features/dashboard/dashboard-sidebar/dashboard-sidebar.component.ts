@@ -1,5 +1,6 @@
 import { Component, Input, Output, EventEmitter, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 import { Program, ProgramService } from '../../../core/services';
 
 @Component({
@@ -15,8 +16,9 @@ export class DashboardSidebarComponent implements OnInit {
 
   expandedProgram: number | null = null;
   expandedWeek: number | null = null;
+  settingsMenuOpen = false;
 
-  constructor(private programService: ProgramService, private cdr: ChangeDetectorRef) {}
+  constructor(private programService: ProgramService, private cdr: ChangeDetectorRef, private router: Router) {}
 
   ngOnInit(): void {}
 
@@ -86,5 +88,16 @@ export class DashboardSidebarComponent implements OnInit {
 
   switchTab(tab: 'programs' | 'packages'): void {
     this.tabChange.emit(tab);
+  }
+
+  toggleSettingsMenu(): void {
+    this.settingsMenuOpen = !this.settingsMenuOpen;
+  }
+
+  navigateToSettings(tab: 'update-profile' | 'change-password' | 'reset-password' | 'delete-profile'): void {
+    this.settingsMenuOpen = false;
+    this.router.navigate(['/dashboard/settings'], { 
+      queryParams: { tab } 
+    });
   }
 }

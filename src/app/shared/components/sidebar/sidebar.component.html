@@ -1,8 +1,10 @@
-<aside [class.open]="isOpen || overlayActive" [class.collapsed]="collapsed && !overlayActive" [class.overlay]="overlayActive" class="sidebar">
+<aside [class.open]="isOpen || overlayActive" [class.collapsed]="collapsed && !overlayActive"
+  [class.overlay]="overlayActive" class="sidebar">
   <div class="sidebar-header">
     <h2 class="sidebar-title">
       <i class="bi bi-heart-pulse sidebar-logo" [class.hidden]="!(collapsed && !overlayActive)"></i>
-      <span class="sidebar-title-text" [class.hidden]="collapsed && !overlayActive" (click)="goTo('/home')" role="button" tabindex="0">Gymunity</span>
+      <span class="sidebar-title-text" [class.hidden]="collapsed && !overlayActive" (click)="goTo('/home')"
+        role="button" tabindex="0">Gymunity</span>
     </h2>
     <div class="header-controls">
       <button class="collapse-toggle" title="Toggle sidebar" (click)="toggleCollapse($event)">
@@ -15,8 +17,8 @@
     <ul class="nav-list">
       <li class="nav-item">
         <a (click)="goTo('/dashboard')" class="nav-link" role="button" [title]="'Dashboard'">
-              <i class="bi bi-speedometer2"></i>
-              <span class="nav-label">Dashboard</span>
+          <i class="bi bi-speedometer2"></i>
+          <span class="nav-label">Dashboard</span>
         </a>
       </li>
       <li class="nav-item">
@@ -48,6 +50,32 @@
           <i class="bi bi-person"></i>
           <span class="nav-label">Profile</span>
         </a>
+      </li>
+      <li class="nav-item settings-item">
+        <button class="nav-link settings-btn" [class.active]="settingsMenuOpen" (click)="toggleSettingsMenu()"
+          [title]="'Account Settings'">
+          <i class="bi bi-gear"></i>
+          <span class="nav-label">Settings</span>
+        </button>
+        <!-- Settings Menu Dropdown -->
+        <div *ngIf="settingsMenuOpen" class="settings-dropdown">
+          <button class="settings-option" (click)="navigateToSettings('update-profile')">
+            <i class="bi bi-person"></i>
+            <span>Update Profile</span>
+          </button>
+          <button class="settings-option" (click)="navigateToSettings('change-password')">
+            <i class="bi bi-lock"></i>
+            <span>Change Password</span>
+          </button>
+          <button class="settings-option" (click)="navigateToSettings('reset-password')">
+            <i class="bi bi-arrow-repeat"></i>
+            <span>Reset Password</span>
+          </button>
+          <button class="settings-option danger" (click)="navigateToSettings('delete-profile')">
+            <i class="bi bi-trash"></i>
+            <span>Delete Account</span>
+          </button>
+        </div>
       </li>
     </ul>
   </nav>

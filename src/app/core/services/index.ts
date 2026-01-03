@@ -1,4 +1,5 @@
 export * from './auth.service';
+export * from './account.service';
 export * from './translation.service';
 export * from './notification.service';
 export * from './signalr.service';

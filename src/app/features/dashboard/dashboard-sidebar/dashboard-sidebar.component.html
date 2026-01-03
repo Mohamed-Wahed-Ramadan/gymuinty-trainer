@@ -6,16 +6,53 @@
 
   <!-- Sidebar Tabs -->
   <div class="sidebar-tabs">
-    <button 
-      class="sidebar-tab-btn"
-      (click)="switchTab('programs')">
+    <button class="sidebar-tab-btn" (click)="switchTab('programs')">
       <i class="bi bi-book"></i> Programs
     </button>
-    <button 
-      class="sidebar-tab-btn"
-      (click)="switchTab('packages')">
+    <button class="sidebar-tab-btn" (click)="switchTab('packages')">
       <i class="bi bi-box"></i> Packages
     </button>
+    <button class="sidebar-tab-btn settings-btn" [class.active]="settingsMenuOpen" (click)="toggleSettingsMenu()">
+      <i class="bi bi-gear"></i>
+    </button>
+  </div>
+
+  <!-- Settings Menu -->
+  <div *ngIf="settingsMenuOpen" class="settings-menu">
+    <div class="settings-menu-header">
+      <h4>⚙️ Settings</h4>
+      <button class="close-btn" (click)="toggleSettingsMenu()">✕</button>
+    </div>
+    <div class="settings-menu-items">
+      <button class="settings-menu-item" (click)="navigateToSettings('update-profile')">
+        <i class="bi bi-person"></i>
+        <div class="menu-item-text">
+          <span class="menu-item-title">Update Profile</span>
+          <span class="menu-item-desc">Edit your information</span>
+        </div>
+      </button>
+      <button class="settings-menu-item" (click)="navigateToSettings('change-password')">
+        <i class="bi bi-lock"></i>
+        <div class="menu-item-text">
+          <span class="menu-item-title">Change Password</span>
+          <span class="menu-item-desc">Update your password</span>
+        </div>
+      </button>
+      <button class="settings-menu-item" (click)="navigateToSettings('reset-password')">
+        <i class="bi bi-arrow-repeat"></i>
+        <div class="menu-item-text">
+          <span class="menu-item-title">Reset Password</span>
+          <span class="menu-item-desc">Reset with token</span>
+        </div>
+      </button>
+      <button class="settings-menu-item danger" (click)="navigateToSettings('delete-profile')">
+        <i class="bi bi-trash"></i>
+        <div class="menu-item-text">
+          <span class="menu-item-title">Delete Account</span>
+          <span class="menu-item-desc">Permanently delete</span>
+        </div>
+      </button>
+    </div>
   </div>
 
   <!-- Programs Tree -->
@@ -27,11 +64,8 @@
 
       <!-- Program Item -->
       <div *ngFor="let program of programs" class="program-item">
-        <button 
-          class="program-header"
-          (click)="toggleProgram(program.id)">
-          <i 
-            [class]="expandedProgram === program.id ? 'bi bi-chevron-down' : 'bi bi-chevron-right'">
+        <button class="program-header" (click)="toggleProgram(program.id)">
+          <i [class]="expandedProgram === program.id ? 'bi bi-chevron-down' : 'bi bi-chevron-right'">
           </i>
           <span class="program-title">{{ program.title }}</span>
           <span class="duration-badge">{{ program.durationWeeks }}w</span>
@@ -44,11 +78,8 @@
           </div>
 
           <div *ngFor="let week of program.weeks" class="week-item">
-            <button 
-              class="week-header"
-              (click)="toggleWeek(week.id)">
-              <i 
-                [class]="expandedWeek === week.id ? 'bi bi-chevron-down' : 'bi bi-chevron-right'">
+            <button class="week-header" (click)="toggleWeek(week.id)">
+              <i [class]="expandedWeek === week.id ? 'bi bi-chevron-down' : 'bi bi-chevron-right'">
               </i>
               <span>Week {{ week.weekNumber }}</span>
             </button>

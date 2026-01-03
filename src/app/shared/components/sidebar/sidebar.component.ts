@@ -20,6 +20,8 @@ export class SidebarComponent {
   overlayActive = false;
   // check if window width is mobile size
   isMobileSize = typeof window !== 'undefined' && window.innerWidth <= 768;
+  // settings menu state
+  settingsMenuOpen = false;
 
   constructor(private auth: AuthService, private router: Router, private cdr: ChangeDetectorRef) {
     // Update isMobileSize on window resize
@@ -63,5 +65,16 @@ export class SidebarComponent {
     // allow passing absolute paths or simple segments
     if (target.startsWith('/')) this.router.navigateByUrl(target);
     else this.router.navigate([target]);
+  }
+
+  toggleSettingsMenu(): void {
+    this.settingsMenuOpen = !this.settingsMenuOpen;
+  }
+
+  navigateToSettings(tab: 'update-profile' | 'change-password' | 'reset-password' | 'delete-profile'): void {
+    this.settingsMenuOpen = false;
+    this.router.navigate(['/dashboard/settings'], { 
+      queryParams: { tab } 
+    });
   }
 }
