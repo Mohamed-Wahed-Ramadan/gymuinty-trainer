@@ -5,11 +5,12 @@ import { ActivatedRoute } from '@angular/router';
 import { AccountService } from '../../../core/services/account.service';
 import { AuthService } from '../../../core/services/auth.service';
 import { User } from '../../../core/models';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-account-settings',
   standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, TranslateModule],
   templateUrl: './account-settings.component.html',
   styleUrls: ['./account-settings.component.css']
 })

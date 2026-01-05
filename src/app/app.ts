@@ -20,6 +20,7 @@ export class App implements OnInit {
   protected isSidebarCollapsed = signal(true);
   protected isLoggedIn = signal(false);
   protected currentRoute = signal('');
+  protected currentDirection = signal('ltr');
 
   constructor(
     private authService: AuthService,
@@ -29,8 +30,9 @@ export class App implements OnInit {
 
   ngOnInit(): void {
     // Initialize translation service
-    this.translationService.currentLanguage$.subscribe(() => {
+    this.translationService.currentLanguage$.subscribe((lang) => {
       // Language updated
+      this.currentDirection.set(this.translationService.getDirection());
     });
 
     // Check authentication
@@ -42,6 +44,10 @@ export class App implements OnInit {
     this.router.events.subscribe(() => {
       this.currentRoute.set(this.router.url);
     });
+  }
+
+  getDirection(): string {
+    return this.translationService.getDirection();
   }
 
   onSidebarCollapsed(collapsed: boolean): void {

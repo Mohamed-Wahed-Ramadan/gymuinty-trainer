@@ -63,6 +63,12 @@
     "exercises": "Exercises",
     "messages": "Messages",
     "profile": "Profile",
+    "settings": "Settings",
+    "update-profile": "Update Profile",
+    "change-password": "Change Password",
+    "reset-password": "Reset Password",
+    "delete-profile": "Delete Profile",
+    "toggleSidebar": "Toggle Sidebar",
     "logout": "Logout"
   },
   "notifications": {

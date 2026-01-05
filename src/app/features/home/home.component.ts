@@ -9,11 +9,12 @@ import { ProgramDetailModalComponent } from '../../shared/components/program-det
 import { TrainerProfileModalComponent } from '../../shared/components/trainer-profile-modal/trainer-profile-modal.component';
 import { ChatbotWidgetComponent } from '../../shared/components/chatbot-widget/chatbot-widget.component';
 import { forkJoin } from 'rxjs';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, FormsModule, ProgramDetailModalComponent, TrainerProfileModalComponent, ChatbotWidgetComponent],
+  imports: [CommonModule, FormsModule, ProgramDetailModalComponent, TrainerProfileModalComponent, ChatbotWidgetComponent, TranslateModule],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css',
   animations: [

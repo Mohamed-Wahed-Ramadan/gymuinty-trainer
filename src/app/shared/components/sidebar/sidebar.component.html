@@ -1,13 +1,13 @@
 <aside [class.open]="isOpen || overlayActive" [class.collapsed]="collapsed && !overlayActive"
-  [class.overlay]="overlayActive" class="sidebar">
+  [class.overlay]="overlayActive" [dir]="getDirection()" class="sidebar">
   <div class="sidebar-header">
     <h2 class="sidebar-title">
       <i class="bi bi-heart-pulse sidebar-logo" [class.hidden]="!(collapsed && !overlayActive)"></i>
       <span class="sidebar-title-text" [class.hidden]="collapsed && !overlayActive" (click)="goTo('/home')"
-        role="button" tabindex="0">Gymunity</span>
+        role="button" tabindex="0">{{ 'app.brand' | translate }}</span>
     </h2>
     <div class="header-controls">
-      <button class="collapse-toggle" title="Toggle sidebar" (click)="toggleCollapse($event)">
+      <button class="collapse-toggle" [title]="'sidebar.toggleSidebar' | translate" (click)="toggleCollapse($event)">
         <i class="bi" [ngClass]="collapsed ? 'bi-chevron-right' : 'bi-chevron-left'"></i>
       </button>
     </div>
@@ -16,64 +16,64 @@
   <nav class="sidebar-nav">
     <ul class="nav-list">
       <li class="nav-item">
-        <a (click)="goTo('/dashboard')" class="nav-link" role="button" [title]="'Dashboard'">
+        <a (click)="goTo('/dashboard')" class="nav-link" role="button" [title]="'sidebar.dashboard' | translate">
           <i class="bi bi-speedometer2"></i>
-          <span class="nav-label">Dashboard</span>
+          <span class="nav-label">{{ 'sidebar.dashboard' | translate }}</span>
         </a>
       </li>
       <li class="nav-item">
-        <a (click)="goTo('programs')" class="nav-link" role="button" [title]="'Programs'">
+        <a (click)="goTo('programs')" class="nav-link" role="button" [title]="'sidebar.programs' | translate">
           <i class="bi bi-collection"></i>
-          <span class="nav-label">Programs</span>
+          <span class="nav-label">{{ 'sidebar.programs' | translate }}</span>
         </a>
       </li>
       <li class="nav-item">
-        <a (click)="goTo('packages')" class="nav-link" role="button" [title]="'Packages'">
+        <a (click)="goTo('packages')" class="nav-link" role="button" [title]="'sidebar.packages' | translate">
           <i class="bi bi-box"></i>
-          <span class="nav-label">Packages</span>
+          <span class="nav-label">{{ 'sidebar.packages' | translate }}</span>
         </a>
       </li>
       <li class="nav-item">
-        <a href="/exercise-library" class="nav-link" [title]="'Exercises'">
+        <a href="/exercise-library" class="nav-link" [title]="'sidebar.exercises' | translate">
           <i class="bi bi-heart-pulse"></i>
-          <span class="nav-label">Exercises</span>
+          <span class="nav-label">{{ 'sidebar.exercises' | translate }}</span>
         </a>
       </li>
       <li class="nav-item">
-        <a href="/inbox" class="nav-link" [title]="'Messages'">
+        <a href="/inbox" class="nav-link" [title]="'sidebar.messages' | translate">
           <i class="bi bi-chat-dots"></i>
-          <span class="nav-label">Messages</span>
+          <span class="nav-label">{{ 'sidebar.messages' | translate }}</span>
         </a>
       </li>
       <li class="nav-item">
-        <a href="/profile" class="nav-link" [title]="'Profile'">
+        <a href="/profile" class="nav-link" [title]="'sidebar.profile' | translate">
           <i class="bi bi-person"></i>
-          <span class="nav-label">Profile</span>
+          <span class="nav-label">{{ 'sidebar.profile' | translate }}</span>
         </a>
       </li>
       <li class="nav-item settings-item">
         <button class="nav-link settings-btn" [class.active]="settingsMenuOpen" (click)="toggleSettingsMenu()"
-          [title]="'Account Settings'">
+          [title]="'sidebar.settings' | translate">
           <i class="bi bi-gear"></i>
-          <span class="nav-label">Settings</span>
+          <span class="nav-label">{{ 'sidebar.settings' | translate }}</span>
         </button>
         <!-- Settings Menu Dropdown -->
-        <div *ngIf="settingsMenuOpen" class="settings-dropdown">
+        <div *ngIf="settingsMenuOpen" class="settings-dropdown" [dir]="getDirection()">
           <button class="settings-option" (click)="navigateToSettings('update-profile')">
             <i class="bi bi-person"></i>
-            <span>Update Profile</span>
+            <span>{{ 'sidebar.update-profile' | translate }}</span>
           </button>
           <button class="settings-option" (click)="navigateToSettings('change-password')">
             <i class="bi bi-lock"></i>
-            <span>Change Password</span>
+            <span>{{ 'sidebar.change-password' | translate }}</span>
           </button>
           <button class="settings-option" (click)="navigateToSettings('reset-password')">
             <i class="bi bi-arrow-repeat"></i>
-            <span>Reset Password</span>
+            <span>{{ 'sidebar.reset-password' | translate }}</span>
           </button>
           <button class="settings-option danger" (click)="navigateToSettings('delete-profile')">
             <i class="bi bi-trash"></i>
-            <span>Delete Account</span>
+            <span>{{ 'sidebar.delete-profile' | translate }}</span>
           </button>
         </div>
       </li>
@@ -83,7 +83,7 @@
   <div class="sidebar-footer">
     <button class="logout-btn" (click)="logout()">
       <i class="bi bi-box-arrow-right"></i>
-      <span class="sidebar-logout-label">Logout</span>
+      <span class="sidebar-logout-label">{{ 'sidebar.logout' | translate }}</span>
     </button>
   </div>
 </aside>

@@ -63,6 +63,12 @@
     "exercises": "التمارين",
     "messages": "الرسائل",
     "profile": "الملف الشخصي",
+    "settings": "الإعدادات",
+    "update-profile": "تحديث الملف الشخصي",
+    "change-password": "تغيير كلمة المرور",
+    "reset-password": "إعادة تعيين كلمة المرور",
+    "delete-profile": "حذف الملف الشخصي",
+    "toggleSidebar": "تبديل الشريط الجانبي",
     "logout": "تسجيل الخروج"
   },
   "notifications": {

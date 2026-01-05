@@ -2,11 +2,12 @@ import { Component, Input, Output, EventEmitter, OnInit, OnChanges, ChangeDetect
 import { CommonModule } from '@angular/common';
 import { ProgramService } from '../../../core/services/program.service';
 import { trigger, transition, style, animate } from '@angular/animations';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-program-detail-modal',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, TranslateModule],
   templateUrl: './program-detail-modal.component.html',
   styleUrl: './program-detail-modal.component.css',
   animations: [
@@ -45,9 +46,9 @@ export class ProgramDetailModalComponent implements OnInit, OnChanges {
     4: 'Challenge'
   };
 
-  constructor(private programService: ProgramService, private cdr: ChangeDetectorRef) {}
+  constructor(private programService: ProgramService, private cdr: ChangeDetectorRef) { }
 
-  ngOnInit(): void {}
+  ngOnInit(): void { }
 
   ngOnChanges(): void {
     if (this.isOpen && this.programId) {
@@ -57,7 +58,7 @@ export class ProgramDetailModalComponent implements OnInit, OnChanges {
 
   loadProgramDetails(): void {
     if (!this.programId) return;
-    
+
     this.isLoading = true;
     this.programService.getProgramDetails(this.programId).subscribe({
       next: (data) => {

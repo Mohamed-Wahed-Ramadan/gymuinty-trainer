@@ -6,11 +6,13 @@ import { TrainerService } from '../../../core/services/trainer.service';
 import { AuthService } from '../../../core/services/auth.service';
 import { NotificationService } from '../../../core/services/notification.service';
 import { ProgramDetailModalComponent } from '../../../shared/components/program-detail-modal/program-detail-modal.component';
+import { TranslateModule } from '@ngx-translate/core';
+
 
 @Component({
   selector: 'app-programs',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, ProgramDetailModalComponent],
+  imports: [CommonModule, ReactiveFormsModule, ProgramDetailModalComponent, TranslateModule],
   templateUrl: './programs.component.html',
   styleUrls: ['./programs.component.css']
 })
@@ -34,7 +36,7 @@ export class ProgramsComponent implements OnInit {
     private authService: AuthService,
     private trainerService: TrainerService,
     private notificationService: NotificationService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
   ) {
     this.userId = this.authService.getUserIdFromToken();
   }
@@ -44,6 +46,7 @@ export class ProgramsComponent implements OnInit {
 
   ngOnInit(): void {
     this.initializeForm();
+    
   }
 
   initializeForm(): void {

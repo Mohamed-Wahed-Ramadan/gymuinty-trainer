@@ -1,6 +1,7 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { TranslateModule } from '@ngx-translate/core';
 import { Exercise } from '../../core/models/exercise.models';
 import { environment } from '../../../environments/environment';
 import { ExerciseLibraryService } from '../../core/services/exercise-library.service';
@@ -10,7 +11,7 @@ import { NotificationService } from '../../core/services/notification.service';
 @Component({
   selector: 'app-exercise-library',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, TranslateModule],
   templateUrl: './exercise-library.component.html',
   styleUrl: './exercise-library.component.css'
 })

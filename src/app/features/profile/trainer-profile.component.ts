@@ -3,34 +3,35 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { TrainerService, TrainerProfileResponse } from '../../core/services/trainer.service';
 import { AuthService } from '../../core/services/auth.service';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-trainer-profile',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, TranslateModule],
   template: `
     <div class="trainer-profile">
       <ng-container *ngIf="!loading">
         <!-- Show existing profile -->
         <ng-container *ngIf="profile && !isEditing; else createForm">
           <div class="profile-display">
-            <h2>Your Trainer Profile</h2>
+            <h2>{{ 'profile.yourTrainerProfile' | translate }}</h2>
             <div class="profile-info">
-              <p><strong>Handle:</strong> @{{ profile.handle }}</p>
-              <p><strong>Bio:</strong> {{ profile.bio }}</p>
-              <p><strong>Years of Experience:</strong> {{ profile.yearsExperience }}</p>
-              <p *ngIf="profile.ratingAverage"><strong>Rating:</strong> {{ profile.ratingAverage }}/5.0</p>
-              <p *ngIf="profile.totalClients"><strong>Total Clients:</strong> {{ profile.totalClients }}</p>
-              <img *ngIf="profile.coverImageUrl" [src]="profile.coverImageUrl" alt="Cover" class="cover-img" />
+              <p><strong>{{ 'profile.handle' | translate }}:</strong> @{{ profile.handle }}</p>
+              <p><strong>{{ 'profile.bio' | translate }}:</strong> {{ profile.bio }}</p>
+              <p><strong>{{ 'profile.yearsOfExperience' | translate }}:</strong> {{ profile.yearsExperience }}</p>
+              <p *ngIf="profile.ratingAverage"><strong>{{ 'profile.rating' | translate }}:</strong> {{ profile.ratingAverage }}/5.0</p>
+              <p *ngIf="profile.totalClients"><strong>{{ 'profile.totalClients' | translate }}:</strong> {{ profile.totalClients }}</p>
+              <img *ngIf="profile.coverImageUrl" [src]="profile.coverImageUrl" [alt]="'profile.cover' | translate" class="cover-img" />
 
               <!-- Status Section -->
               <div class="status-section mt-4 pt-4 border-top">
                 <h4 class="mb-3">
-                  <i class="bi bi-chat-fill status-icon"></i> Status
+                  <i class="bi bi-chat-fill status-icon"></i> {{ 'profile.status' | translate }}
                 </h4>
                 <div class="status-display">
                   <div *ngIf="profile.statusImageUrl" class="status-image-container">
-                    <img [src]="profile.statusImageUrl" alt="Status" class="status-image" />
+                    <img [src]="profile.statusImageUrl" [alt]="'profile.status' | translate" class="status-image" />
                   </div>
                   <div *ngIf="!profile.statusImageUrl" class="status-placeholder">
                     <i class="bi bi-image"></i>
@@ -40,7 +41,7 @@ import { AuthService } from '../../core/services/auth.service';
                       {{ profile.statusDescription }}
                     </p>
                     <p *ngIf="!profile.statusDescription" class="text-muted">
-                      No status set yet
+                      {{ 'profile.noStatusSetYet' | translate }}
                     </p>
                   </div>
                 </div>
@@ -52,7 +53,7 @@ import { AuthService } from '../../core/services/auth.service';
                     class="btn btn-outline-primary btn-sm"
                     (click)="openStatusModal()"
                   >
-                    <i class="bi bi-pencil"></i> Update Status
+                    <i class="bi bi-pencil"></i> {{ 'profile.updateStatus' | translate }}
                   </button>
                   <button
                     type="button"
@@ -60,7 +61,7 @@ import { AuthService } from '../../core/services/auth.service';
                     (click)="openStatusViewer()"
                     [disabled]="!profile?.statusImageUrl && !profile?.statusDescription"
                   >
-                    <i class="bi bi-eye"></i> Show Status
+                    <i class="bi bi-eye"></i> {{ 'profile.showStatus' | translate }}
                   </button>
                 </div>
               </div>
@@ -70,7 +71,7 @@ import { AuthService } from '../../core/services/auth.service';
             <div *ngIf="showStatusModal" class="modal-backdrop">
               <div class="modal-panel">
                 <div class="modal-header">
-                  <h5>Update Your Status</h5>
+                  <h5>{{ 'profile.updateYourStatus' | translate }}</h5>
                   <button class="btn-close" (click)="closeStatusModal()">
                     <i class="bi bi-x-lg"></i>
                   </button>
@@ -80,7 +81,7 @@ import { AuthService } from '../../core/services/auth.service';
                   <form [formGroup]="statusForm" (ngSubmit)="updateStatus()">
                     <!-- Status Image -->
                     <div class="form-group">
-                      <label for="statusImage" class="form-label">Status Image (Optional)</label>
+                      <label for="statusImage" class="form-label">{{ 'profile.statusImageOptional' | translate }}</label>
                       <input 
                         type="file" 
                         id="statusImage"
@@ -88,7 +89,7 @@ import { AuthService } from '../../core/services/auth.service';
                         (change)="onStatusImageSelect($event)"
                         accept="image/jpeg,image/jpg,image/png,image/gif,image/webp"
                       />
-                      <small class="form-text">Max 5MB. JPG, PNG, GIF, WebP</small>
+                      <small class="form-text">{{ 'profile.maxImageSize' | translate }}</small>
 
                       <!-- Preview -->
                       <div *ngIf="statusImagePreview" class="image-preview mt-2">
