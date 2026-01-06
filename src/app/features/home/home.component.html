@@ -86,7 +86,7 @@
                     <p class="small muted">{{ pr.durationWeeks }} weeks • {{ getProgramTypeLabel(pr.type) }}</p>
                     <p class="small">{{ pr.description }}</p>
                     <div class="program-actions">
-                      <button class="btn-view" (click)="viewProgram(pr)">View Program</button>
+                      <button class="btn-view" (click)="viewProgram(pr)">{{ 'common.view' | translate }}</button>
                     </div>
                   </div>
                 </div>
@@ -170,18 +170,19 @@
             <div class="trainer-stats">
               <div class="stat">
                 <span class="stat-value">{{ t.yearsExperience || 0 }}</span>
-                <span class="stat-label">Years</span>
+                <span class="stat-label">{{ 'trainer.experienceYears' | translate }}</span>
               </div>
               <div class="stat">
                 <span class="stat-value">{{ t.totalClients || 0 }}</span>
-                <span class="stat-label">Clients</span>
+                <span class="stat-label">{{ 'trainer.totalClients' | translate }}</span>
               </div>
             </div>
 
             <div class="card-footer">
-              <button class="btn-view" *ngIf="isLoggedIn" (click)="viewTrainerProfile(t)">View Profile</button>
-              <button class="btn-view btn-disabled" *ngIf="!isLoggedIn" [title]="'Login to view trainer profile'">View
-                Profile</button>
+              <button class="btn-view" *ngIf="isLoggedIn" (click)="viewTrainerProfile(t)">{{ 'home.viewProfile' |
+                translate }}</button>
+              <button class="btn-view btn-disabled" *ngIf="!isLoggedIn" [title]="'navbar.login' | translate">{{
+                'home.viewProfile' | translate }}</button>
             </div>
           </div>
         </div>
