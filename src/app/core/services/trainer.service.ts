@@ -50,7 +50,7 @@ export interface UpdateStatusRequest {
 export class TrainerService {
   private readonly baseUrl = `${environment.apiUrl}/trainer/TrainerProfile`;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   // Get profile by user ID
   getProfileByUserId(userId: string): Observable<TrainerProfileResponse> {
@@ -123,34 +123,34 @@ export class TrainerService {
   private resolveImageUrl(url: string | null): string | null {
     if (!url) return null;
 
-      // Use the environment origin (protocol + host + port) as the base.
-      // This strips any path segments on `environment.apiUrl` like `/api`.
-      let base: string;
-      try {
-        base = new URL(environment.apiUrl).origin.replace(/\/$/, '');
-      } catch {
-        base = environment.apiUrl.replace(/\/$/, '');
+    // Use the environment origin (protocol + host + port) as the base.
+    // This strips any path segments on `environment.apiUrl` like `/api`.
+    let base: string;
+    try {
+      base = new URL(environment.apiUrl).origin.replace(/\/$/, '');
+    } catch {
+      base = environment.apiUrl.replace(/\/$/, '');
+    }
+
+    try {
+      let path = url;
+      if (/^https?:\/\//i.test(url)) {
+        const parsed = new URL(url);
+        path = (parsed.pathname || '') + (parsed.search || '') + (parsed.hash || '');
       }
 
-      try {
-        let path = url;
-        if (/^https?:\/\//i.test(url)) {
-          const parsed = new URL(url);
-          path = (parsed.pathname || '') + (parsed.search || '') + (parsed.hash || '');
-        }
-
-        if (!path.startsWith('/')) path = '/' + path.replace(/^\/+/, '');
-        return `${base}${path}`;
-      } catch (err) {
-        if (url.startsWith('/')) return `${base}${url}`;
-        return `${base}/${url.replace(/^\/+/, '')}`;
-      }
+      if (!path.startsWith('/')) path = '/' + path.replace(/^\/+/, '');
+      return `${base}${path}`;
+    } catch (err) {
+      if (url.startsWith('/')) return `${base}${url}`;
+      return `${base}/${url.replace(/^\/+/, '')}`;
+    }
   }
 
   // Error handling
   private handleError(error: HttpErrorResponse) {
     let errorMessage = 'An unexpected error occurred';
-    
+
     if (error.error) {
       if (error.error.message) {
         errorMessage = error.error.message;
@@ -160,7 +160,7 @@ export class TrainerService {
     } else if (error.status === 0) {
       errorMessage = 'Network error. Please check your connection.';
     }
-    
+
     console.error('TrainerService Error:', errorMessage, error);
     return throwError(() => new Error(errorMessage));
   }

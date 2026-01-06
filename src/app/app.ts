@@ -4,13 +4,14 @@ import { RouterOutlet, Router } from '@angular/router';
 import { SidebarComponent } from './shared/components/sidebar/sidebar.component';
 import { NotificationsComponent } from './shared/components/notifications/notifications.component';
 import { NavbarComponent } from './shared/components/navbar/navbar.component';
+import { TranslateModule } from '@ngx-translate/core';
 import { AuthService } from './core/services/auth.service';
 import { TranslationService } from './core/services/translation.service';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, RouterOutlet, SidebarComponent, NotificationsComponent, NavbarComponent],
+  imports: [CommonModule, RouterOutlet, SidebarComponent, NotificationsComponent, NavbarComponent, TranslateModule],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
@@ -56,5 +57,15 @@ export class App implements OnInit {
 
   goHome(): void {
     this.router.navigate(['/home']);
+  }
+
+  toggleLanguage(): void {
+    const current = this.translationService.getLanguage();
+    const next = current === 'en' ? 'ar' : 'en';
+    this.translationService.setLanguage(next);
+  }
+
+  getCurrentLanguage(): string {
+    return this.translationService.getLanguage();
   }
 }

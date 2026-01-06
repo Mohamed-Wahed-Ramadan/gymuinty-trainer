@@ -81,6 +81,54 @@
   color: #4A90E2;
 }
 
+/* Header language toggle (matches navbar styling but adapted for light header) */
+.language-toggle {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(0, 0, 0, 0.03);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  color: #333;
+  padding: 8px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.language-toggle:hover {
+  background: rgba(74, 144, 226, 0.06);
+  transform: translateY(-2px);
+}
+
+.language-toggle:active {
+  transform: translateY(0);
+}
+
+.language-toggle .lang-text {
+  font-weight: 600;
+  letter-spacing: 1px;
+}
+
+@media (max-width: 768px) {
+  .language-toggle {
+    padding: 6px 8px;
+    font-size: 12px;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+  }
+
+  .language-toggle .lang-text {
+    display: none;
+  }
+}
+
 .page-content {
   flex: 1;
   overflow: visible;
@@ -118,4 +166,10 @@
   .page-content.public-page {
     padding: 0;
   }
+}
+
+/* Ensure settings dropdown appears above other UI elements */
+.settings-dropdown {
+  position: relative; /* ensure z-index applies; change to absolute if needed */
+  z-index: 99999 !important;
 }

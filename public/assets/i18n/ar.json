@@ -89,7 +89,7 @@
     "profile": "الملف الشخصي",
     "logout": "تسجيل الخروج",
     "toggleSidebar": "تبديل الشريط الجانبي",
-     "update-profile": "تحديث الملف الشخصي",
+    "update-profile": "تحديث الملف الشخصي",
     "change-password": "تغيير كلمة المرور",
     "reset-password": "إعادة تعيين كلمة المرور",
     "delete-profile": "حذف الملف الشخصي"
@@ -295,7 +295,7 @@
     }
   },
   "home": {
-    "bgTitle1": "أطلق العنان",
+    "Title1": "أطلق العنان",
     "bgTitle2": "لإمكانياتك",
     "bgSubtitle": "رحلتك نحو صحة أفضل وقوة أكبر تبدأ هنا.",
     "searchPlaceholder": "ابحث عن الحزم، البرامج، أو المدربين...",
@@ -375,11 +375,35 @@
     "showStatus": "عرض الحالة",
     "updateYourStatus": "تحديث حالتك",
     "statusImageOptional": "صورة الحالة (اختياري)",
+    "statusDescriptionOptional": "وصف الحالة (اختياري)",
     "maxImageSize": "أقصى 5 ميجابايت. JPG, PNG, GIF, WebP",
     "statusDescription": "وصف الحالة",
+    "statusDescriptionPlaceholder": "ما الذي يشغل بالك؟",
     "descriptionPlaceholder": "ما الذي يشغل بالك؟",
     "saveChanges": "حفظ التغييرات",
-    "cancelEdit": "إلغاء"
+    "cancelEdit": "إلغاء",
+    "handlePlaceholder": "@johnfitness",
+    "bioPlaceholder": "أخبرنا عن نفسك...",
+    "videoIntroPlaceholder": "https://youtube.com/watch?v=...",
+    "brandingColorsPlaceholder": "#4A90E2,#8B5FBF",
+    "updateProfile": "تحديث الملف الشخصي",
+    "createProfile": "إنشاء الملف الشخصي",
+    "handleRequired": "المقبض مطلوب",
+    "handleMinLength": "يجب أن يكون المقبض 3 أحرف على الأقل",
+    "handleMaxLength": "يجب ألا يتجاوز المقبض 50 حرف",
+    "bioMaxLength": "يجب ألا تتجاوز السيرة الذاتية 500 حرف",
+    "yearsOfExperienceRequired": "سنوات الخبرة مطلوبة",
+    "loadingProfile": "جاري تحميل الملف الشخصي...",
+    "unableToIdentify": "غير قادر على تحديد المستخدم. يرجى تسجيل الدخول مرة أخرى.",
+    "pleaseCheckAll": "يرجى ملء جميع الحقول المطلوبة.",
+    "failedSaveProfile": "فشل حفظ الملف الشخصي. يرجى المحاولة مرة أخرى.",
+    "failedUpdateStatus": "فشل تحديث الحالة. يرجى المحاولة مرة أخرى.",
+    "fileExceedSize": "حجم الملف يتجاوز حد 5 ميجابايت.",
+    "invalidFileType": "نوع الملف غير صحيح. المقبول: JPG, PNG, GIF, WebP",
+    "editProfile": "تعديل الملف الشخصي",
+    "videoIntro": "رابط فيديو المقدمة",
+    "brandingColors": "ألوان العلامة التجارية",
+    "brandingColorsHelp": "ألوان سادسة عشرية مفصولة بفواصل"
   },
   "shared": {
     "trainerProfile": {
@@ -460,6 +484,6 @@
     "client": "العميل",
     "package": "الحزمة",
     "startDate": "تاريخ البدء",
-  "endDate": "تاريخ الانتهاء"
-}
+    "endDate": "تاريخ الانتهاء"
+  }
 }

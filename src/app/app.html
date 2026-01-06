@@ -18,6 +18,11 @@
         <button class="btn-home" (click)="goHome()" title="Go to Home">
           <i class="bi bi-house-fill"></i>
         </button>
+        <button class="language-toggle text-black" (click)="toggleLanguage()"
+          [attr.title]="( 'navbar.switchTo' | translate ) + ' ' + (getCurrentLanguage() === 'en' ? 'AR' : 'EN')">
+          <i class="bi bi-globe"></i>
+          <span class="lang-text">{{ getCurrentLanguage() === 'en' ? 'AR' : 'EN' }}</span>
+        </button>
         <app-notifications></app-notifications>
       </div>
     </header>
