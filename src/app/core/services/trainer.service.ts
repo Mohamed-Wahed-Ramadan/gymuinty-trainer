@@ -122,9 +122,29 @@ export class TrainerService {
 
   private resolveImageUrl(url: string | null): string | null {
     if (!url) return null;
-    if (url.startsWith('http')) return url;
-    const base = environment.apiUrl.replace(/\/$/, '');
-    return `${base}/${url.replace(/^\/+/, '')}`;
+
+      // Use the environment origin (protocol + host + port) as the base.
+      // This strips any path segments on `environment.apiUrl` like `/api`.
+      let base: string;
+      try {
+        base = new URL(environment.apiUrl).origin.replace(/\/$/, '');
+      } catch {
+        base = environment.apiUrl.replace(/\/$/, '');
+      }
+
+      try {
+        let path = url;
+        if (/^https?:\/\//i.test(url)) {
+          const parsed = new URL(url);
+          path = (parsed.pathname || '') + (parsed.search || '') + (parsed.hash || '');
+        }
+
+        if (!path.startsWith('/')) path = '/' + path.replace(/^\/+/, '');
+        return `${base}${path}`;
+      } catch (err) {
+        if (url.startsWith('/')) return `${base}${url}`;
+        return `${base}/${url.replace(/^\/+/, '')}`;
+      }
   }
 
   // Error handling
