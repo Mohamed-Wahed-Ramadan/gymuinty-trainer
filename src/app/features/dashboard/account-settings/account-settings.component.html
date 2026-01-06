@@ -93,7 +93,6 @@
         <div *ngIf="activeTab === 'change-password'" class="tab-pane active">
             <form [formGroup]="changePasswordForm" (ngSubmit)="submitChangePassword()" class="settings-form">
                 <div class="form-group">
-                    <label for="currentPassword">Current Password *</label>
                     <label for="currentPassword">{{ 'settings.currentPassword' | translate }} *</label>
                     <input type="password" id="currentPassword" class="form-control" formControlName="currentPassword"
                         [placeholder]="'settings.enterCurrentPassword' | translate"
@@ -104,7 +103,6 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="newPassword">New Password *</label>
                     <label for="newPassword">{{ 'settings.newPassword' | translate }} *</label>
                     <input type="password" id="newPassword" class="form-control" formControlName="newPassword"
                         [placeholder]="'settings.enterNewPassword' | translate"
@@ -121,7 +119,6 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="confirmNewPassword">Confirm New Password *</label>
                     <label for="confirmNewPassword">{{ 'settings.confirmPassword' | translate }} *</label>
                     <input type="password" id="confirmNewPassword" class="form-control"
                         formControlName="confirmNewPassword"
@@ -153,7 +150,6 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="resetEmail">Email *</label>
                     <label for="resetEmail">{{ 'settings.email' | translate }} *</label>
                     <input type="email" id="resetEmail" class="form-control" formControlName="email"
                         [placeholder]="'settings.enterEmail' | translate"
@@ -193,9 +189,10 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="resetConfirmPassword">Confirm New Password *</label>
+                    <label for="resetConfirmPassword">{{ 'settings.confirmPassword' | translate }} *</label>
                     <input type="password" id="resetConfirmPassword" class="form-control"
-                        formControlName="confirmNewPassword" [placeholder]="'settings.confirmPasswordPlaceholder' | translate"
+                        formControlName="confirmNewPassword"
+                        [placeholder]="'settings.confirmPasswordPlaceholder' | translate"
                         [class.is-invalid]="resetPasswordForm.get('confirmNewPassword')?.invalid && resetPasswordForm.get('confirmNewPassword')?.touched">
                     <small class="error-text" *ngIf="resetPasswordForm.get('confirmNewPassword')?.errors?.['required']">
                         {{ 'settings.confirmPasswordRequired' | translate }}

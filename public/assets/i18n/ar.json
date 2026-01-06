@@ -1,4 +1,7 @@
 {
+  "app": {
+    "brand": "جيمونتي"
+  },
   "program": {
     "title": "لوحة تحكم مدرب جيمونتي",
     "brand": "جيمونتي"
@@ -85,7 +88,11 @@
     "settings": "الإعدادات",
     "profile": "الملف الشخصي",
     "logout": "تسجيل الخروج",
-    "toggleSidebar": "تبديل الشريط الجانبي"
+    "toggleSidebar": "تبديل الشريط الجانبي",
+     "update-profile": "تحديث الملف الشخصي",
+    "change-password": "تغيير كلمة المرور",
+    "reset-password": "إعادة تعيين كلمة المرور",
+    "delete-profile": "حذف الملف الشخصي"
   },
   "settings": {
     "title": "إعدادات الحساب",
@@ -416,6 +423,7 @@
   "common": {
     "yes": "نعم",
     "no": "لا",
+    "view": "عرض",
     "save": "حفظ",
     "cancel": "إلغاء",
     "delete": "حذف",

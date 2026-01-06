@@ -1,4 +1,7 @@
 {
+  "app": {
+    "brand": "Gymunity"
+  },
   "program": {
     "title": "Gymunity Trainer Dashboard",
     "brand": "Gymunity"
@@ -85,7 +88,11 @@
     "settings": "Settings",
     "profile": "Profile",
     "logout": "Logout",
-    "toggleSidebar": "Toggle Sidebar"
+    "toggleSidebar": "Toggle Sidebar",
+    "update-profile": "Update Profile",
+    "change-password": "Change Password",
+    "reset-password": "Reset Password",
+    "delete-profile": "Delete Profile"
   },
   "settings": {
     "title": "Account Settings",
@@ -416,6 +423,7 @@
   "common": {
     "yes": "Yes",
     "no": "No",
+    "view": "View",
     "save": "Save",
     "cancel": "Cancel",
     "delete": "Delete",
