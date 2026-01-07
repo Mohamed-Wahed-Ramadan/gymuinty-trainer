@@ -272,6 +272,7 @@
     "promoCode": "رمز ترويجي",
     "activeStatus": "حالة النشاط",
     "isAnnual": "خطة سنوية",
+    "thumbnailUrl": "رابط الصورة",
     "modal": {
       "editPackage": "تعديل الحزمة",
       "createNewPackage": "إنشاء حزمة جديدة",
@@ -284,7 +285,7 @@
       "programs": "البرامج",
       "loadingPrograms": "جاري تحميل البرامج...",
       "noProgramsAvailable": "لا توجد برامج متاحة. أنشئ برنامجاً أولاً.",
-      "programsSelected": "✓ {{count}} برنامج/برامج محددة",
+      "programsSelected": "✓ تم تحديد {{count}} برنامج/برامج",
       "promoCode": "رمز ترويجي (اختياري)",
       "promoCodePlaceholder": "مثال: SAVE20",
       "thumbnailUrl": "رابط الصورة (اختياري)",
@@ -300,7 +301,7 @@
     }
   },
   "packages_ui": {
-    "selectedPrograms": "✓ {{count}} برنامج/برامج محددة"
+    "selectedPrograms": "✓ تم تحديد {{count}} برنامج/برامج"
   },
   "notifications": {
     "title": "الإشعارات",
@@ -442,6 +443,7 @@
   "shared": {
     "chat": {
       "listTitle": "الرسائل",
+      "massagetitle": "الرسائل",
       "searchPlaceholder": "ابحث في المحادثات...",
       "noChats": "لا توجد محادثات بعد",
       "lastMessagePreview": "معاينة الرسالة الأخيرة...",

@@ -101,39 +101,39 @@
 <div *ngIf="showModal" class="modal-overlay" (click)="closeModal()">
   <div class="modal-content" (click)="$event.stopPropagation()">
     <div class="modal-header">
-      <h3>{{ isEditMode ? ('packages.modal.editPackage' | translate) : ('packages.modal.createNewPackage' | translate) }}</h3>
+      <h3>{{ isEditMode ? ('packages.editPackage' | translate) : ('packages.createNewPackage' | translate) }}</h3>
       <button class="close-btn" (click)="closeModal()">×</button>
     </div>
 
     <form [formGroup]="packageForm" (ngSubmit)="onSubmit()" class="modal-body">
       <!-- Package Name -->
       <div class="form-group">
-        <label for="name">{{ 'packages.modal.packageName' | translate }} *</label>
+        <label for="name">{{ 'packages.packageName' | translate }} *</label>
         <input type="text" id="name" class="form-control" formControlName="name" [placeholder]="'packages.namePlaceholder' | translate"
           maxlength="100" [class.is-invalid]="packageForm.get('name')?.invalid && packageForm.get('name')?.touched">
-        <small class="form-text">3-100 {{ 'common.characters' | translate }}</small>
+        <small class="form-text">3-100 </small>
       </div>
 
       <!-- Description -->
       <div class="form-group">
-        <label for="description">{{ 'packages.modal.description' | translate }}</label>
+        <label for="description">{{ 'packages.description' | translate }}</label>
         <textarea id="description" class="form-control" formControlName="description"
-          [placeholder]="'packages.modal.descriptionPlaceholder' | translate" rows="3" maxlength="500">
+          [placeholder]="'packages.descPlaceholder' | translate" rows="3" maxlength="500">
         </textarea>
-        <small class="form-text">{{ 'common.max' | translate }} 500 {{ 'common.characters' | translate }}</small>
+        <small class="form-text"> 500 </small>
       </div>
 
       <!-- Pricing -->
       <div class="form-row">
         <div class="form-group">
-          <label for="priceMonthly">{{ 'packages.modal.monthlyPrice' | translate }} *</label>
+          <label for="priceMonthly">{{ 'packages.monthlyPrice' | translate }} *</label>
           <input type="number" id="priceMonthly" class="form-control" formControlName="priceMonthly" min="0.01"
             step="0.01"
             [class.is-invalid]="packageForm.get('priceMonthly')?.invalid && packageForm.get('priceMonthly')?.touched">
           <small class="form-text">0.01 - 100000</small>
         </div>
         <div class="form-group">
-          <label for="priceYearly">{{ 'packages.modal.yearlyPrice' | translate }}</label>
+          <label for="priceYearly">{{ 'packages.yearlyPrice' | translate }}</label>
           <input type="number" id="priceYearly" class="form-control" formControlName="priceYearly" min="0.01"
             step="0.01">
           <small class="form-text">0.01 - 100000</small>
@@ -142,12 +142,12 @@
 
       <!-- Programs Selection -->
       <div class="form-group">
-        <label>{{ 'packages.modal.programs' | translate }} *</label>
+        <label>{{ 'packages.selectPrograms' | translate }} *</label>
         <div *ngIf="isLoadingPrograms" class="loading-spinner">
           <small>{{ 'packages.modal.loadingPrograms' | translate }}</small>
         </div>
         <div *ngIf="!isLoadingPrograms && programs.length === 0" class="alert alert-warning">
-          <small>{{ 'packages.modal.noProgramsAvailable' | translate }}</small>
+          <small>{{ 'packages.noProgramsAvailable' | translate }}</small>
         </div>
         <div *ngIf="!isLoadingPrograms && programs.length > 0" class="programs-list">
           <div *ngFor="let prog of programs" class="form-check">
@@ -159,21 +159,21 @@
           </div>
         </div>
         <small *ngIf="selectedProgramIds.length > 0" class="form-text" style="color:green">
-          {{ 'packages.modal.programsSelected' | translate: {count: selectedProgramIds.length} }}
+          {{ 'packages_ui.selectedPrograms' | translate: {count: selectedProgramIds.length} }}
         </small>
       </div>
 
       <!-- Promo Code -->
       <div class="form-group">
-        <label for="promoCode">{{ 'packages.modal.promoCode' | translate }}</label>
+        <label for="promoCode">{{ 'packages.promoCode' | translate }}</label>
         <input type="text" id="promoCode" class="form-control" formControlName="promoCode" [placeholder]="'packages.modal.promoCodePlaceholder' | translate"
           maxlength="20">
-        <small class="form-text">3-20 {{ 'common.characters' | translate }}</small>
+        <small class="form-text">3-20 </small>
       </div>
 
       <!-- Thumbnail -->
       <div class="form-group">
-        <label for="thumbnailUrl">{{ 'packages.modal.thumbnailUrl' | translate }}</label>
+        <label for="thumbnailUrl">{{ 'programs.thumbnailUrl' | translate }}</label>
         <input type="url" id="thumbnailUrl" class="form-control" formControlName="thumbnailUrl"
           [placeholder]="'packages.modal.thumbnailUrlPlaceholder' | translate">
       </div>
@@ -182,7 +182,7 @@
       <div class="form-group checkbox-group">
         <label for="isAnnual">
           <input type="checkbox" id="isAnnual" formControlName="isAnnual">
-          <span>{{ 'packages.modal.isAnnual' | translate }}</span>
+          <span>{{ 'packages.isAnnual' | translate }}</span>
         </label>
       </div>
 
@@ -190,18 +190,18 @@
       <div class="form-group checkbox-group">
         <label for="isActive">
           <input type="checkbox" id="isActive" formControlName="isActive">
-          <span>{{ 'packages.modal.isActive' | translate }}</span>
+          <span>{{ 'packages.activeStatus' | translate }}</span>
         </label>
       </div>
 
       <!-- Modal Footer -->
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" (click)="closeModal()">{{ 'packages.modal.cancel' | translate }}</button>
+        <button type="button" class="btn btn-secondary" (click)="closeModal()">{{ 'common.cancel' | translate }}</button>
         <button type="submit" class="btn btn-primary" [disabled]="!packageForm.valid || isSaving">
-          <span *ngIf="!isSaving">{{ isEditMode ? ('packages.modal.update' | translate) : ('packages.modal.create' | translate) }}</span>
+          <span *ngIf="!isSaving">{{ isEditMode ? ('common.update' | translate) : ('common.create' | translate) }}</span>
           <span *ngIf="isSaving">
             <span class="spinner-border spinner-border-sm me-2"></span>
-            {{ 'packages.modal.saving' | translate }}
+            {{ 'common.saving' | translate }}
           </span>
         </button>
       </div>
