@@ -295,7 +295,7 @@
     }
   },
   "home": {
-    "Title1": "أطلق العنان",
+    "bgTitle1": "أطلق العنان",
     "bgTitle2": "لإمكانياتك",
     "bgSubtitle": "رحلتك نحو صحة أفضل وقوة أكبر تبدأ هنا.",
     "searchPlaceholder": "ابحث عن الحزم، البرامج، أو المدربين...",
@@ -400,7 +400,6 @@
     "failedUpdateStatus": "فشل تحديث الحالة. يرجى المحاولة مرة أخرى.",
     "fileExceedSize": "حجم الملف يتجاوز حد 5 ميجابايت.",
     "invalidFileType": "نوع الملف غير صحيح. المقبول: JPG, PNG, GIF, WebP",
-    "editProfile": "تعديل الملف الشخصي",
     "videoIntro": "رابط فيديو المقدمة",
     "brandingColors": "ألوان العلامة التجارية",
     "brandingColorsHelp": "ألوان سادسة عشرية مفصولة بفواصل"

@@ -1,0 +1,56 @@
+<div class="settings-root">
+  <h3>{{ 'settings.title' | translate }}</h3>
+
+  <div *ngIf="activePanel === 'list'" class="settings-list">
+    <ul>
+      <li><button class="action-btn" (click)="open('update')">{{ 'settings.updateProfile' | translate }}</button></li>
+      <li><button class="action-btn" (click)="open('change')">{{ 'settings.changePassword' | translate }}</button></li>
+      <li><button class="action-btn" (click)="open('reset')">{{ 'settings.resetPassword' | translate }}</button></li>
+      <li><button class="action-btn danger" (click)="open('delete')">{{ 'settings.deleteProfile' | translate }}</button></li>
+    </ul>
+  </div>
+
+  <div *ngIf="activePanel === 'update'" class="panel">
+    <h4>{{ 'settings.updateProfile' | translate }}</h4>
+    <label>{{ 'auth.register.username' | translate }}<input [(ngModel)]="updateProfileData.userName" /></label>
+    <label>{{ 'auth.register.email' | translate }}<input [(ngModel)]="updateProfileData.email" /></label>
+    <label>{{ 'auth.register.fullName' | translate }}<input [(ngModel)]="updateProfileData.fullName" /></label>
+    <label>{{ 'auth.register.profilePhoto' | translate }}<input type="file" (change)="onFileChange($event)" /></label>
+    <div class="actions">
+      <button class="primary" (click)="updateProfile()" [disabled]="loading">{{ 'common.save' | translate }}</button>
+      <button class="secondary" (click)="open('list')">{{ 'common.back' | translate }}</button>
+    </div>
+  </div>
+
+  <div *ngIf="activePanel === 'change'" class="panel">
+    <h4>{{ 'settings.changePassword' | translate }}</h4>
+    <label>{{ 'settings.currentPassword' | translate }}<input type="password" [(ngModel)]="changePasswordData.currentPassword" /></label>
+    <label>{{ 'settings.newPassword' | translate }}<input type="password" [(ngModel)]="changePasswordData.newPassword" /></label>
+    <label>{{ 'settings.confirmNewPassword' | translate }}<input type="password" [(ngModel)]="changePasswordData.confirmNewPassword" /></label>
+    <div class="actions">
+      <button class="primary" (click)="changePassword()" [disabled]="loading">{{ 'settings.change' | translate }}</button>
+      <button class="secondary" (click)="open('list')">{{ 'common.back' | translate }}</button>
+    </div>
+  </div>
+
+  <div *ngIf="activePanel === 'reset'" class="panel">
+    <h4>{{ 'settings.resetPassword' | translate }}</h4>
+    <label>{{ 'auth.register.email' | translate }}<input [(ngModel)]="resetPasswordData.email" /></label>
+    <label>{{ 'settings.token' | translate }}<input [(ngModel)]="resetPasswordData.token" /></label>
+    <label>{{ 'settings.newPassword' | translate }}<input type="password" [(ngModel)]="resetPasswordData.newPassword" /></label>
+    <label>{{ 'settings.confirmNewPassword' | translate }}<input type="password" [(ngModel)]="resetPasswordData.confirmNewPassword" /></label>
+    <div class="actions">
+      <button class="primary" (click)="resetPassword()" [disabled]="loading">{{ 'settings.reset' | translate }}</button>
+      <button class="secondary" (click)="open('list')">{{ 'common.back' | translate }}</button>
+    </div>
+  </div>
+
+  <div *ngIf="activePanel === 'delete'" class="panel">
+    <h4>{{ 'settings.deleteProfile' | translate }}</h4>
+    <p>{{ 'settings.deleteProfileWarning' | translate }}</p>
+    <div class="actions">
+      <button class="primary" (click)="deleteTrainerProfile()" [disabled]="loading">{{ 'common.delete' | translate }}</button>
+      <button class="secondary" (click)="open('list')">{{ 'common.back' | translate }}</button>
+    </div>
+  </div>
+</div>

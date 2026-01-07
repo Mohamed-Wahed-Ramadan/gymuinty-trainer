@@ -62,6 +62,23 @@ export class AuthService {
       );
   }
 
+  // Update Profile
+  updateProfile(formData: FormData): Observable<any> {
+    return this.http.post<any>(`${this.API_URL}/Account/update-profile`, formData)
+      .pipe(
+        tap(response => {
+          if (response && response.token) {
+            this.handleAuthResponse(response);
+          }
+        })
+      );
+  }
+
+  // Change Password
+  changePassword(request: any): Observable<any> {
+    return this.http.post<any>(`${this.API_URL}/Account/change-password`, request);
+  }
+
   logout(): void {
     localStorage.removeItem(this.TOKEN_KEY);
     localStorage.removeItem(this.USER_KEY);

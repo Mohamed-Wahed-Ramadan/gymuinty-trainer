@@ -59,7 +59,7 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
                     type="button"
                     class="btn btn-outline-secondary btn-sm ms-2"
                     (click)="openStatusViewer()"
-                    [disabled]="!profile?.statusImageUrl && !profile?.statusDescription"
+                    [disabled]="!profile.statusImageUrl && !profile.statusDescription"
                   >
                     <i class="bi bi-eye"></i> {{ 'profile.showStatus' | translate }}
                   </button>
@@ -158,10 +158,10 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
                 </div>
 
                 <div class="modal-body text-center">
-                  <div *ngIf="profile?.statusImageUrl" class="mb-3">
-                    <img [src]="profile?.statusImageUrl" alt="Status" style="max-width:100%; height:auto; border-radius:8px;" />
+                  <div *ngIf="profile.statusImageUrl" class="mb-3">
+                    <img [src]="profile.statusImageUrl" alt="Status" style="max-width:100%; height:auto; border-radius:8px;" />
                   </div>
-                  <div *ngIf="profile?.statusDescription" class="status-description">
+                  <div *ngIf="profile.statusDescription" class="status-description">
                     {{ profile.statusDescription }}
                   </div>
                 </div>
