@@ -66,18 +66,46 @@ export class NotificationService {
   }
 
   success(title: string, message: string): void {
+    // عرض toast و notification للإشعارات الصحيحة
     this.addNotification({ title, message, type: 'success' });
+    this.showToast(title, message, 'success');
   }
 
   error(title: string, message: string): void {
-    this.addNotification({ title, message, type: 'error' });
+    // عرض toast للأخطاء بدلاً من notification
+    this.showToast(title, message, 'error');
   }
 
   warning(title: string, message: string): void {
-    this.addNotification({ title, message, type: 'warning' });
+    this.showToast(title, message, 'warning');
   }
 
   info(title: string, message: string): void {
-    this.addNotification({ title, message, type: 'info' });
+    this.showToast(title, message, 'info');
+  }
+
+  private showToast(title: string, message: string, type: 'success' | 'error' | 'warning' | 'info'): void {
+    // إنشاء toast element
+    const toast = document.createElement('div');
+    toast.className = `toast-notification toast-${type}`;
+    toast.innerHTML = `
+      <div class="toast-header">
+        <strong>${title}</strong>
+        <button type="button" class="toast-close" onclick="this.parentElement.parentElement.remove()">×</button>
+      </div>
+      <div class="toast-body">${message}</div>
+    `;
+    
+    // إضافة الـ toast إلى body
+    document.body.appendChild(toast);
+    
+    // إظهار الـ toast
+    setTimeout(() => toast.classList.add('show'), 100);
+    
+    // إزالة الـ toast بعد 5 ثوان
+    setTimeout(() => {
+      toast.classList.remove('show');
+      setTimeout(() => toast.remove(), 300);
+    }, 5000);
   }
 }

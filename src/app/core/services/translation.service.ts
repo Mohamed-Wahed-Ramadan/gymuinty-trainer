@@ -37,9 +37,11 @@ export class TranslationService {
     if (isPlatformBrowser(this.platformId)) {
       localStorage.setItem(this.LANG_KEY, language);
     }
-    this.translate.use(language);
-    this.currentLanguageSubject.next(language);
-    this.updateDirection(language);
+    this.translate.use(language).subscribe(() => {
+      // Ensure translation is loaded before updating
+      this.currentLanguageSubject.next(language);
+      this.updateDirection(language);
+    });
   }
 
   getLanguage(): string {

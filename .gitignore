@@ -37,6 +37,7 @@ yarn-error.log
 testem.log
 /typings
 __screenshots__/
+CursorSetup-x64-2.3.26.exe
 
 # System files
 .DS_Store

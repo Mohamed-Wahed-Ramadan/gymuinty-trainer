@@ -13,10 +13,10 @@ import { TranslateModule } from '@ngx-translate/core';
   styleUrls: ['./sidebar.component.css']
 })
 export class SidebarComponent {
-  @Input() isOpen = true;
+  @Input() isOpen = true; // دائماً ظاهر
   @Output() toggle = new EventEmitter<void>();
   @Output() collapsedChange = new EventEmitter<boolean>();
-  collapsed = false;
+  collapsed = true; // مغلق (collapsed) افتراضياً
   overlayActive = false;
   isMobileSize = typeof window !== 'undefined' && window.innerWidth <= 768;
   settingsMenuOpen = false;
@@ -56,6 +56,14 @@ export class SidebarComponent {
       return;
     }
 
+    // إذا كان الـ sidebar مغلقاً تماماً، افتحه أولاً
+    if (!this.isOpen) {
+      this.toggle.emit(); // فتح الـ sidebar
+      this.collapsed = false;
+      this.collapsedChange.emit(this.collapsed);
+      return;
+    }
+
     this.collapsed = !this.collapsed;
     this.collapsedChange.emit(this.collapsed);
   }
@@ -66,6 +74,7 @@ export class SidebarComponent {
   }
 
   goTo(target: string): void {
+    // لا تغلق الـ sidebar عند التنقل
     if (target === 'programs' || target === 'packages') {
       this.router.navigate(['/dashboard'], { queryParams: { tab: target } });
       return;
@@ -73,6 +82,7 @@ export class SidebarComponent {
     // allow passing absolute paths or simple segments
     if (target.startsWith('/')) this.router.navigateByUrl(target);
     else this.router.navigate([target]);
+    // الـ sidebar يبقى مفتوحاً (collapsed لكن ظاهر)
   }
 
   toggleSettingsMenu(): void {

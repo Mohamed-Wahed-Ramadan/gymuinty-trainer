@@ -28,7 +28,7 @@
 
       <!-- Avatar & Info -->
       <div class="chat-item-avatar">
-        <img [src]="thread.otherUserProfilePhoto || './avatar.png'" (error)="setAvatarFallback($event)"
+        <img [src]="getAvatarUrl(thread.otherUserProfilePhoto, null)" (error)="setAvatarFallback($event)"
           alt="{{ thread.otherUserName }}" class="message-avatar rounded-circle">
         <span *ngIf="isUserOnline(thread.otherUserId)" class="online-badge"></span>
       </div>

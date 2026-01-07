@@ -82,10 +82,12 @@ export class LoginComponent implements OnInit {
     this.authService.login(request).subscribe({
       next: (response) => {
         if (response.role !== 'Trainer') {
-          this.notificationService.error(
-            'Access Denied',
-            'This platform is for trainers only. To continue as a client, please visit our client portal.'
-          );
+          const currentLang = this.translationService.getLanguage();
+          const errorTitle = currentLang === 'ar' ? 'تم الرفض' : 'Access Denied';
+          const errorMessage = currentLang === 'ar'
+            ? 'هذه المنصة للمدربين فقط. للمتابعة كعميل، يرجى زيارة بوابة العملاء.'
+            : 'This platform is for trainers only. To continue as a client, please visit our client portal.';
+          this.notificationService.error(errorTitle, errorMessage);
           this.authService.logout();
           this.isLoading = false;
           return;
@@ -98,8 +100,13 @@ export class LoginComponent implements OnInit {
       error: (error) => {
         this.isLoading = false;
         console.error('Login error:', error);
-        const errorMessage = error?.error?.message || 'Invalid email/username or password';
-        this.notificationService.error('Login Failed', errorMessage);
+        const currentLang = this.translationService.getLanguage();
+        const errorKey = error?.error?.message || 'auth.login.errors.invalidCredentials';
+        const errorMessage = currentLang === 'ar' 
+          ? (error?.error?.message || 'البريد الإلكتروني/اسم المستخدم أو كلمة المرور غير صحيحة')
+          : (error?.error?.message || 'Invalid email/username or password');
+        const errorTitle = currentLang === 'ar' ? 'فشل تسجيل الدخول' : 'Login Failed';
+        this.notificationService.error(errorTitle, errorMessage);
         this.cdr.detectChanges();
       }
     });
@@ -141,8 +148,10 @@ export class LoginComponent implements OnInit {
       error: (error) => {
         this.isLoading = false;
         console.error('Google Auth error:', error);
-        const errorMessage = error?.error?.message || 'Google Sign-In failed';
-        this.notificationService.error('Authentication Error', errorMessage);
+        const currentLang = this.translationService.getLanguage();
+        const errorMessage = error?.error?.message || (currentLang === 'ar' ? 'فشل تسجيل الدخول عبر جوجل' : 'Google Sign-In failed');
+        const errorTitle = currentLang === 'ar' ? 'خطأ في المصادقة' : 'Authentication Error';
+        this.notificationService.error(errorTitle, errorMessage);
         this.cdr.detectChanges();
       }
     });

@@ -97,7 +97,11 @@ background:
 }
 
 .message-wrapper.own-message {
-  justify-content: flex-end;
+  justify-content: flex-start; /* المرسل على الشمال */
+}
+
+.message-wrapper:not(.own-message) {
+  justify-content: flex-end; /* المستقبل على اليمين */
 }
 
 .message-group {
@@ -108,7 +112,11 @@ background:
 }
 
 .message-wrapper.own-message .message-group {
-  flex-direction: row-reverse;
+  flex-direction: row; /* المرسل: الصورة على اليسار ثم الرسالة */
+}
+
+.message-wrapper:not(.own-message) .message-group {
+  flex-direction: row-reverse; /* المستقبل: الرسالة ثم الصورة على اليمين */
 }
 
 .message-avatar {

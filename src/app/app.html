@@ -3,11 +3,13 @@
   <app-navbar *ngIf="!isLoggedIn()"></app-navbar>
 
   <!-- Sidebar for authenticated users -->
-  <app-sidebar *ngIf="isLoggedIn()" [isOpen]="true" (collapsedChange)="onSidebarCollapsed($event)">
+  <app-sidebar *ngIf="isLoggedIn()" [isOpen]="isSidebarOpen()" (toggle)="onSidebarToggle()" (collapsedChange)="onSidebarCollapsed($event)">
   </app-sidebar>
 
   <!-- Main Content -->
-  <main [class.with-sidebar]="isLoggedIn()" [class.sidebar-collapsed]="isSidebarCollapsed() && isLoggedIn()"
+  <main [class.with-sidebar]="isLoggedIn()" 
+    [class.sidebar-collapsed]="isSidebarCollapsed() && isLoggedIn() && isSidebarOpen()"
+    [class.sidebar-open]="isSidebarOpen()"
     [class.with-navbar]="!isLoggedIn()" class="main-content">
     <!-- Header for authenticated users -->
     <header *ngIf="isLoggedIn()" class="app-header">

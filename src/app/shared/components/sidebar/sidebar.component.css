@@ -13,6 +13,11 @@
   box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
 }
 
+/* الـ sidebar دائماً ظاهر لكن collapsed افتراضياً */
+.sidebar {
+  transform: translateX(0) !important;
+}
+
 .sidebar-header {
   display: flex;
   justify-content: space-between;

@@ -20,7 +20,16 @@
       "signUp": "إنشاء حساب جديد",
       "required": "هذا الحقل مطلوب",
       "invalidEmail": "يرجى إدخال بريد إلكتروني صحيح",
-      "minLength": "يجب أن تكون كلمة المرور 6 أحرف على الأقل"
+      "minLength": "يجب أن تكون كلمة المرور 6 أحرف على الأقل",
+      "errors": {
+        "invalidCredentials": "البريد الإلكتروني/اسم المستخدم أو كلمة المرور غير صحيحة",
+        "accessDenied": "تم الرفض",
+        "accessDeniedMessage": "هذه المنصة للمدربين فقط. للمتابعة كعميل، يرجى زيارة بوابة العملاء.",
+        "googleAuthFailed": "فشل تسجيل الدخول عبر جوجل",
+        "googleAuthError": "خطأ في المصادقة",
+        "loginFailed": "فشل تسجيل الدخول",
+        "genericError": "حدث خطأ أثناء تسجيل الدخول. يرجى المحاولة مرة أخرى."
+      }
     },
     "register": {
       "title": "إنشاء حساب",
@@ -262,7 +271,33 @@
     "yearlyPrice": "السعر السنوي",
     "promoCode": "رمز ترويجي",
     "activeStatus": "حالة النشاط",
-    "isAnnual": "خطة سنوية"
+    "isAnnual": "خطة سنوية",
+    "modal": {
+      "editPackage": "تعديل الحزمة",
+      "createNewPackage": "إنشاء حزمة جديدة",
+      "packageName": "اسم الحزمة",
+      "packageNameRequired": "اسم الحزمة مطلوب",
+      "description": "الوصف (اختياري)",
+      "descriptionPlaceholder": "صف حزمتك...",
+      "monthlyPrice": "السعر الشهري ($)",
+      "yearlyPrice": "السعر السنوي ($) (اختياري)",
+      "programs": "البرامج",
+      "loadingPrograms": "جاري تحميل البرامج...",
+      "noProgramsAvailable": "لا توجد برامج متاحة. أنشئ برنامجاً أولاً.",
+      "programsSelected": "✓ {{count}} برنامج/برامج محددة",
+      "promoCode": "رمز ترويجي (اختياري)",
+      "promoCodePlaceholder": "مثال: SAVE20",
+      "thumbnailUrl": "رابط الصورة (اختياري)",
+      "thumbnailUrlPlaceholder": "https://example.com/image.jpg",
+      "isAnnual": "خطة سنوية",
+      "isActive": "نشط",
+      "cancel": "إلغاء",
+      "update": "تحديث",
+      "create": "إنشاء",
+      "saving": "جاري الحفظ...",
+      "deleteConfirm": "تأكيد الحذف",
+      "deleteMessage": "هل أنت متأكد من حذف \"{{name}}\"؟ هذا حذف مؤقت ويمكن استعادته."
+    }
   },
   "packages_ui": {
     "selectedPrograms": "✓ {{count}} برنامج/برامج محددة"
@@ -405,6 +440,17 @@
     "brandingColorsHelp": "ألوان سادسة عشرية مفصولة بفواصل"
   },
   "shared": {
+    "chat": {
+      "listTitle": "الرسائل",
+      "searchPlaceholder": "ابحث في المحادثات...",
+      "noChats": "لا توجد محادثات بعد",
+      "lastMessagePreview": "معاينة الرسالة الأخيرة...",
+      "startConversation": "ابدأ محادثة",
+      "typing": "{{name}} يكتب...",
+      "placeholder": "اكتب رسالة...",
+      "online": "متصل",
+      "offline": "غير متصل"
+    },
     "trainerProfile": {
       "loading": "جاري تحميل ملف المدرب...",
       "basedOnReviews": "بناءً على تقييمات العملاء",
@@ -469,7 +515,9 @@
     "email": "البريد الإلكتروني",
     "status": "الحالة",
     "description": "الوصف",
-    "saving": "جاري الحفظ..."
+    "saving": "جاري الحفظ...",
+    "characters": "أحرف",
+    "max": "الحد الأقصى"
   },
   "inbox": {
     "messages": "الرسائل",

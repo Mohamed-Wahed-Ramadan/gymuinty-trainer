@@ -20,7 +20,16 @@
       "signUp": "Sign up here",
       "required": "This field is required",
       "invalidEmail": "Please enter a valid email",
-      "minLength": "Password must be at least 6 characters"
+      "minLength": "Password must be at least 6 characters",
+      "errors": {
+        "invalidCredentials": "Invalid email/username or password",
+        "accessDenied": "Access Denied",
+        "accessDeniedMessage": "This platform is for trainers only. To continue as a client, please visit our client portal.",
+        "googleAuthFailed": "Google Sign-In failed",
+        "googleAuthError": "Authentication Error",
+        "loginFailed": "Login Failed",
+        "genericError": "An error occurred during login. Please try again."
+      }
     },
     "register": {
       "title": "Create Account",
@@ -262,7 +271,33 @@
     "yearlyPrice": "Yearly Price",
     "promoCode": "Promo Code",
     "activeStatus": "Active Status",
-    "isAnnual": "Is Annual Plan"
+    "isAnnual": "Is Annual Plan",
+    "modal": {
+      "editPackage": "Edit Package",
+      "createNewPackage": "Create New Package",
+      "packageName": "Package Name",
+      "packageNameRequired": "Package Name is required",
+      "description": "Description (optional)",
+      "descriptionPlaceholder": "Describe your package...",
+      "monthlyPrice": "Monthly Price ($)",
+      "yearlyPrice": "Yearly Price ($) (optional)",
+      "programs": "Programs",
+      "loadingPrograms": "Loading programs...",
+      "noProgramsAvailable": "No programs available. Create a program first.",
+      "programsSelected": "✓ {{count}} program(s) selected",
+      "promoCode": "Promo Code (optional)",
+      "promoCodePlaceholder": "e.g., SAVE20",
+      "thumbnailUrl": "Thumbnail URL (optional)",
+      "thumbnailUrlPlaceholder": "https://example.com/image.jpg",
+      "isAnnual": "Annual Plan",
+      "isActive": "Active",
+      "cancel": "Cancel",
+      "update": "Update",
+      "create": "Create",
+      "saving": "Saving...",
+      "deleteConfirm": "Confirm Deletion",
+      "deleteMessage": "Are you sure you want to delete \"{{name}}\"? This is a soft delete and can be restored."
+    }
   },
   "packages_ui": {
     "selectedPrograms": "✓ {{count}} program(s) selected"
@@ -405,6 +440,17 @@
     "brandingColorsHelp": "Comma-separated hex colors"
   },
   "shared": {
+    "chat": {
+      "listTitle": "Messages",
+      "searchPlaceholder": "Search chats...",
+      "noChats": "No chats yet",
+      "lastMessagePreview": "Last message preview...",
+      "startConversation": "Start a conversation",
+      "typing": "{{name}} is typing...",
+      "placeholder": "Type a message...",
+      "online": "Online",
+      "offline": "Offline"
+    },
     "trainerProfile": {
       "loading": "Loading trainer profile...",
       "basedOnReviews": "Based on client reviews",
@@ -469,7 +515,9 @@
     "email": "Email",
     "status": "Status",
     "description": "Description",
-    "saving": "Saving..."
+    "saving": "Saving...",
+    "characters": "characters",
+    "max": "Max"
   },
   "inbox": {
     "messages": "Messages",

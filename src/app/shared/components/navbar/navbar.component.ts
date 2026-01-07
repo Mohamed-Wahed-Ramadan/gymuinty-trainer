@@ -65,6 +65,11 @@ export class NavbarComponent implements OnInit, OnDestroy {
   toggleLanguage(): void {
     const newLang = this.currentLanguage === 'en' ? 'ar' : 'en';
     this.translationService.setLanguage(newLang);
+    // Force change detection to ensure UI updates immediately
+    setTimeout(() => {
+      this.currentLanguage = this.translationService.getLanguage();
+      this.cdr.detectChanges();
+    }, 0);
   }
 
   ngOnDestroy(): void {

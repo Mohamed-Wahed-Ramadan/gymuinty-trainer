@@ -299,4 +299,25 @@ export class ChatDetailComponent implements OnInit, OnDestroy, AfterViewChecked,
     try { event.target.src = './avatar.png'; } catch (e) { /* ignore */ }
   }
 
+  // Helper method to get avatar URL
+  getAvatarUrl(senderPhoto: string | null | undefined, fallbackPhoto: string | null | undefined): string {
+    if (senderPhoto && senderPhoto.trim() && senderPhoto !== 'null' && senderPhoto !== 'undefined') {
+      // إذا كان URL كامل، استخدمه مباشرة
+      if (senderPhoto.startsWith('http://') || senderPhoto.startsWith('https://')) {
+        return senderPhoto;
+      }
+      // إذا كان مسار نسبي، أضف base URL
+      const baseUrl = 'https://gymunity-fp-apis.runasp.net';
+      return `${baseUrl}/${senderPhoto.replace(/^\/+/, '')}`;
+    }
+    if (fallbackPhoto && fallbackPhoto.trim() && fallbackPhoto !== 'null' && fallbackPhoto !== 'undefined') {
+      if (fallbackPhoto.startsWith('http://') || fallbackPhoto.startsWith('https://')) {
+        return fallbackPhoto;
+      }
+      const baseUrl = 'https://gymunity-fp-apis.runasp.net';
+      return `${baseUrl}/${fallbackPhoto.replace(/^\/+/, '')}`;
+    }
+    return './avatar.png';
+  }
+
 }

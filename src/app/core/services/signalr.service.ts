@@ -44,7 +44,9 @@ export class SignalRService {
     }
 
     this.hubConnection = new HubConnectionBuilder()
-      .withUrl(`${this.hubUrl}?access_token=${encodeURIComponent(token)}`)
+      .withUrl(this.hubUrl, {
+        accessTokenFactory: () => token // استخدام accessTokenFactory بدلاً من query string
+      })
       .configureLogging(LogLevel.Warning)
       .withAutomaticReconnect()
       .build();

@@ -34,19 +34,19 @@
         </a>
       </li>
       <li class="nav-item">
-        <a href="/exercise-library" class="nav-link" [title]="'sidebar.exercises' | translate">
+        <a (click)="goTo('/exercise-library')" class="nav-link" role="button" [title]="'sidebar.exercises' | translate">
           <i class="bi bi-heart-pulse"></i>
           <span class="nav-label">{{ 'sidebar.exercises' | translate }}</span>
         </a>
       </li>
       <li class="nav-item">
-        <a href="/inbox" class="nav-link" [title]="'sidebar.messages' | translate">
+        <a (click)="goTo('/inbox')" class="nav-link" role="button" [title]="'sidebar.messages' | translate">
           <i class="bi bi-chat-dots"></i>
           <span class="nav-label">{{ 'sidebar.messages' | translate }}</span>
         </a>
       </li>
       <li class="nav-item">
-        <a href="/profile" class="nav-link" [title]="'sidebar.profile' | translate">
+        <a (click)="goTo('/profile')" class="nav-link" role="button" [title]="'sidebar.profile' | translate">
           <i class="bi bi-person"></i>
           <span class="nav-label">{{ 'sidebar.profile' | translate }}</span>
         </a>

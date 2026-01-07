@@ -2,7 +2,7 @@
   <!-- Header -->
   <div class="chat-detail-header">
     <div class="header-content">
-      <img [src]="thread.otherUserProfilePhoto || './avatar.png'" (error)="setAvatarFallback($event)"
+      <img [src]="getAvatarUrl(thread.otherUserProfilePhoto, null)" (error)="setAvatarFallback($event)"
         alt="{{ thread.otherUserName }}" class="message-avatar">
       <div class="header-info">
         <h6 class="mb-0">{{ thread.otherUserName }}</h6>
@@ -33,11 +33,12 @@
       <div class="message-group">
         <!-- Avatar (use sender profile or thread.otherUserProfilePhoto fallback) -->
         <img *ngIf="item.side === 'other'"
-          [src]="item.message.senderProfilePhoto || thread.otherUserProfilePhoto || './avatar.png'"
+          [src]="getAvatarUrl(item.message.senderProfilePhoto, thread.otherUserProfilePhoto)"
           (error)="setAvatarFallback($event)" alt="{{ item.message.senderName }}" class="message-avatar">
 
-        <!-- For own messages show avatar on right if available -->
-        <img *ngIf="item.side === 'mine'" [src]="item.message.senderProfilePhoto || './avatar.png'"
+        <!-- For own messages show avatar on left -->
+        <img *ngIf="item.side === 'mine'" 
+          [src]="getAvatarUrl(item.message.senderProfilePhoto, null)"
           (error)="setAvatarFallback($event)" alt="{{ item.message.senderName }}" class="message-avatar">
 
         <!-- Sender name -->
