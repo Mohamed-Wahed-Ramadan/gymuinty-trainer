@@ -10,8 +10,12 @@ import { authInterceptor } from './core/interceptors/auth.interceptor';
 import { errorInterceptor } from './core/interceptors/error.interceptor';
 
 export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
-  return new TranslateHttpLoader(http, '/assets/i18n/', '.json');
+  const loader = new TranslateHttpLoader(http);
+  loader.prefix = '/assets/i18n/';
+  loader.suffix = '.json';
+  return loader;
 }
+
 
 export const appConfig: ApplicationConfig = {
   providers: [
