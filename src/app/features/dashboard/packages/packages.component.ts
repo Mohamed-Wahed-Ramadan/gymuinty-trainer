@@ -36,6 +36,12 @@ export class PackagesComponent implements OnInit {
   selectedProgramIds: number[] = [];
   isLoadingPrograms = false;
 
+  // Delete confirmation state
+  deleteConfirmation: { show: boolean; item: PackageResponse | null } = {
+    show: false,
+    item: null
+  };
+
   constructor(
     private fb: FormBuilder,
     private packageService: PackageService,
@@ -256,21 +262,34 @@ export class PackagesComponent implements OnInit {
 
   deletePackage(pkg: PackageResponse): void {
     if (!pkg.id) return;
+    this.deleteConfirmation = {
+      show: true,
+      item: pkg
+    };
+  }
 
-    if (confirm(`Are you sure you want to delete "${pkg.name}"? This is a soft delete and can be restored.`)) {
-      this.packageService.deletePackage(pkg.id).subscribe({
-        next: () => {
-          this.notificationService.success('Success', 'Package deleted successfully');
-          this.reload.emit();
-          this.cdr.detectChanges();
-        },
-        error: (error: Error) => {
-          this.notificationService.error('Error', error.message || 'Failed to delete package');
-          console.error(error);
-          this.cdr.detectChanges();
-        }
-      });
-    }
+  confirmDelete(): void {
+    if (!this.deleteConfirmation.item || !this.deleteConfirmation.item.id) return;
+
+    const pkg = this.deleteConfirmation.item;
+    this.packageService.deletePackage(pkg.id).subscribe({
+      next: () => {
+        this.notificationService.success('Success', 'Package deleted successfully');
+        this.deleteConfirmation = { show: false, item: null };
+        this.reload.emit();
+        this.cdr.detectChanges();
+      },
+      error: (error: Error) => {
+        this.notificationService.error('Error', error.message || 'Failed to delete package');
+        this.deleteConfirmation = { show: false, item: null };
+        console.error(error);
+        this.cdr.detectChanges();
+      }
+    });
+  }
+
+  cancelDelete(): void {
+    this.deleteConfirmation = { show: false, item: null };
   }
 
   /**

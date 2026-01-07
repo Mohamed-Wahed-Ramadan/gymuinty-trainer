@@ -32,6 +32,12 @@ export class ExerciseLibraryComponent implements OnInit {
   muscleGroups: string[] = [];
   equipmentList: string[] = [];
 
+  // Toast confirmation state
+  deleteConfirmation: { show: boolean; item: Exercise | null } = {
+    show: false,
+    item: null
+  };
+
   constructor(
     private svc: ExerciseLibraryService,
     private auth: AuthService,
@@ -223,17 +229,33 @@ export class ExerciseLibraryComponent implements OnInit {
   }
 
   deleteExercise(ex: Exercise) {
-    if (!confirm(`Delete '${ex.name}'? This cannot be undone.`)) return;
+    this.deleteConfirmation = {
+      show: true,
+      item: ex
+    };
+  }
+
+  confirmDelete(): void {
+    if (!this.deleteConfirmation.item || !this.deleteConfirmation.item.id) return;
+    const ex = this.deleteConfirmation.item;
     this.svc.delete(ex.id).subscribe({
       next: () => {
+        this.notify.success('Success', 'Exercise deleted successfully');
+        this.deleteConfirmation = { show: false, item: null };
         this.loadExercises();
         this.cdr.detectChanges();
       },
       error: err => {
+        this.notify.error('Error', err.message || 'Failed to delete exercise');
+        this.deleteConfirmation = { show: false, item: null };
         console.error(err);
         this.cdr.detectChanges();
       }
     });
+  }
+
+  cancelDelete(): void {
+    this.deleteConfirmation = { show: false, item: null };
   }
 }
 

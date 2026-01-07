@@ -102,7 +102,6 @@
 .thumbnail {
   width: 100%;
   height: 100%;
-  object-fit: cover;
 }
 
 .card-overlay {
@@ -410,5 +409,98 @@
 @keyframes spinner {
   to {
     transform: rotate(360deg);
+  }
+}
+/* Delete Confirmation Toast */
+.delete-confirmation-toast {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 2000;
+  max-width: 450px;
+  animation: slideUp 0.3s ease-out;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(400px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.toast-content {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+  display: flex;
+  gap: 16px;
+  padding: 16px;
+  border-left: 4px solid #dc3545;
+}
+
+.toast-icon {
+  flex-shrink: 0;
+  display: flex;
+  align-items: flex-start;
+  font-size: 24px;
+  color: #dc3545;
+  margin-top: 2px;
+}
+
+.toast-body {
+  flex: 1;
+}
+
+.toast-body h5 {
+  margin: 0 0 8px 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: #212529;
+}
+
+.toast-body p {
+  margin: 0 0 12px 0;
+  font-size: 14px;
+  color: #6c757d;
+  line-height: 1.4;
+}
+
+.toast-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.toast-actions .btn {
+  min-width: 80px;
+  padding: 6px 12px;
+  font-size: 13px;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 480px) {
+  .delete-confirmation-toast {
+    bottom: 10px;
+    right: 10px;
+    left: 10px;
+    max-width: none;
+  }
+
+  .toast-content {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .toast-actions {
+    flex-direction: column;
+  }
+
+  .toast-actions .btn {
+    flex: 1;
+    width: 100%;
   }
 }

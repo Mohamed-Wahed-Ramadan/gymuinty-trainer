@@ -29,7 +29,11 @@ export class ProgramsComponent implements OnInit {
   isSaving = false;
   showProgramModal = false;
   modalProgramId: number | null = null;
-
+  // Delete confirmation state
+  deleteConfirmation: { show: boolean; item: Program | null } = {
+    show: false,
+    item: null
+  };
   constructor(
     private fb: FormBuilder,
     private programService: ProgramService,
@@ -166,21 +170,34 @@ export class ProgramsComponent implements OnInit {
 
   deleteProgram(program: Program): void {
     if (!program.id) return;
+    this.deleteConfirmation = {
+      show: true,
+      item: program
+    };
+  }
 
-    if (confirm(`Are you sure you want to delete "${program.title}"?`)) {
-      this.programService.deleteProgram(program.id).subscribe({
-        next: () => {
-          this.notificationService.success('Success', 'Program deleted successfully');
-          this.reload.emit();
-          this.cdr.detectChanges();
-        },
-        error: (error) => {
-          this.notificationService.error('Error', 'Failed to delete program');
-          console.error(error);
-          this.cdr.detectChanges();
-        }
-      });
-    }
+  confirmDelete(): void {
+    if (!this.deleteConfirmation.item || !this.deleteConfirmation.item.id) return;
+
+    const program = this.deleteConfirmation.item;
+    this.programService.deleteProgram(program.id).subscribe({
+      next: () => {
+        this.notificationService.success('Success', 'Program deleted successfully');
+        this.deleteConfirmation = { show: false, item: null };
+        this.reload.emit();
+        this.cdr.detectChanges();
+      },
+      error: (error) => {
+        this.notificationService.error('Error', 'Failed to delete program');
+        this.deleteConfirmation = { show: false, item: null };
+        console.error(error);
+        this.cdr.detectChanges();
+      }
+    });
+  }
+
+  cancelDelete(): void {
+    this.deleteConfirmation = { show: false, item: null };
   }
 
   selectProgram(program: Program): void {

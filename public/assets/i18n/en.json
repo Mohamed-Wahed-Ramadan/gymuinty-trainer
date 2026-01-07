@@ -451,6 +451,7 @@
     "save": "Save",
     "cancel": "Cancel",
     "delete": "Delete",
+    "confirmDelete": "Confirm Delete",
     "edit": "Edit",
     "add": "Add",
     "close": "Close",

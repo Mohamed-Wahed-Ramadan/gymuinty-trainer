@@ -75,6 +75,27 @@
   gap: 20px;
 }
 
+@media (max-width: 1200px) {
+  .packages-grid {
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 16px;
+  }
+}
+
+@media (max-width: 768px) {
+  .packages-grid {
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .packages-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+}
+
 .package-card {
   background: white;
   border-radius: 8px;
@@ -106,7 +127,6 @@
 .thumbnail {
   width: 100%;
   height: 100%;
-  object-fit: cover;
 }
 
 .inactive-badge {
@@ -199,8 +219,85 @@
 
 .card-actions {
   display: flex;
+  flex-wrap: wrap;
   gap: 8px;
   padding-top: 8px;
+  margin-top: auto;
+  border-top: 1px solid #e9ecef;
+  padding-top: 12px;
+}
+
+.card-actions .btn {
+  flex: 1 1 calc(50% - 4px);
+  min-width: 0;
+  font-size: 12px;
+  padding: 8px 12px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+
+.card-actions .btn i {
+  margin-right: 0;
+  flex-shrink: 0;
+}
+
+.card-actions .btn-text {
+  display: inline;
+}
+
+/* Mobile: Stack buttons vertically */
+@media (max-width: 768px) {
+  .card-actions {
+    gap: 6px;
+  }
+  
+  .card-actions .btn {
+    flex: 1 1 calc(50% - 3px);
+    font-size: 11px;
+    padding: 6px 8px;
+  }
+}
+
+/* Small screens: Full width buttons */
+@media (max-width: 480px) {
+  .packages-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .card-actions {
+    flex-direction: column;
+    gap: 6px;
+  }
+  
+  .card-actions .btn {
+    flex: 1 1 100%;
+    width: 100%;
+  }
+  
+  .card-actions .btn-text {
+    display: inline;
+  }
+}
+
+/* Hide button text on very small screens, show only icons */
+@media (max-width: 360px) {
+  .card-actions .btn-text {
+    display: none;
+  }
+  
+  .card-actions .btn {
+    padding: 8px;
+    justify-content: center;
+  }
+  
+  .card-actions .btn i {
+    margin-right: 0;
+  }
 }
 
 /* Modal Styles */
@@ -431,5 +528,98 @@
 @keyframes spinner {
   to {
     transform: rotate(360deg);
+  }
+}
+/* Delete Confirmation Toast */
+.delete-confirmation-toast {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 2000;
+  max-width: 450px;
+  animation: slideUp 0.3s ease-out;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(400px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.toast-content {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+  display: flex;
+  gap: 16px;
+  padding: 16px;
+  border-left: 4px solid #dc3545;
+}
+
+.toast-icon {
+  flex-shrink: 0;
+  display: flex;
+  align-items: flex-start;
+  font-size: 24px;
+  color: #dc3545;
+  margin-top: 2px;
+}
+
+.toast-body {
+  flex: 1;
+}
+
+.toast-body h5 {
+  margin: 0 0 8px 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: #212529;
+}
+
+.toast-body p {
+  margin: 0 0 12px 0;
+  font-size: 14px;
+  color: #6c757d;
+  line-height: 1.4;
+}
+
+.toast-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.toast-actions .btn {
+  min-width: 80px;
+  padding: 6px 12px;
+  font-size: 13px;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 480px) {
+  .delete-confirmation-toast {
+    bottom: 10px;
+    right: 10px;
+    left: 10px;
+    max-width: none;
+  }
+
+  .toast-content {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .toast-actions {
+    flex-direction: column;
+  }
+
+  .toast-actions .btn {
+    flex: 1;
+    width: 100%;
   }
 }

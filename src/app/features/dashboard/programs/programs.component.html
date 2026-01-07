@@ -181,6 +181,29 @@
   </div>
 </div>
 
+<!-- Delete Confirmation Toast -->
+<div *ngIf="deleteConfirmation.show" class="delete-confirmation-toast">
+  <div class="toast-content">
+    <div class="toast-icon">
+      <i class="bi bi-exclamation-triangle"></i>
+    </div>
+    <div class="toast-body">
+      <h5>{{ 'common.confirmDelete' | translate }}</h5>
+      <p *ngIf="deleteConfirmation.item">
+        Are you sure you want to delete "<strong>{{ deleteConfirmation.item.title }}</strong>"?
+      </p>
+    </div>
+    <div class="toast-actions">
+      <button class="btn btn-sm btn-secondary" (click)="cancelDelete()">
+        {{ 'common.cancel' | translate }}
+      </button>
+      <button class="btn btn-sm btn-danger" (click)="confirmDelete()">
+        <i class="bi bi-trash"></i> {{ 'common.delete' | translate }}
+      </button>
+    </div>
+  </div>
+</div>
+
 <!-- Program Detail Modal -->
 <app-program-detail-modal [isOpen]="showProgramModal" [programId]="modalProgramId" [hideEnroll]="false"
   (closeModal)="closeProgramModal()">

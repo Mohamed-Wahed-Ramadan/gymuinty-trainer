@@ -62,20 +62,29 @@
         <!-- Actions -->
         <div class="card-actions">
           <button class="btn btn-sm btn-warning" (click)="openEditModal(pkg)"
-            title="{{ 'packages.editPackage' | translate }}">
-            <i class="bi bi-pencil"></i> {{ 'packages.editPackage' | translate }}
+            title="{{ 'packages.editPackage' | translate }}"
+            aria-label="Edit">
+            <i class="bi bi-pencil"></i>
+            <span class="btn-text">{{ 'packages.editPackage' | translate }}</span>
           </button>
           <button class="btn btn-sm btn-primary" (click)="openProgramModalFromPackage(pkg)"
-            title="{{ 'packages.viewContent' | translate }}">
-            <i class="bi bi-eye"></i> {{ 'packages.viewContent' | translate }}
+            title="{{ 'packages.viewContent' | translate }}"
+            aria-label="View">
+            <i class="bi bi-eye"></i>
+            <span class="btn-text">{{ 'packages.viewContent' | translate }}</span>
           </button>
           <button class="btn btn-sm btn-orange-500" (click)="toggleActiveStatus(pkg)"
-            [title]="pkg.isActive ? ( 'packages.deactivate' | translate ) : ( 'packages.activate' | translate )">
-            <i class="bi" [ngClass]="pkg.isActive ? 'bi-pause' : 'bi-play'"></i> {{ pkg.isActive ? (
-            'packages.deactivate' | translate ) : ( 'packages.activate' | translate ) }}
+            [title]="pkg.isActive ? ( 'packages.deactivate' | translate ) : ( 'packages.activate' | translate )"
+            [attr.aria-label]="pkg.isActive ? 'Deactivate' : 'Activate'">
+            <i class="bi" [ngClass]="pkg.isActive ? 'bi-pause' : 'bi-play'"></i>
+            <span class="btn-text">{{ pkg.isActive ? (
+            'packages.deactivate' | translate ) : ( 'packages.activate' | translate ) }}</span>
           </button>
-          <button class="btn btn-sm btn-danger" (click)="deletePackage(pkg)" title="{{ 'common.delete' | translate }}">
-            <i class="bi bi-trash"></i> {{ 'common.delete' | translate }}
+          <button class="btn btn-sm btn-danger" (click)="deletePackage(pkg)" 
+            title="{{ 'common.delete' | translate }}"
+            aria-label="Delete">
+            <i class="bi bi-trash"></i>
+            <span class="btn-text">{{ 'common.delete' | translate }}</span>
           </button>
         </div>
       </div>
@@ -197,5 +206,29 @@
         </button>
       </div>
     </form>
+  </div>
+</div>
+
+<!-- Delete Confirmation Toast -->
+<div *ngIf="deleteConfirmation.show" class="delete-confirmation-toast">
+  <div class="toast-content">
+    <div class="toast-icon">
+      <i class="bi bi-exclamation-triangle"></i>
+    </div>
+    <div class="toast-body">
+      <h5>{{ 'common.confirmDelete' | translate }}</h5>
+      <p *ngIf="deleteConfirmation.item">
+        Are you sure you want to delete "<strong>{{ deleteConfirmation.item.name }}</strong>"?
+        This is a soft delete and can be restored.
+      </p>
+    </div>
+    <div class="toast-actions">
+      <button class="btn btn-sm btn-secondary" (click)="cancelDelete()">
+        {{ 'common.cancel' | translate }}
+      </button>
+      <button class="btn btn-sm btn-danger" (click)="confirmDelete()">
+        <i class="bi bi-trash"></i> {{ 'common.delete' | translate }}
+      </button>
+    </div>
   </div>
 </div>
