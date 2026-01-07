@@ -1,82 +1,67 @@
 <div class="login-container">
   <div class="login-card">
     <div class="login-header">
-      <h1 class="brand-name">Gymunity</h1>
-      <p class="subtitle">Trainer Dashboard</p>
+      <h1 class="brand-name">{{ 'app.brand' | translate }}</h1>
+      <p class="subtitle">{{ 'auth.login.subtitle' | translate }}</p>
     </div>
 
     <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
       <div class="form-group">
-        <label for="emailOrUserName" class="form-label">Email or Username</label>
-        <input
-          type="text"
-          id="emailOrUserName"
-          class="form-control"
-          formControlName="emailOrUserName"
-          placeholder="Enter your email or username"
-          [class.is-invalid]="emailOrUserName?.invalid && emailOrUserName?.touched"
-        />
+        <label for="emailOrUserName" class="form-label">{{ 'auth.login.emailOrUsername' | translate }}</label>
+        <input type="text" id="emailOrUserName" class="form-control" formControlName="emailOrUserName"
+          placeholder="{{ 'auth.login.emailOrUsername' | translate }}"
+          [class.is-invalid]="emailOrUserName?.invalid && emailOrUserName?.touched" />
         <div class="invalid-feedback" *ngIf="emailOrUserName?.invalid && emailOrUserName?.touched">
-          <span *ngIf="emailOrUserName?.errors?.['required']">Email or username is required</span>
+          <span *ngIf="emailOrUserName?.errors?.['required']">{{ 'auth.login.required' | translate }}</span>
         </div>
       </div>
 
       <div class="form-group">
-        <label for="password" class="form-label">Password</label>
+        <label for="password" class="form-label">{{ 'auth.login.password' | translate }}</label>
         <div class="password-input-group">
-          <input
-            [type]="showPassword ? 'text' : 'password'"
-            id="password"
-            class="form-control"
-            formControlName="password"
-            placeholder="Enter your password"
-            [class.is-invalid]="password?.invalid && password?.touched"
-          />
-          <button
-            type="button"
-            class="password-toggle"
-            (click)="togglePasswordVisibility()"
-            [attr.aria-label]="showPassword ? 'Hide password' : 'Show password'"
-          >
+          <input [type]="showPassword ? 'text' : 'password'" id="password" class="form-control"
+            formControlName="password" placeholder="{{ 'auth.login.password' | translate }}"
+            [class.is-invalid]="password?.invalid && password?.touched" />
+          <button type="button" class="password-toggle" (click)="togglePasswordVisibility()"
+            [attr.aria-label]="showPassword ? 'Hide password' : 'Show password'">
             <i [class]="showPassword ? 'bi bi-eye-slash' : 'bi bi-eye'"></i>
           </button>
         </div>
         <div class="invalid-feedback" *ngIf="password?.invalid && password?.touched">
-          <span *ngIf="password?.errors?.['required']">Password is required</span>
-          <span *ngIf="password?.errors?.['minlength']">Password must be at least 6 characters</span>
+          <span *ngIf="password?.errors?.['required']">{{ 'auth.login.required' | translate }}</span>
+          <span *ngIf="password?.errors?.['minlength']">{{ 'auth.login.minLength' | translate }}</span>
         </div>
       </div>
 
       <div class="form-group remember-forgot">
         <label class="checkbox">
           <input type="checkbox" />
-          <span>Remember me</span>
+          <span>{{ 'auth.login.rememberMe' | translate }}</span>
         </label>
-        <a routerLink="/auth/forgot-password" class="forgot-link">Forgot Password?</a>
+        <a routerLink="/auth/forgot-password" class="forgot-link">{{ 'auth.login.forgotPassword' | translate }}</a>
       </div>
 
       <button type="submit" class="btn btn-primary btn-lg" [disabled]="isLoading || loginForm.invalid">
-        <span *ngIf="!isLoading">Sign In</span>
+        <span *ngIf="!isLoading">{{ 'auth.login.signIn' | translate }}</span>
         <span *ngIf="isLoading">
           <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
-          Loading...
+          {{ 'common.loading' | translate }}
         </span>
       </button>
     </form>
 
     <div class="divider">
-      <span>Or continue with</span>
+      <span>{{ 'auth.login.signInWithGoogle' | translate }}</span>
     </div>
 
-    <div id="g_id_onload"
-         [attr.data-client_id]="googleClientId"
-         data-callback="handleCredentialResponse"
-         (nglize)="onGoogleSignInSuccess($event)">
+    <div id="g_id_onload" [attr.data-client_id]="googleClientId" data-callback="handleCredentialResponse"
+      (nglize)="onGoogleSignInSuccess($event)">
     </div>
     <div class="g_id_signin" data-type="standard"></div>
 
     <div class="login-footer">
-      <p>Don't have an account? <a routerLink="/auth/register" class="signup-link">Sign up here</a></p>
+      <p>{{ 'auth.login.noAccount' | translate }} <a routerLink="/auth/register" class="signup-link">{{
+          'auth.login.signUp' | translate }}</a></p>
     </div>
   </div>
 </div>

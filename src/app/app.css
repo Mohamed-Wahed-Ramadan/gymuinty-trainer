@@ -81,6 +81,37 @@
   color: #4A90E2;
 }
 
+/* Header language toggle (placed next to home) */
+.language-toggle {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  color: #333;
+  padding: 8px 10px;
+  border-radius: 6px;
+  transition: all 0.18s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.language-toggle i {
+  font-size: 16px;
+  line-height: 1;
+}
+
+.language-toggle .lang-text {
+  font-weight: 600;
+  letter-spacing: 0.6px;
+}
+
+.language-toggle:hover {
+  background: rgba(74, 144, 226, 0.08);
+  color: #4A90E2;
+  transform: translateY(-1px);
+}
+
 .page-content {
   flex: 1;
   overflow: visible;

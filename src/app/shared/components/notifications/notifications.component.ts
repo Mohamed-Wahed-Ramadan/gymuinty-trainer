@@ -1,6 +1,7 @@
 import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NotificationService, Notification } from '../../../core/services/notification.service';
+import { TranslationService } from '../../../core/services/translation.service';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
@@ -15,9 +16,20 @@ export class NotificationsComponent implements OnInit, OnDestroy {
   notifications: Notification[] = [];
   unreadCount = 0;
   showDropdown = false;
+  direction = 'ltr';
   private destroy$ = new Subject<void>();
 
-  constructor(private notificationService: NotificationService, private cdr: ChangeDetectorRef) {}
+  constructor(
+    private notificationService: NotificationService,
+    private cdr: ChangeDetectorRef,
+    private translationService: TranslationService
+  ) {
+    this.direction = this.translationService.getDirection();
+    this.translationService.currentLanguage$.subscribe(() => {
+      this.direction = this.translationService.getDirection();
+      this.cdr.detectChanges();
+    });
+  }
 
   ngOnInit(): void {
     this.notificationService.notifications$
@@ -68,5 +80,9 @@ export class NotificationsComponent implements OnInit, OnDestroy {
       info: 'bi-info-circle'
     };
     return icons[type] || 'bi-bell';
+  }
+
+  getDirection(): string {
+    return this.direction;
   }
 }

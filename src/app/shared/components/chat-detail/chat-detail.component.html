@@ -2,16 +2,13 @@
   <!-- Header -->
   <div class="chat-detail-header">
     <div class="header-content">
-      <img
-  [src]="thread.otherUserProfilePhoto || './avatar.png'"
-  (error)="setAvatarFallback($event)"
-  alt="{{ thread.otherUserName }}"
-  class="message-avatar">
+      <img [src]="thread.otherUserProfilePhoto || './avatar.png'" (error)="setAvatarFallback($event)"
+        alt="{{ thread.otherUserName }}" class="message-avatar">
       <div class="header-info">
         <h6 class="mb-0">{{ thread.otherUserName }}</h6>
         <small [class]="isOtherUserOnline ? 'text-success' : 'text-muted'">
           <i class="bi" [ngClass]="isOtherUserOnline ? 'bi-circle-fill' : 'bi-circle'"></i>
-          {{ isOtherUserOnline ? 'Online' : 'Offline' }}
+          {{ isOtherUserOnline ? ('shared.chat.online' | translate) : ('shared.chat.offline' | translate) }}
         </small>
       </div>
     </div>
@@ -29,27 +26,23 @@
   <div class="messages-container" #messagesContainer>
     <div *ngIf="messages.length === 0" class="no-messages">
       <i class="bi bi-chat-left-dots"></i>
-      <p>Start a conversation</p>
+      <p>{{ 'shared.chat.startConversation' | translate }}</p>
     </div>
 
     <div *ngFor="let item of displayMessages" [class.own-message]="item.side === 'mine'" class="message-wrapper">
       <div class="message-group">
         <!-- Avatar (use sender profile or thread.otherUserProfilePhoto fallback) -->
-           <img *ngIf="item.side === 'other'"
-             [src]="item.message.senderProfilePhoto || thread.otherUserProfilePhoto || './avatar.png'"
-             (error)="setAvatarFallback($event)"
-             alt="{{ item.message.senderName }}"
-             class="message-avatar">
+        <img *ngIf="item.side === 'other'"
+          [src]="item.message.senderProfilePhoto || thread.otherUserProfilePhoto || './avatar.png'"
+          (error)="setAvatarFallback($event)" alt="{{ item.message.senderName }}" class="message-avatar">
 
         <!-- For own messages show avatar on right if available -->
-        <img *ngIf="item.side === 'mine'"
-             [src]="item.message.senderProfilePhoto || './avatar.png'"
-             (error)="setAvatarFallback($event)"
-             alt="{{ item.message.senderName }}"
-             class="message-avatar">
+        <img *ngIf="item.side === 'mine'" [src]="item.message.senderProfilePhoto || './avatar.png'"
+          (error)="setAvatarFallback($event)" alt="{{ item.message.senderName }}" class="message-avatar">
 
         <!-- Sender name -->
-        <div class="message-sender" [class.own]="item.side === 'mine'">{{ item.message.senderName || (item.side === 'mine' ? (currentUserName || '') : '') }}</div>
+        <div class="message-sender" [class.own]="item.side === 'mine'">{{ item.message.senderName || (item.side ===
+          'mine' ? (currentUserName || '') : '') }}</div>
 
         <!-- Message bubble -->
         <div class="message-bubble" [ngClass]="item.side === 'mine' ? 'own' : 'other'">
@@ -58,10 +51,8 @@
 
             <!-- Media if exists -->
             <img *ngIf="item.message.mediaUrl && isImageType(item.message.type)"
-                 [src]="item.message.mediaUrl || './avatar.png'"
-                 (error)="setAvatarFallback($event)"
-                 alt="Media"
-                 class="message-media">
+              [src]="item.message.mediaUrl || './avatar.png'" (error)="setAvatarFallback($event)" alt="Media"
+              class="message-media">
           </div>
 
           <small class="message-time">
@@ -74,7 +65,7 @@
 
     <!-- Typing Indicator -->
     <div *ngIf="otherUserTyping" class="typing-indicator">
-      <small class="text-muted">{{ thread.otherUserName }} is typing...</small>
+      <small class="text-muted">{{ 'shared.chat.typing' | translate:{name: thread.otherUserName} }}</small>
       <div class="typing-dots">
         <span></span>
         <span></span>
@@ -89,17 +80,11 @@
       <!-- <button class="btn btn-light" (click)="onAttachMedia()">
         <i class="bi bi-paperclip"></i>
       </button> -->
-      
-      <input type="text"
-             class="form-control message-input"
-             placeholder="Type a message..."
-             [(ngModel)]="messageContent"
-             (keydown.enter)="sendMessage()"
-             (input)="onTyping()">
-      
-      <button [disabled]="!messageContent.trim()" 
-              (click)="sendMessage()"
-              class="btn btn-bton send-btn">
+
+      <input type="text" class="form-control message-input" placeholder="{{ 'shared.chat.placeholder' | translate }}"
+        [(ngModel)]="messageContent" (keydown.enter)="sendMessage()" (input)="onTyping()">
+
+      <button [disabled]="!messageContent.trim()" (click)="sendMessage()" class="btn btn-bton send-btn">
         <i class="bi bi-send"></i>
       </button>
     </div>

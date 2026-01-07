@@ -3,15 +3,15 @@
   <!-- Hero Banner -->
   <section class="hero-banner">
     <div class="hero-content">
-      <h1 class="hero-title">Welcome to Gymunity</h1>
-      <p class="hero-subtitle">Your Platform for Fitness Excellence and Professional Training</p>
+      <h1 class="hero-title">{{ 'home.bgTitle1' | translate }} {{ 'home.bgTitle2' | translate }}</h1>
+      <p class="hero-subtitle">{{ 'home.bgSubtitle' | translate }}</p>
 
       <div class="hero-actions">
         <button *ngIf="!isLoggedIn" class="btn btn-primary btn-lg" (click)="goToRegister()">
-          <i class="bi bi-pencil-square"></i> Get Started
+          <i class="bi bi-pencil-square"></i> {{ 'home.getStarted' | translate }}
         </button>
         <button *ngIf="isLoggedIn" class="btn btn-primary btn-lg" (click)="goToDashboard()">
-          <i class="bi bi-speedometer2"></i> Go to Dashboard
+          <i class="bi bi-speedometer2"></i> {{ 'home.viewDashboard' | translate }}
         </button>
       </div>
     </div>
@@ -25,10 +25,10 @@
     <div class="search-container">
       <div class="search-box">
         <!-- <i class="bi bi-search"></i> -->
-        <input type="text" class="search-input" placeholder="Search packages, programs, or trainers..."
+        <input type="text" class="search-input" placeholder="{{ 'home.searchPlaceholder' | translate }}"
           [(ngModel)]="term" (keyup.enter)="search()" />
         <button class="btn-search text-black" (click)="search()" [disabled]="isLoading">
-          <i class="bi bi-search"></i> Search
+          <i class="bi bi-search"></i> {{ 'home.search' | translate }}
         </button>
       </div>
     </div>
@@ -39,16 +39,16 @@
     <!-- Loading State -->
     <div *ngIf="isLoading" class="loading-state">
       <div class="spinner"></div>
-      <p>Loading...</p>
+      <p>{{ 'common.loading' | translate }}</p>
     </div>
 
     <!-- Packages Section -->
     <section class="section-container" *ngIf="packages.length > 0 && !isLoading">
       <div class="section-header">
         <h2 class="section-title">
-          <i class="bi bi-bag-check"></i> Featured Packages
+          <i class="bi bi-bag-check"></i> {{ 'home.packagesTitle' | translate }}
         </h2>
-        <p class="section-description">Choose from our premium training packages</p>
+        <p class="section-description">{{ 'home.packagesSubtitle' | translate }}</p>
       </div>
 
       <div class="cards-grid">
@@ -66,16 +66,16 @@
               <h3 class="card-title">{{ p.name }}</h3>
               <div class="package-meta">
                 <span class="package-price">{{ p.priceMonthly | currency }}</span>
-                <button class="btn-view " *ngIf="isLoggedIn">Open</button>
-                <button class="btn-view btn-disabled" *ngIf="!isLoggedIn"
-                  [title]="'Login to view this package'">Open</button>
+                <button class="btn-view " *ngIf="isLoggedIn">{{ 'common.view' | translate }}</button>
+                <button class="btn-view btn-disabled" *ngIf="!isLoggedIn" [title]="'navbar.login' | translate">{{
+                  'common.view' | translate }}</button>
               </div>
             </div>
 
             <p class="card-description">{{ p.description }}</p>
 
             <div class="package-programs" *ngIf="isPackageExpanded(p)" [@expandCollapse]>
-              <h4 class="programs-title">Programs in this package</h4>
+              <h4 class="programs-title">{{ 'home.programsInPackage' | translate }}</h4>
               <div class="programs-grid">
                 <div class="program-item" *ngFor="let pr of p.programs">
                   <div class="program-thumb" *ngIf="pr.thumbnailUrl">
@@ -101,9 +101,9 @@
     <section class="section-container" *ngIf="programs.length > 0 && !isLoading">
       <div class="section-header">
         <h2 class="section-title">
-          <i class="bi bi-diagram-3"></i> Training Programs
+          <i class="bi bi-diagram-3"></i> {{ 'home.programsTitle' | translate }}
         </h2>
-        <p class="section-description">Explore our comprehensive training programs</p>
+        <p class="section-description">{{ 'home.programsSubtitle' | translate }}</p>
       </div>
 
       <div class="cards-grid">
@@ -132,9 +132,10 @@
             </div>
 
             <div class="card-footer">
-              <button class="btn-view" *ngIf="isLoggedIn" (click)="exploreProgram(pr)">Explore</button>
-              <button class="btn-view btn-disabled" *ngIf="!isLoggedIn"
-                [title]="'Login to explore this program'">Explore</button>
+              <button class="btn-view" *ngIf="isLoggedIn" (click)="exploreProgram(pr)">{{ 'home.explore' | translate
+                }}</button>
+              <button class="btn-view btn-disabled" *ngIf="!isLoggedIn" [title]="'navbar.login' | translate">{{
+                'home.explore' | translate }}</button>
             </div>
           </div>
         </div>
@@ -145,9 +146,9 @@
     <section class="section-container" *ngIf="trainers.length > 0 && !isLoading">
       <div class="section-header">
         <h2 class="section-title">
-          <i class="bi bi-people"></i> Expert Trainers
+          <i class="bi bi-people"></i> {{ 'home.trainersTitle' | translate }}
         </h2>
-        <p class="section-description">Connect with professional and experienced trainers</p>
+        <p class="section-description">{{ 'home.trainersSubtitle' | translate }}</p>
       </div>
 
       <div class="cards-grid">
@@ -193,8 +194,8 @@
       <div class="empty-icon">
         <i class="bi bi-inbox"></i>
       </div>
-      <h3>No Content Available</h3>
-      <p>Please check back later for packages, programs, and trainers.</p>
+      <h3>{{ 'home.noContentTitle' | translate }}</h3>
+      <p>{{ 'home.noContentSubtitle' | translate }}</p>
     </div>
   </div>
 </div>

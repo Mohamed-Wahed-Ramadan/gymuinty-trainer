@@ -6,11 +6,13 @@ import { TranslationService } from '../../../core/services/translation.service';
 import { ChatService } from '../../../core/services/chat.service';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+import { TranslateModule } from '@ngx-translate/core';
+
 
 @Component({
   selector: 'app-navbar',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, RouterLink, TranslateModule],
   templateUrl: './navbar.component.html',
   styleUrl: './navbar.component.css'
 })
@@ -61,8 +63,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
   }
 
   toggleLanguage(): void {
-    const newLang = this.currentLanguage === 'en' ? 'ar' : 'en';
-    this.translationService.setLanguage(newLang);
+    this.translationService.toggleLanguage();
   }
 
   ngOnDestroy(): void {

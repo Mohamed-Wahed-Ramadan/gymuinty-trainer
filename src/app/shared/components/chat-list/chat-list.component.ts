@@ -1,6 +1,7 @@
 import { Component, OnInit, OnDestroy, OnChanges, Input, Output, EventEmitter, ChangeDetectorRef, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { TranslateModule } from '@ngx-translate/core';
 import { ChatService } from '../../../core/services/chat.service';
 import { SignalRService } from '../../../core/services/signalr.service';
 import { ChatThread } from '../../../core/models/chat.models';
@@ -10,7 +11,7 @@ import { takeUntil } from 'rxjs/operators';
 @Component({
   selector: 'app-chat-list',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, TranslateModule],
   templateUrl: './chat-list.component.html',
   styleUrls: ['./chat-list.component.css']
 })

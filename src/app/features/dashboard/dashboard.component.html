@@ -9,13 +9,13 @@
         class="tab-btn"
         [class.active]="activeTab === 'programs'"
         (click)="switchTab('programs')">
-        <i class="bi bi-book"></i> Programs
+        <i class="bi bi-book"></i> {{ 'dashboard.programs' | translate }}
       </button>
       <button 
         class="tab-btn"
         [class.active]="activeTab === 'packages'"
         (click)="switchTab('packages')">
-        <i class="bi bi-box"></i> Packages
+        <i class="bi bi-box"></i> {{ 'dashboard.packages' | translate }}
       </button>
     </div>
 

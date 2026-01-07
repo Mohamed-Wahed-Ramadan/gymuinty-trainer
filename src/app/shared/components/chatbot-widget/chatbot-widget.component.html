@@ -9,18 +9,18 @@
                     <i class="bi bi-robot"></i>
                 </div>
                 <div class="header-info">
-                    <h3 class="chat-title">Gymunity Assistant</h3>
+                    <h3 class="chat-title">{{ 'chatbot.title' | translate }}</h3>
                     <span class="status-indicator">
                         <span class="status-dot"></span>
-                        Online
+                        {{ 'chatbot.online' | translate }}
                     </span>
                 </div>
             </div>
             <div class="header-actions">
-                <button class="action-btn" (click)="clearChat()" title="Clear chat">
+                <button class="action-btn" (click)="clearChat()" title="{{ 'chatbot.clear' | translate }}">
                     <i class="bi bi-trash3"></i>
                 </button>
-                <button class="action-btn close-btn" (click)="toggleChat()" title="Close">
+                <button class="action-btn close-btn" (click)="toggleChat()" title="{{ 'common.close' | translate }}">
                     <i class="bi bi-x-lg"></i>
                 </button>
             </div>
@@ -50,12 +50,12 @@
 
             <!-- Suggested Questions (shown when empty) -->
             <div *ngIf="messages.length === 1" class="suggested-questions">
-                <p class="suggestions-label">الأسئلة المقترحة:</p>
+                <p class="suggestions-label">{{ 'chatbot.suggestedLabel' | translate }}</p>
                 <div class="suggestions-list">
                     <button *ngFor="let question of suggestedQuestions" class="suggestion-btn"
                         (click)="selectSuggestedQuestion(question)">
                         <i class="bi bi-chat-left-dots"></i>
-                        {{ question }}
+                        {{ question | translate }}
                     </button>
                 </div>
             </div>
@@ -64,10 +64,10 @@
         <!-- Chat Input -->
         <div class="chat-input-area">
             <div class="input-wrapper">
-                <input type="text" class="chat-input" placeholder="اسأل عن الباكدجات والأسعار..."
+                <input type="text" class="chat-input" placeholder="{{ 'chatbot.placeholder' | translate }}"
                     [(ngModel)]="userInput" (keyup.enter)="sendMessage()" [disabled]="isLoading" />
                 <button class="send-btn" (click)="sendMessage()" [disabled]="!userInput.trim() || isLoading"
-                    title="Send message">
+                    title="{{ 'chatbot.send' | translate }}">
                     <i class="bi bi-send-fill"></i>
                 </button>
             </div>
@@ -75,7 +75,8 @@
     </div>
 
     <!-- Floating Button -->
-    <button class="chatbot-fab" (click)="toggleChat()" [class.hidden]="isOpen" title="Open chat">
+    <button class="chatbot-fab" (click)="toggleChat()" [class.hidden]="isOpen"
+        title="{{ 'chatbot.title' | translate }}">
         <div class="fab-icon">
             <i class="bi bi-chat-dots"></i>
         </div>

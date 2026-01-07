@@ -11,11 +11,12 @@ import { ChatDetailComponent } from '../../shared/components/chat-detail/chat-de
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { NewChatModalComponent } from '../../shared/components/new-chat-modal/new-chat-modal.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-inbox',
   standalone: true,
-  imports: [CommonModule, ChatListComponent, ChatDetailComponent, NewChatModalComponent],
+  imports: [CommonModule, ChatListComponent, ChatDetailComponent, NewChatModalComponent, TranslateModule],
   template: `
     <div class="inbox-container">
       <!-- Header -->
@@ -24,12 +25,12 @@ import { NewChatModalComponent } from '../../shared/components/new-chat-modal/ne
           <div class="header-top">
             <div>
               <h2 class="mb-0">
-                <i class="bi bi-chat-dots"></i> Messages
+                <i class="bi bi-chat-dots"></i> {{ 'inbox.messages' | translate }}
               </h2>
-              <small class="text-muted">Your conversations and chats</small>
+              <small class="text-muted">{{ 'inbox.subtitle' | translate }}</small>
             </div>
-            <button class="btn btn-sm btn-outline-primary" (click)="openSubscribersModal()" title="View Subscribers">
-              <i class="bi bi-people"></i> My Subscribers
+            <button class="btn btn-sm btn-outline-primary" (click)="openSubscribersModal()" [title]="'inbox.viewSubscribers' | translate">
+              <i class="bi bi-people"></i> {{ 'inbox.mySubscribers' | translate }}
             </button>
           </div>
         </div>
@@ -54,10 +55,10 @@ import { NewChatModalComponent } from '../../shared/components/new-chat-modal/ne
               <div *ngIf="!selectedThreadId" class="empty-state">
                 <div class="empty-state-content">
                   <i class="bi bi-chat-left-dots"></i>
-                  <h3>No Chat Selected</h3>
-                  <p>Select a conversation from the list to start messaging</p>
+                  <h3>{{ 'inbox.noChatSelected' | translate }}</h3>
+                  <p>{{ 'inbox.selectConversation' | translate }}</p>
                   <button class="btn btn-bton" (click)="openNewChatModal()">
-                    <i class="bi bi-plus-circle"></i> Start New Chat
+                    <i class="bi bi-plus-circle"></i> {{ 'inbox.startNewChat' | translate }}
                   </button>
                 </div>
               </div>
@@ -82,28 +83,28 @@ import { NewChatModalComponent } from '../../shared/components/new-chat-modal/ne
       <div *ngIf="showSubscribersModal" class="subscribers-modal-overlay" (click)="closeSubscribersModal()">
         <div class="subscribers-modal" (click)="$event.stopPropagation()">
           <div class="modal-header">
-            <h5 class="modal-title">My Subscribers</h5>
+            <h5 class="modal-title">{{ 'inbox.mySubscribers' | translate }}</h5>
             <button type="button" class="btn-close" (click)="closeSubscribersModal()"></button>
           </div>
           <div class="modal-body">
             <div *ngIf="subscribersLoading" class="text-center py-5">
               <div class="spinner-border" role="status">
-                <span class="visually-hidden">Loading...</span>
+                <span class="visually-hidden">{{ 'common.loading' | translate }}</span>
               </div>
             </div>
             <div *ngIf="!subscribersLoading && subscribers.length === 0" class="alert alert-info">
-              No active subscribers yet.
+              {{ 'inbox.noActiveSubscribers' | translate }}
             </div>
             <div *ngIf="!subscribersLoading && subscribers.length > 0" class="table-responsive">
               <table class="table table-hover mb-0">
                 <thead>
                   <tr>
-                    <th>Client</th>
-                    <th>Email</th>
-                    <th>Package</th>
-                    <th>Start Date</th>
-                    <th>End Date</th>
-                    <th>Status</th>
+                    <th>{{ 'inbox.client' | translate }}</th>
+                    <th>{{ 'common.email' | translate }}</th>
+                    <th>{{ 'inbox.package' | translate }}</th>
+                    <th>{{ 'inbox.startDate' | translate }}</th>
+                    <th>{{ 'inbox.endDate' | translate }}</th>
+                    <th>{{ 'common.status' | translate }}</th>
                   </tr>
                 </thead>
                 <tbody>

@@ -2,11 +2,13 @@ import { Component, Input, Output, EventEmitter, ChangeDetectorRef } from '@angu
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
+import { TranslationService } from '../../../core/services/translation.service';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-sidebar',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, TranslateModule],
   templateUrl: './sidebar.component.html',
   styleUrls: ['./sidebar.component.css']
 })
@@ -14,17 +16,23 @@ export class SidebarComponent {
   @Input() isOpen = true;
   @Output() toggle = new EventEmitter<void>();
   @Output() collapsedChange = new EventEmitter<boolean>();
-  // local collapsed state: when true show icon-only sidebar
   collapsed = false;
-  // when true the sidebar will act as an overlay (mobile only)
   overlayActive = false;
-  // check if window width is mobile size
   isMobileSize = typeof window !== 'undefined' && window.innerWidth <= 768;
-  // settings menu state
   settingsMenuOpen = false;
+  direction = 'ltr';
 
-  constructor(private auth: AuthService, private router: Router, private cdr: ChangeDetectorRef) {
-    // Update isMobileSize on window resize
+  constructor(
+    private auth: AuthService,
+    private router: Router,
+    private cdr: ChangeDetectorRef,
+    private translationService: TranslationService
+  ) {
+    this.direction = this.translationService.getDirection();
+    this.translationService.currentLanguage$.subscribe(() => {
+      this.direction = this.translationService.getDirection();
+      this.cdr.markForCheck();
+    });
     if (typeof window !== 'undefined') {
       window.addEventListener('resize', () => {
         this.isMobileSize = window.innerWidth <= 768;
@@ -76,5 +84,9 @@ export class SidebarComponent {
     this.router.navigate(['/dashboard/settings'], { 
       queryParams: { tab } 
     });
+  }
+
+  getDirection(): string {
+    return this.direction;
   }
 }

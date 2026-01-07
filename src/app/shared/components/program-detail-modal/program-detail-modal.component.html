@@ -22,7 +22,7 @@
     <!-- Loading State -->
     <div *ngIf="isLoading" class="loading-container">
       <div class="spinner"></div>
-      <p>Loading program details...</p>
+      <p>{{ 'shared.program.loading' | translate }}</p>
     </div>
 
     <!-- Content -->
@@ -30,34 +30,35 @@
       <!-- Program Description Section -->
       <div class="section">
         <h3 class="section-title">
-          <i class="bi bi-info-circle"></i> Overview
+          <i class="bi bi-info-circle"></i> {{ 'shared.program.overview' | translate }}
         </h3>
         <p class="description">{{ program.description }}</p>
-        
+
         <div class="program-details-grid">
           <div class="detail-item" *ngIf="program.trainerUserName">
             <span class="detail-label">
-              <i class="bi bi-person-badge"></i> Trainer
+              <i class="bi bi-person-badge"></i> {{ 'shared.program.trainer' | translate }}
             </span>
             <span class="detail-value">{{ program.trainerUserName }}</span>
           </div>
           <div class="detail-item" *ngIf="program.price">
             <span class="detail-label">
-              <i class="bi bi-tag"></i> Price
+              <i class="bi bi-tag"></i> {{ 'shared.program.price' | translate }}
             </span>
             <span class="detail-value">{{ program.price | currency }}</span>
           </div>
           <div class="detail-item" *ngIf="program.maxClients">
             <span class="detail-label">
-              <i class="bi bi-people"></i> Max Clients
+              <i class="bi bi-people"></i> {{ 'shared.program.maxClients' | translate }}
             </span>
             <span class="detail-value">{{ program.maxClients }}</span>
           </div>
           <div class="detail-item">
             <span class="detail-label">
-              <i class="bi bi-globe"></i> Visibility
+              <i class="bi bi-globe"></i> {{ 'shared.program.visibility' | translate }}
             </span>
-            <span class="detail-value">{{ program.isPublic ? 'Public' : 'Private' }}</span>
+            <span class="detail-value">{{ program.isPublic ? ('shared.program.public' | translate) :
+              ('shared.program.private' | translate) }}</span>
           </div>
         </div>
       </div>
@@ -65,7 +66,7 @@
       <!-- Weeks and Days Section -->
       <div class="section" *ngIf="program.weeks && program.weeks.length > 0">
         <h3 class="section-title">
-          <i class="bi bi-diagram-3"></i> Program Structure
+          <i class="bi bi-diagram-3"></i> {{ 'shared.program.structure' | translate }}
         </h3>
 
         <div class="weeks-container">
@@ -74,10 +75,10 @@
               <div class="week-info">
                 <h4 class="week-title">
                   <i class="bi" [ngClass]="isWeekExpanded(week.id) ? 'bi-chevron-down' : 'bi-chevron-right'"></i>
-                  Week {{ week.weekNumber }}
+                  {{ 'shared.program.week' | translate }} {{ week.weekNumber }}
                 </h4>
               </div>
-              <span class="days-count">{{ week.days?.length || 0 }} days</span>
+              <span class="days-count">{{ week.days?.length || 0 }} {{ 'shared.program.days' | translate }}</span>
             </div>
 
             <!-- Days -->
@@ -87,7 +88,7 @@
                   <div class="day-info">
                     <h5 class="day-title">
                       <i class="bi" [ngClass]="isDayExpanded(day.id) ? 'bi-chevron-down' : 'bi-chevron-right'"></i>
-                      <span class="day-number">Day {{ day.dayNumber }}</span>
+                      <span class="day-number">{{ 'shared.program.day' | translate }} {{ day.dayNumber }}</span>
                       <span class="day-name">{{ day.title }}</span>
                     </h5>
                   </div>
@@ -104,17 +105,19 @@
                     <div class="exercise-item" *ngFor="let exercise of day.exercises; let idx = index">
                       <div class="exercise-order">{{ idx + 1 }}</div>
                       <div class="exercise-details">
-                        <h6 class="exercise-title">Exercise {{ exercise.orderIndex }}</h6>
-                        
+                        <h6 class="exercise-title">{{ 'shared.program.exercise' | translate }} {{ exercise.orderIndex }}
+                        </h6>
+
                         <div class="exercise-specs">
                           <span class="spec" *ngIf="exercise.sets">
-                            <i class="bi bi-square"></i> {{ exercise.sets }} sets
+                            <i class="bi bi-square"></i> {{ exercise.sets }} {{ 'shared.program.sets' | translate }}
                           </span>
                           <span class="spec" *ngIf="exercise.reps">
-                            <i class="bi bi-repeat"></i> {{ exercise.reps }} reps
+                            <i class="bi bi-repeat"></i> {{ exercise.reps }} {{ 'shared.program.reps' | translate }}
                           </span>
                           <span class="spec" *ngIf="exercise.restSeconds">
-                            <i class="bi bi-hourglass"></i> {{ exercise.restSeconds }}s rest
+                            <i class="bi bi-hourglass"></i> {{ exercise.restSeconds }}s {{ 'shared.program.rest' |
+                            translate }}
                           </span>
                           <span class="spec" *ngIf="exercise.tempo">
                             <i class="bi bi-speedometer2"></i> {{ exercise.tempo }}
@@ -133,7 +136,7 @@
 
                         <div *ngIf="exercise.videoUrl" class="exercise-video">
                           <a [href]="exercise.videoUrl" target="_blank" class="video-link">
-                            <i class="bi bi-play-circle"></i> Watch Form Video
+                            <i class="bi bi-play-circle"></i> {{ 'shared.program.watchFormVideo' | translate }}
                           </a>
                         </div>
                       </div>
@@ -149,15 +152,15 @@
       <!-- Empty State -->
       <div *ngIf="!program.weeks || program.weeks.length === 0" class="empty-state">
         <i class="bi bi-inbox"></i>
-        <p>No program structure available yet</p>
+        <p>{{ 'shared.program.noStructure' | translate }}</p>
       </div>
     </div>
 
     <!-- Footer -->
     <div class="modal-footer">
-      <button class="btn btn-secondary" (click)="close()">Close</button>
+      <button class="btn btn-secondary" (click)="close()">{{ 'common.close' | translate }}</button>
       <button class="btn btn-bton" *ngIf="program && !hideEnroll">
-        <i class="bi bi-check-circle"></i> Enroll Now
+        <i class="bi bi-check-circle"></i> {{ 'shared.program.enrollNow' | translate }}
       </button>
     </div>
   </div>

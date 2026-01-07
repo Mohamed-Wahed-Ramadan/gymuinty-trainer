@@ -8,6 +8,7 @@ import { AuthService, ProgramService, PackageService, Program, Package } from '.
 import { ProgramsComponent } from './programs/programs.component';
 import { PackagesComponent } from './packages/packages.component';
 import { ProgramDetailComponent } from './program-detail/program-detail.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-dashboard',
@@ -16,7 +17,8 @@ import { ProgramDetailComponent } from './program-detail/program-detail.componen
     CommonModule,
     ProgramsComponent,
     PackagesComponent,
-    ProgramDetailComponent
+    ProgramDetailComponent, 
+    TranslateModule
   ],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css']

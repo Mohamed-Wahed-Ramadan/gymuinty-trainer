@@ -3,14 +3,14 @@
     <!-- Loading State -->
     <div *ngIf="isLoading" class="loading-container">
       <div class="spinner"></div>
-      <p>Loading trainer profile...</p>
+      <p>{{ 'shared.trainerProfile.loading' | translate }}</p>
     </div>
 
     <!-- Content -->
     <div *ngIf="!isLoading && profile" class="modal-content">
       <!-- Cover Section -->
-      <div class="cover-section" 
-           [style.background]="'linear-gradient(135deg, ' + getBrandingColors().primary + ' 0%, ' + getBrandingColors().secondary + ' 100%)'">
+      <div class="cover-section"
+        [style.background]="'linear-gradient(135deg, ' + getBrandingColors().primary + ' 0%, ' + getBrandingColors().secondary + ' 100%)'">
         <button class="btn-close-fixed" (click)="close()" aria-label="Close">
           <i class="bi bi-x-lg"></i>
         </button>
@@ -31,8 +31,8 @@
         <div class="profile-intro">
           <div class="name-row">
             <h2 class="profile-name">{{ profile.userName }}</h2>
-            <span *ngIf="profile.isVerified" class="verified-badge" title="Verified Trainer">
-              <i class="bi bi-check-circle-fill"></i> Verified
+            <span *ngIf="profile.isVerified" class="verified-badge" title="{{ 'trainer.verified' | translate }}">
+              <i class="bi bi-check-circle-fill"></i> {{ 'trainer.verified' | translate }}
             </span>
           </div>
 
@@ -44,7 +44,7 @@
               <i class="bi bi-star-fill"></i>
               <span class="rating-value">{{ profile.ratingAverage | number:'1.1-1' }}</span>
             </div>
-            <div class="rating-text">Based on client reviews</div>
+            <div class="rating-text">{{ 'shared.trainerProfile.basedOnReviews' | translate }}</div>
           </div>
         </div>
       </div>
@@ -57,7 +57,7 @@
           </div>
           <div class="stat-info">
             <span class="stat-value">{{ profile.totalClients }}</span>
-            <span class="stat-label">Total Clients</span>
+            <span class="stat-label">{{ 'shared.trainerProfile.totalClients' | translate }}</span>
           </div>
         </div>
 
@@ -67,7 +67,7 @@
           </div>
           <div class="stat-info">
             <span class="stat-value">{{ profile.yearsExperience }}+</span>
-            <span class="stat-label">Years of Experience</span>
+            <span class="stat-label">{{ 'shared.trainerProfile.yearsExperience' | translate }}</span>
           </div>
         </div>
 
@@ -81,8 +81,9 @@
             </div>
           </ng-template>
           <div class="stat-info">
-            <span class="stat-value">{{ profile.isVerified ? 'Yes' : 'No' }}</span>
-            <span class="stat-label">Verified</span>
+            <span class="stat-value">{{ profile.isVerified ? ('common.yes' | translate) : ('common.no' | translate)
+              }}</span>
+            <span class="stat-label">{{ 'shared.trainerProfile.verifiedLabel' | translate }}</span>
           </div>
         </div>
       </div>
@@ -92,7 +93,7 @@
         <!-- Status Section -->
         <div *ngIf="profile.statusDescription" class="detail-card status-card">
           <h3 class="detail-title">
-            <i class="bi bi-info-circle"></i> Current Status
+            <i class="bi bi-info-circle"></i> {{ 'shared.trainerProfile.currentStatus' | translate }}
           </h3>
           <p class="status-text">{{ profile.statusDescription }}</p>
           <div *ngIf="profile.statusImageUrl" class="status-image">
@@ -104,30 +105,30 @@
         <div class="info-grid">
           <div class="info-item" *ngIf="profile.createdAt">
             <span class="info-label">
-              <i class="bi bi-calendar3"></i> Joined
+              <i class="bi bi-calendar3"></i> {{ 'shared.trainerProfile.joined' | translate }}
             </span>
             <span class="info-value">{{ profile.createdAt | date:'short' }}</span>
           </div>
 
           <div class="info-item" *ngIf="profile.isVerified && profile.verifiedAt">
             <span class="info-label">
-              <i class="bi bi-check-circle"></i> Verified Since
+              <i class="bi bi-check-circle"></i> {{ 'shared.trainerProfile.verifiedSince' | translate }}
             </span>
             <span class="info-value">{{ profile.verifiedAt | date:'short' }}</span>
           </div>
 
           <div class="info-item" *ngIf="!profile.isSuspended">
             <span class="info-label">
-              <i class="bi bi-activity"></i> Account Status
+              <i class="bi bi-activity"></i> {{ 'shared.trainerProfile.accountStatus' | translate }}
             </span>
-            <span class="info-value status-active">Active</span>
+            <span class="info-value status-active">{{ 'shared.trainerProfile.active' | translate }}</span>
           </div>
 
           <div class="info-item" *ngIf="profile.isSuspended">
             <span class="info-label">
-              <i class="bi bi-exclamation-triangle"></i> Account Status
+              <i class="bi bi-exclamation-triangle"></i> {{ 'shared.trainerProfile.accountStatus' | translate }}
             </span>
-            <span class="info-value status-suspended">Suspended</span>
+            <span class="info-value status-suspended">{{ 'shared.trainerProfile.suspended' | translate }}</span>
           </div>
         </div>
       </div>
@@ -135,11 +136,11 @@
       <!-- Video Intro (button link to external video if provided) -->
       <div *ngIf="profile.videoIntroUrl" class="video-section">
         <h3 class="detail-title">
-          <i class="bi bi-play-circle"></i> Trainer Introduction
+          <i class="bi bi-play-circle"></i> {{ 'shared.trainerProfile.introduction' | translate }}
         </h3>
         <div class="video-actions">
           <a [href]="profile.videoIntroUrl" target="_blank" rel="noopener noreferrer" class="btn btn-primary">
-            <i class="bi bi-play-circle"></i> Watch Introduction
+            <i class="bi bi-play-circle"></i> {{ 'shared.trainerProfile.watchIntro' | translate }}
           </a>
         </div>
       </div>
@@ -147,9 +148,9 @@
 
     <!-- Footer -->
     <div class="modal-footer" *ngIf="!isLoading && profile">
-      <button class="btn btn-secondary" (click)="close()">Close</button>
+      <button class="btn btn-secondary" (click)="close()">{{ 'common.close' | translate }}</button>
       <button class="btn btn-primary" (click)="contactTrainer()">
-        <i class="bi bi-chat-dots"></i> Contact Trainer
+        <i class="bi bi-chat-dots"></i> {{ 'shared.trainerProfile.contactTrainer' | translate }}
       </button>
     </div>
   </div>

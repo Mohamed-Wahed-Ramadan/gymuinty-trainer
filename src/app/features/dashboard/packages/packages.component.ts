@@ -1,6 +1,7 @@
 import { Component, Input, Output, EventEmitter, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { TranslateModule } from '@ngx-translate/core';
 import { PackageService, PackageResponse, PackageCreateRequest } from '../../../core/services';
 import { AuthService } from '../../../core/services/auth.service';
 import { NotificationService } from '../../../core/services/notification.service';
@@ -11,7 +12,7 @@ import { ProgramDetailModalComponent } from '../../../shared/components/program-
 @Component({
   selector: 'app-packages',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, ProgramDetailModalComponent],
+  imports: [CommonModule, ReactiveFormsModule, ProgramDetailModalComponent, TranslateModule],
   templateUrl: './packages.component.html',
   styleUrls: ['./packages.component.css']
 })

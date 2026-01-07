@@ -1,16 +1,14 @@
-<div class="app-container" [dir]="'ltr'">
+<div class="app-container" [dir]="getDirection()">
   <!-- Navbar for public pages -->
   <app-navbar *ngIf="!isLoggedIn()"></app-navbar>
 
   <!-- Sidebar for authenticated users -->
-  <app-sidebar
-    *ngIf="isLoggedIn()"
-    [isOpen]="true"
-    (collapsedChange)="onSidebarCollapsed($event)">
+  <app-sidebar *ngIf="isLoggedIn()" [isOpen]="true" (collapsedChange)="onSidebarCollapsed($event)">
   </app-sidebar>
 
   <!-- Main Content -->
-  <main [class.with-sidebar]="isLoggedIn()" [class.sidebar-collapsed]="isSidebarCollapsed() && isLoggedIn()" [class.with-navbar]="!isLoggedIn()" class="main-content">
+  <main [class.with-sidebar]="isLoggedIn()" [class.sidebar-collapsed]="isSidebarCollapsed() && isLoggedIn()"
+    [class.with-navbar]="!isLoggedIn()" class="main-content">
     <!-- Header for authenticated users -->
     <header *ngIf="isLoggedIn()" class="app-header">
       <div class="header-left">
@@ -19,6 +17,13 @@
       <div class="header-right">
         <button class="btn-home" (click)="goHome()" title="Go to Home">
           <i class="bi bi-house-fill"></i>
+        </button>
+
+        <!-- Language Toggle (placed next to home) -->
+        <button class="language-toggle text-black" (click)="toggleLanguage()"
+          [attr.title]="('navbar.switchTo' | translate) + ' ' + ((currentLanguage$ | async) === 'en' ? 'AR' : 'EN')">
+          <i class="bi bi-globe"></i>
+          <span class="lang-text">{{ (currentLanguage$ | async) === 'en' ? 'AR' : 'EN' }}</span>
         </button>
         <app-notifications></app-notifications>
       </div>
@@ -30,4 +35,3 @@
     </div>
   </main>
 </div>
-

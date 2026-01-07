@@ -4,11 +4,13 @@ import { TrainerService } from '../../../core/services/trainer.service';
 import { ChatService } from '../../../core/services/chat.service';
 import { Router } from '@angular/router';
 import { trigger, transition, style, animate } from '@angular/animations';
+import { TranslateModule } from '@ngx-translate/core';
+
 
 @Component({
   selector: 'app-trainer-profile-modal',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, TranslateModule],
   templateUrl: './trainer-profile-modal.component.html',
   styleUrl: './trainer-profile-modal.component.css',
   animations: [

@@ -1,5 +1,7 @@
-import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { Injectable, Inject, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
+import { TranslateService } from '@ngx-translate/core';
+import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -10,54 +12,53 @@ export class TranslationService {
   private currentLanguageSubject = new BehaviorSubject<string>(this.getStoredLanguage());
   public currentLanguage$ = this.currentLanguageSubject.asObservable();
 
-  private translations: { [key: string]: any } = {};
+  constructor(
+    private translate: TranslateService,
+    @Inject(PLATFORM_ID) private platformId: Object
+  ) {
+    // Set available languages
+    this.translate.addLangs(['en', 'ar']);
+    this.translate.setDefaultLang(this.defaultLanguage);
 
-  constructor() {
-    this.loadTranslations();
+    // Initialize with stored language
+    const storedLang = this.getStoredLanguage();
+    this.translate.use(storedLang);
+    this.updateDirection(storedLang);
   }
 
   private getStoredLanguage(): string {
-    return localStorage.getItem(this.LANG_KEY) || this.defaultLanguage;
-  }
-
-  private async loadTranslations(): Promise<void> {
-    try {
-      const lang = this.currentLanguageSubject.value;
-      const response = await fetch(`/assets/i18n/${lang}.json`);
-      if (response.ok) {
-        this.translations[lang] = await response.json();
-      }
-    } catch (error) {
-      console.error('Error loading translations:', error);
+    if (isPlatformBrowser(this.platformId)) {
+      return localStorage.getItem(this.LANG_KEY) || this.defaultLanguage;
     }
+    return this.defaultLanguage;
   }
 
   setLanguage(language: string): void {
-    localStorage.setItem(this.LANG_KEY, language);
+    if (isPlatformBrowser(this.platformId)) {
+      localStorage.setItem(this.LANG_KEY, language);
+    }
+    this.translate.use(language);
     this.currentLanguageSubject.next(language);
-    this.loadTranslations();
+    this.updateDirection(language);
+  }
+
+  toggleLanguage(): void {
+    const current = this.getLanguage();
+    const next = current === 'en' ? 'ar' : 'en';
+    this.setLanguage(next);
   }
 
   getLanguage(): string {
     return this.currentLanguageSubject.value;
   }
 
-  get(key: string, params?: any): string {
-    const lang = this.currentLanguageSubject.value;
-    let translation = this.getNestedProperty(this.translations[lang] || {}, key);
-
-    if (!translation) {
-      console.warn(`Translation key not found: ${key}`);
-      return key;
+  private updateDirection(language: string): void {
+    if (isPlatformBrowser(this.platformId)) {
+      const dir = language === 'ar' ? 'rtl' : 'ltr';
+      document.documentElement.setAttribute('dir', dir);
+      document.documentElement.setAttribute('lang', language);
+      document.body.setAttribute('dir', dir);
     }
-
-    if (params) {
-      Object.keys(params).forEach(param => {
-        translation = translation.replace(`:${param}`, params[param]);
-      });
-    }
-
-    return translation;
   }
 
   isArabic(): boolean {
@@ -68,7 +69,13 @@ export class TranslationService {
     return this.getLanguage() === 'en';
   }
 
-  private getNestedProperty(obj: any, path: string): any {
-    return path.split('.').reduce((acc, part) => acc?.[part], obj);
+  // For backward compatibility with components using get()
+  get(key: string, params?: any): string {
+    return this.translate.instant(key, params);
+  }
+
+  // Get current direction
+  getDirection(): string {
+    return this.isArabic() ? 'rtl' : 'ltr';
   }
 }

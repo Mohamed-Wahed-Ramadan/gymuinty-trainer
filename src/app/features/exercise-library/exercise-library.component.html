@@ -1,26 +1,28 @@
 <div class="exercise-library">
-  <h1>Exercise Library</h1>
+  <h1>{{ 'exercises.title' | translate }}</h1>
 
   <div style="margin-bottom:12px">
-    <button class="btn btn-success" (click)="openCreate()"><i class="bi bi-plus-circle"></i> New Exercise</button>
+    <button class="btn btn-success" (click)="openCreate()"><i class="bi bi-plus-circle"></i> {{ 'exercises.newExercise'
+      | translate }}</button>
   </div>
 
   <div class="controls">
     <div class="search-group">
-      <input class="form-control search-input" placeholder="Search exercises..." [(ngModel)]="searchTerm" (ngModelChange)="onSearch()" />
+      <input class="form-control search-input" placeholder="{{ 'exercises.searchPlaceholder' | translate }}"
+        [(ngModel)]="searchTerm" (ngModelChange)="onSearch()" />
     </div>
 
     <div class="filters">
       <select class="form-select filter-select" [(ngModel)]="filterCategory" (change)="applyFilters()">
-        <option value="">All Categories</option>
+        <option value="">{{ 'common.all' | translate }} {{ 'exercises.category' | translate }}</option>
         <option *ngFor="let c of categories" [value]="c">{{ c }}</option>
       </select>
       <select class="form-select filter-select" [(ngModel)]="filterMuscle" (change)="applyFilters()">
-        <option value="">All Muscle Groups</option>
+        <option value="">{{ 'common.all' | translate }} {{ 'exercises.muscle' | translate }}</option>
         <option *ngFor="let m of muscleGroups" [value]="m">{{ m }}</option>
       </select>
       <select class="form-select filter-select" [(ngModel)]="filterEquipment" (change)="applyFilters()">
-        <option value="">All Equipment</option>
+        <option value="">{{ 'common.all' | translate }} {{ 'exercises.equipment' | translate }}</option>
         <option *ngFor="let e of equipmentList" [value]="e">{{ e }}</option>
       </select>
     </div>
@@ -33,10 +35,14 @@
         <h4 class="card-title">{{ ex.name }}</h4>
         <p class="meta">{{ ex.category }} · {{ ex.muscleGroup }} · {{ ex.equipment }}</p>
         <div class="action-row">
-          <button class="btn btn-action btn-primary" (click)="openDetail(ex)"><i class="bi bi-eye"></i> Details</button>
-          <button class="btn btn-action btn-success" (click)="addToDay(ex)"><i class="bi bi-plus"></i> Add</button>
-          <button class="btn btn-action btn-warning" (click)="openEdit(ex)"><i class="bi bi-pencil"></i> Edit</button>
-          <button class="btn btn-action btn-danger" (click)="deleteExercise(ex)"><i class="bi bi-trash"></i> Delete</button>
+          <button class="btn btn-action btn-primary" (click)="openDetail(ex)"><i class="bi bi-eye"></i> {{
+            'common.details' | translate }}</button>
+          <button class="btn btn-action btn-success" (click)="addToDay(ex)"><i class="bi bi-plus"></i> {{ 'common.add' |
+            translate }}</button>
+          <button class="btn btn-action btn-warning" (click)="openEdit(ex)"><i class="bi bi-pencil"></i> {{
+            'common.edit' | translate }}</button>
+          <button class="btn btn-action btn-danger" (click)="deleteExercise(ex)"><i class="bi bi-trash"></i> {{
+            'common.delete' | translate }}</button>
         </div>
       </div>
     </div>
@@ -47,20 +53,16 @@
       <button class="close" (click)="closeDetail()">×</button>
       <h3>{{ selectedExercise.name }}</h3>
       <p>{{ selectedExercise.category }} · {{ selectedExercise.muscleGroup }}</p>
-         <div style="text-align:center; margin:18px 0;">
-           <a *ngIf="selectedExercise.videoDemoUrl"
-              [href]="selectedExercise.videoDemoUrl"
-              target="_blank"
-              rel="noopener"
-              class="btn btn-primary"
-              style="display:inline-flex; align-items:center; gap:8px;">
-             <i class="bi bi-play-circle"></i>
-             Watch Exercise Video
-           </a>
-           <div *ngIf="!selectedExercise.videoDemoUrl" style="margin-top:12px;color:#666;">
-             <p>No video available</p>
-           </div>
-         </div>
+      <div style="text-align:center; margin:18px 0;">
+        <a *ngIf="selectedExercise.videoDemoUrl" [href]="selectedExercise.videoDemoUrl" target="_blank" rel="noopener"
+          class="btn btn-primary" style="display:inline-flex; align-items:center; gap:8px;">
+          <i class="bi bi-play-circle"></i>
+          {{ 'exercises.watchVideo' | translate }}
+        </a>
+        <div *ngIf="!selectedExercise.videoDemoUrl" style="margin-top:12px;color:#666;">
+          <p>{{ 'exercises.noVideo' | translate }}</p>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -68,7 +70,7 @@
   <div class="modal" *ngIf="showFormModal">
     <div class="modal-content">
       <button class="close" (click)="closeForm()">×</button>
-      <h3>{{ isEditing ? 'Edit Exercise' : 'Create Exercise' }}</h3>
+      <h3>{{ isEditing ? ( 'exercises.editExercise' | translate ) : ( 'exercises.createExercise' | translate ) }}</h3>
       <form (submit)="submitForm($event)">
         <div style="display:flex; gap:8px; flex-wrap:wrap">
           <input class="form-control" placeholder="Name" [(ngModel)]="form.name" name="name" required />
@@ -78,11 +80,14 @@
           <label class="form-label">Thumbnail URL</label>
           <input class="form-control" placeholder="https://..." [(ngModel)]="form.thumbnailUrl" name="thumbnailUrl" />
           <label class="form-label">Video Demo URL (YouTube)</label>
-          <input class="form-control" placeholder="https://youtube.com/..." [(ngModel)]="form.videoDemoUrl" name="videoDemoUrl" />
+          <input class="form-control" placeholder="https://youtube.com/..." [(ngModel)]="form.videoDemoUrl"
+            name="videoDemoUrl" />
         </div>
         <div style="margin-top:8px">
-          <button class="btn btn-primary" type="submit"><i class="bi bi-check-circle"></i> {{ isEditing ? 'Save' : 'Create' }}</button>
-          <button class="btn btn-secondary ms-2" type="button" (click)="closeForm()"><i class="bi bi-x-circle"></i> Cancel</button>
+          <button class="btn btn-primary" type="submit"><i class="bi bi-check-circle"></i> {{ isEditing ? (
+            'common.save' | translate ) : ( 'common.create' | translate ) }}</button>
+          <button class="btn btn-secondary ms-2" type="button" (click)="closeForm()"><i class="bi bi-x-circle"></i> {{
+            'common.cancel' | translate }}</button>
         </div>
       </form>
     </div>

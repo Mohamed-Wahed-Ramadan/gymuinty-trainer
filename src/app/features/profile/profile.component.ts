@@ -1,14 +1,15 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TrainerProfileComponent } from './trainer-profile.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-profile',
   standalone: true,
-  imports: [CommonModule, TrainerProfileComponent],
+  imports: [CommonModule, TrainerProfileComponent, TranslateModule],
   template: `
     <div class="profile">
-      <h1>Profile</h1>
+      <h1>{{ 'profile.title' | translate }}</h1>
       <app-trainer-profile></app-trainer-profile>
     </div>
   `,

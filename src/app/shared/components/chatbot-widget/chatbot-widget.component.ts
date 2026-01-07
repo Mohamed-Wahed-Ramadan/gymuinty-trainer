@@ -4,6 +4,8 @@ import { FormsModule } from '@angular/forms';
 import { ChatbotService } from '../../../core/services/chatbot.service';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+import { TranslateModule } from '@ngx-translate/core';
+import { TranslationService } from '../../../core/services/translation.service';
 
 export interface ChatMessage {
   id: string;
@@ -16,7 +18,7 @@ export interface ChatMessage {
 @Component({
   selector: 'app-chatbot-widget',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, TranslateModule],
   templateUrl: './chatbot-widget.component.html',
   styleUrl: './chatbot-widget.component.css'
 })
@@ -28,15 +30,16 @@ export class ChatbotWidgetComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
 
   suggestedQuestions = [
-    'ما هي الباكدجات المتاحة؟',
-    'ما أسعار الباكدجات؟',
-    'من هم المدربون؟',
-    'كيف أشترك في برنامج؟'
+    'chatbot.questions.q1',
+    'chatbot.questions.q2',
+    'chatbot.questions.q3',
+    'chatbot.questions.q4'
   ];
 
   constructor(
     private chatbotService: ChatbotService,
     private cdr: ChangeDetectorRef
+    , private translation: TranslationService
   ) { }
 
   ngOnInit(): void {
@@ -44,7 +47,7 @@ export class ChatbotWidgetComponent implements OnInit, OnDestroy {
     this.messages.push({
       id: this.generateId(),
       type: 'bot',
-      text: 'أهلاً وسهلاً! 👋\n\nأنا مساعدك الافتراضي في Gymunity. يمكنك أن تسأل عن الباكدجات والأسعار والمدربين والبرامج التدريبية.\n\nكيف يمكنني مساعدتك؟',
+      text: this.translation.get('chatbot.welcome'),
       timestamp: new Date()
     });
   }
@@ -105,7 +108,7 @@ export class ChatbotWidgetComponent implements OnInit, OnDestroy {
             const errorMessage: ChatMessage = {
               id: this.generateId(),
               type: 'bot',
-              text: 'عذراً، حدث خطأ في معالجة طلبك. يرجى المحاولة مرة أخرى.',
+              text: this.translation.get('common.error'),
               timestamp: new Date()
             };
             this.messages.push(errorMessage);
@@ -121,7 +124,7 @@ export class ChatbotWidgetComponent implements OnInit, OnDestroy {
           const errorMessage: ChatMessage = {
             id: this.generateId(),
             type: 'bot',
-            text: 'عذراً، حدث خطأ في الاتصال. يرجى التحقق من الاتصال بالإنترنت والمحاولة مرة أخرى.',
+            text: this.translation.get('common.error'),
             timestamp: new Date()
           };
           this.messages.push(errorMessage);
@@ -133,7 +136,7 @@ export class ChatbotWidgetComponent implements OnInit, OnDestroy {
   }
 
   selectSuggestedQuestion(question: string): void {
-    this.userInput = question;
+    this.userInput = this.translation.get(question) || '';
     setTimeout(() => {
       this.sendMessage();
     }, 100);
@@ -143,7 +146,7 @@ export class ChatbotWidgetComponent implements OnInit, OnDestroy {
     this.messages = [{
       id: this.generateId(),
       type: 'bot',
-      text: 'تم مسح المحادثة. كيف يمكنني مساعدتك؟',
+      text: this.translation.get('chatbot.cleared') || this.translation.get('chatbot.welcome'),
       timestamp: new Date()
     }];
   }

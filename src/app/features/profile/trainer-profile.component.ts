@@ -3,34 +3,35 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { TrainerService, TrainerProfileResponse } from '../../core/services/trainer.service';
 import { AuthService } from '../../core/services/auth.service';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-trainer-profile',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, TranslateModule],
   template: `
     <div class="trainer-profile">
       <ng-container *ngIf="!loading">
         <!-- Show existing profile -->
         <ng-container *ngIf="profile && !isEditing; else createForm">
           <div class="profile-display">
-            <h2>Your Trainer Profile</h2>
+            <h2>{{ 'profile.yourTrainerProfile' | translate }}</h2>
             <div class="profile-info">
-              <p><strong>Handle:</strong> @{{ profile.handle }}</p>
-              <p><strong>Bio:</strong> {{ profile.bio }}</p>
-              <p><strong>Years of Experience:</strong> {{ profile.yearsExperience }}</p>
-              <p *ngIf="profile.ratingAverage"><strong>Rating:</strong> {{ profile.ratingAverage }}/5.0</p>
-              <p *ngIf="profile.totalClients"><strong>Total Clients:</strong> {{ profile.totalClients }}</p>
-              <img *ngIf="profile.coverImageUrl" [src]="profile.coverImageUrl" alt="Cover" class="cover-img" />
+              <p><strong>{{ 'profile.handle' | translate }}:</strong> @{{ profile.handle }}</p>
+              <p><strong>{{ 'profile.bio' | translate }}:</strong> {{ profile.bio }}</p>
+              <p><strong>{{ 'profile.yearsOfExperience' | translate }}:</strong> {{ profile.yearsExperience }}</p>
+              <p *ngIf="profile.ratingAverage"><strong>{{ 'profile.rating' | translate }}:</strong> {{ profile.ratingAverage }}/5.0</p>
+              <p *ngIf="profile.totalClients"><strong>{{ 'profile.totalClients' | translate }}:</strong> {{ profile.totalClients }}</p>
+              <img *ngIf="profile.coverImageUrl" [src]="profile.coverImageUrl" [alt]="'profile.cover' | translate" class="cover-img" />
 
               <!-- Status Section -->
               <div class="status-section mt-4 pt-4 border-top">
                 <h4 class="mb-3">
-                  <i class="bi bi-chat-fill status-icon"></i> Status
+                  <i class="bi bi-chat-fill status-icon"></i> {{ 'profile.status' | translate }}
                 </h4>
                 <div class="status-display">
                   <div *ngIf="profile.statusImageUrl" class="status-image-container">
-                    <img [src]="profile.statusImageUrl" alt="Status" class="status-image" />
+                    <img [src]="profile.statusImageUrl" [alt]="'profile.status' | translate" class="status-image" />
                   </div>
                   <div *ngIf="!profile.statusImageUrl" class="status-placeholder">
                     <i class="bi bi-image"></i>
@@ -40,7 +41,7 @@ import { AuthService } from '../../core/services/auth.service';
                       {{ profile.statusDescription }}
                     </p>
                     <p *ngIf="!profile.statusDescription" class="text-muted">
-                      No status set yet
+                      {{ 'profile.noStatusSetYet' | translate }}
                     </p>
                   </div>
                 </div>
@@ -52,7 +53,7 @@ import { AuthService } from '../../core/services/auth.service';
                     class="btn btn-outline-primary btn-sm"
                     (click)="openStatusModal()"
                   >
-                    <i class="bi bi-pencil"></i> Update Status
+                    <i class="bi bi-pencil"></i> {{ 'profile.updateStatus' | translate }}
                   </button>
                   <button
                     type="button"
@@ -60,7 +61,7 @@ import { AuthService } from '../../core/services/auth.service';
                     (click)="openStatusViewer()"
                     [disabled]="!profile?.statusImageUrl && !profile?.statusDescription"
                   >
-                    <i class="bi bi-eye"></i> Show Status
+                    <i class="bi bi-eye"></i> {{ 'profile.showStatus' | translate }}
                   </button>
                 </div>
               </div>
@@ -70,7 +71,7 @@ import { AuthService } from '../../core/services/auth.service';
             <div *ngIf="showStatusModal" class="modal-backdrop">
               <div class="modal-panel">
                 <div class="modal-header">
-                  <h5>Update Your Status</h5>
+                  <h5>{{ 'profile.updateYourStatus' | translate }}</h5>
                   <button class="btn-close" (click)="closeStatusModal()">
                     <i class="bi bi-x-lg"></i>
                   </button>
@@ -80,7 +81,7 @@ import { AuthService } from '../../core/services/auth.service';
                   <form [formGroup]="statusForm" (ngSubmit)="updateStatus()">
                     <!-- Status Image -->
                     <div class="form-group">
-                      <label for="statusImage" class="form-label">Status Image (Optional)</label>
+                      <label for="statusImage" class="form-label">{{ 'profile.statusImageOptional' | translate }}</label>
                       <input 
                         type="file" 
                         id="statusImage"
@@ -88,7 +89,7 @@ import { AuthService } from '../../core/services/auth.service';
                         (change)="onStatusImageSelect($event)"
                         accept="image/jpeg,image/jpg,image/png,image/gif,image/webp"
                       />
-                      <small class="form-text">Max 5MB. JPG, PNG, GIF, WebP</small>
+                      <small class="form-text">{{ 'profile.maxImageSize' | translate }}</small>
 
                       <!-- Preview -->
                       <div *ngIf="statusImagePreview" class="image-preview mt-2">
@@ -98,14 +99,14 @@ import { AuthService } from '../../core/services/auth.service';
 
                     <!-- Status Description -->
                     <div class="form-group mt-3">
-                      <label for="statusDescription" class="form-label">Status Description (Optional)</label>
+                      <label for="statusDescription" class="form-label">{{ 'profile.statusDescriptionOptional' | translate }}</label>
                       <textarea 
                         id="statusDescription"
                         class="form-control"
                         rows="3"
                         formControlName="statusDescription"
                         maxlength="200"
-                        placeholder="What are you up to?"
+                        [placeholder]="'profile.statusDescriptionPlaceholder' | translate"
                       ></textarea>
                       <small class="form-text">
                         {{ statusForm.get('statusDescription')?.value?.length || 0 }}/200
@@ -125,11 +126,11 @@ import { AuthService } from '../../core/services/auth.service';
                         [disabled]="isUpdatingStatus"
                       >
                         <span *ngIf="!isUpdatingStatus">
-                          <i class="bi bi-check-circle"></i> Update Status
+                          <i class="bi bi-check-circle"></i> {{ 'profile.updateStatus' | translate }}
                         </span>
                         <span *ngIf="isUpdatingStatus">
                           <span class="spinner-border spinner-border-sm me-2"></span>
-                          Updating...
+                          {{ 'profile.updating' | translate }}
                         </span>
                       </button>
                       <button 
@@ -138,7 +139,7 @@ import { AuthService } from '../../core/services/auth.service';
                         (click)="closeStatusModal()"
                         [disabled]="isUpdatingStatus"
                       >
-                        Cancel
+                        {{ 'common.cancel' | translate }}
                       </button>
                     </div>
                   </form>
@@ -150,7 +151,7 @@ import { AuthService } from '../../core/services/auth.service';
             <div *ngIf="showBigStatus" class="modal-backdrop">
               <div class="modal-panel">
                 <div class="modal-header">
-                  <h5>Status</h5>
+                  <h5>{{ 'profile.status' | translate }}</h5>
                   <button class="btn-close" (click)="closeStatusViewer()">
                     <i class="bi bi-x-lg"></i>
                   </button>
@@ -166,7 +167,7 @@ import { AuthService } from '../../core/services/auth.service';
                 </div>
 
                 <div class="modal-actions mt-3">
-                  <button type="button" class="btn btn-secondary" (click)="closeStatusViewer()">Close</button>
+                  <button type="button" class="btn btn-secondary" (click)="closeStatusViewer()">{{ 'common.close' | translate }}</button>
                 </div>
               </div>
             </div>
@@ -174,7 +175,7 @@ import { AuthService } from '../../core/services/auth.service';
             <!-- Action Buttons -->
             <div class="action-buttons mt-4">
               <button class="btn btn-primary" (click)="editProfile()">
-                <i class="bi bi-pencil"></i> Edit Profile
+                <i class="bi bi-pencil"></i> {{ 'profile.editProfile' | translate }}
               </button>
             </div>
           </div>
@@ -183,12 +184,12 @@ import { AuthService } from '../../core/services/auth.service';
         <!-- Form to create/edit profile -->
         <ng-template #createForm>
           <div class="create-form">
-            <h2>{{ isEditing ? 'Edit Your Trainer Profile' : 'Create Your Trainer Profile' }}</h2>
+            <h2>{{ isEditing ? ('profile.editYourProfile' | translate) : ('profile.createYourProfile' | translate) }}</h2>
             
             <form [formGroup]="profileForm" (ngSubmit)="onSubmit()" novalidate>
               <!-- Handle -->
               <div class="form-group">
-                <label for="handle" class="form-label">Handle <span class="text-danger">*</span></label>
+                <label for="handle" class="form-label">{{ 'profile.handle' | translate }} <span class="text-danger">*</span></label>
                 <input 
                   type="text" 
                   id="handle"
@@ -198,19 +199,19 @@ import { AuthService } from '../../core/services/auth.service';
                   [class.is-invalid]="handle?.invalid && handle?.touched"
                 />
                 <div class="invalid-feedback" *ngIf="handle?.errors?.['required']">
-                  Handle is required
+                  {{ 'profile.handleRequired' | translate }}
                 </div>
                 <div class="invalid-feedback" *ngIf="handle?.errors?.['minlength']">
-                  Handle must be at least 3 characters
+                  {{ 'profile.handleMinLength' | translate }}
                 </div>
                 <div class="invalid-feedback" *ngIf="handle?.errors?.['maxlength']">
-                  Handle must not exceed 50 characters
+                  {{ 'profile.handleMaxLength' | translate }}
                 </div>
               </div>
 
               <!-- Bio -->
               <div class="form-group">
-                <label for="bio" class="form-label">Bio</label>
+                <label for="bio" class="form-label">{{ 'profile.bio' | translate }}</label>
                 <textarea 
                   id="bio"
                   class="form-control" 
@@ -222,13 +223,13 @@ import { AuthService } from '../../core/services/auth.service';
                 ></textarea>
                 <small class="form-text">{{ bio?.value?.length || 0 }}/500</small>
                 <div class="invalid-feedback" *ngIf="bio?.errors?.['maxlength']">
-                  Bio must not exceed 500 characters
+                  {{ 'profile.bioMaxLength' | translate }}
                 </div>
               </div>
 
               <!-- Years of Experience -->
               <div class="form-group">
-                <label for="yearsExperience" class="form-label">Years of Experience <span class="text-danger">*</span></label>
+                <label for="yearsExperience" class="form-label">{{ 'profile.yearsOfExperience' | translate }} <span class="text-danger">*</span></label>
                 <input 
                   type="number" 
                   id="yearsExperience"
@@ -239,13 +240,13 @@ import { AuthService } from '../../core/services/auth.service';
                   [class.is-invalid]="yearsExperience?.invalid && yearsExperience?.touched"
                 />
                 <div class="invalid-feedback" *ngIf="yearsExperience?.errors?.['required']">
-                  Years of experience is required
+                  {{ 'profile.yearsOfExperienceRequired' | translate }}
                 </div>
               </div>
 
               <!-- Cover Image -->
               <div class="form-group">
-                <label for="coverImage" class="form-label">Cover Image</label>
+                <label for="coverImage" class="form-label">{{ 'profile.coverImage' | translate }}</label>
                 <input 
                   type="file" 
                   id="coverImage"
@@ -253,7 +254,7 @@ import { AuthService } from '../../core/services/auth.service';
                   (change)="onFileSelect($event)"
                   accept="image/jpeg,image/jpg,image/png,image/gif,image/webp"
                 />
-                <small class="form-text">Max file size: 5MB. Accepted formats: JPG, PNG, GIF, WebP</small>
+                <small class="form-text">{{ 'profile.acceptedFormats' | translate }}</small>
                 
                 <!-- Image Preview -->
                 <div *ngIf="imagePreview" class="image-preview mt-3">
@@ -263,7 +264,7 @@ import { AuthService } from '../../core/services/auth.service';
 
               <!-- Video Intro URL -->
               <div class="form-group">
-                <label for="videoIntroUrl" class="form-label">Video Intro URL</label>
+                <label for="videoIntroUrl" class="form-label">{{ 'profile.videoIntro' | translate }}</label>
                 <input 
                   type="url" 
                   id="videoIntroUrl"
@@ -276,7 +277,7 @@ import { AuthService } from '../../core/services/auth.service';
 
               <!-- Branding Colors -->
               <div class="form-group">
-                <label for="brandingColors" class="form-label">Branding Colors</label>
+                <label for="brandingColors" class="form-label">{{ 'profile.brandingColors' | translate }}</label>
                 <input 
                   type="text" 
                   id="brandingColors"
@@ -284,7 +285,7 @@ import { AuthService } from '../../core/services/auth.service';
                   formControlName="brandingColors"
                   placeholder="#4A90E2,#8B5FBF"
                 />
-                <small class="form-text">Comma-separated hex colors</small>
+                <small class="form-text">{{ 'profile.brandingColorsHelp' | translate }}</small>
               </div>
 
               <!-- Error Message -->
@@ -300,10 +301,10 @@ import { AuthService } from '../../core/services/auth.service';
                   [disabled]="profileForm.invalid || isSubmitting"
                   class="btn btn-primary"
                 >
-                  <span *ngIf="!isSubmitting">{{ isEditing ? 'Update Profile' : 'Create Profile' }}</span>
+                  <span *ngIf="!isSubmitting">{{ isEditing ? ('profile.updateProfile' | translate) : ('profile.createProfile' | translate) }}</span>
                   <span *ngIf="isSubmitting">
                     <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
-                    {{ isEditing ? 'Updating...' : 'Creating...' }}
+                    {{ isEditing ? ('profile.updating' | translate) : ('profile.creating' | translate) }}
                   </span>
                 </button>
                 <button 
@@ -313,7 +314,7 @@ import { AuthService } from '../../core/services/auth.service';
                   class="btn btn-secondary ms-2"
                   (click)="cancelEdit()"
                 >
-                  Cancel
+                  {{ 'common.cancel' | translate }}
                 </button>
               </div>
             </form>
@@ -324,7 +325,7 @@ import { AuthService } from '../../core/services/auth.service';
       <!-- Loading -->
       <div *ngIf="loading" class="alert alert-info">
         <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
-        Loading profile...
+        {{ 'profile.loadingProfile' | translate }}
       </div>
     </div>
   `,
