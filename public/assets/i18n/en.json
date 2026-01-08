@@ -491,6 +491,8 @@
     "client": "Client",
     "package": "Package",
     "startDate": "Start Date",
-    "endDate": "End Date"
+    "endDate": "End Date",
+    "online": "Online",
+    "offline": "Offline"
   }
 }
