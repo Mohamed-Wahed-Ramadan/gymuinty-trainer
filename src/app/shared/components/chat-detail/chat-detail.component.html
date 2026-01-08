@@ -86,7 +86,7 @@
         <i class="bi bi-paperclip"></i>
       </button> -->
 
-      <input type="text" class="form-control message-input" placeholder="{{ 'shared.chat.placeholder' | translate }}"
+      <input type="text" class="form-control message-input" placeholder="{{ 'chat.placeholder' | translate }}"
         [(ngModel)]="messageContent" (keydown.enter)="sendMessage()" (input)="onTyping()">
 
       <button [disabled]="!messageContent.trim()" (click)="sendMessage()" class="btn btn-bton send-btn">
