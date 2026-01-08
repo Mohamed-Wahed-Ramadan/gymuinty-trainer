@@ -22,7 +22,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 30px;
+  margin-bottom: 10px;
   padding-bottom: 15px;
   border-bottom: 1px solid rgba(0, 0, 0, 0.1);
 }
@@ -54,7 +54,7 @@
 }
 
 .sidebar-nav {
-  margin-bottom: 30px;
+  margin-bottom: 20px;
 }
 
 .nav-list {
@@ -64,7 +64,7 @@
 }
 
 .nav-item {
-  margin-bottom: 8px;
+  margin-bottom: 1px;
   position: relative;
 }
 
