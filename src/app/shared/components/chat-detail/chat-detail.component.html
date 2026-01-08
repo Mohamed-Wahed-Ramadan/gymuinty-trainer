@@ -31,19 +31,23 @@
 
     <div *ngFor="let item of displayMessages" [class.own-message]="item.side === 'mine'" class="message-wrapper">
       <div class="message-group">
-        <!-- Avatar (use sender profile or thread.otherUserProfilePhoto fallback) -->
-        <img *ngIf="item.side === 'other'"
-          [src]="getAvatarUrl(item.message.senderProfilePhoto, thread.otherUserProfilePhoto)"
-          (error)="setAvatarFallback($event)" alt="{{ item.message.senderName }}" class="message-avatar">
+        <!-- Avatar Container with Name Below -->
+        <div class="avatar-container">
+          <!-- Avatar (use sender profile or thread.otherUserProfilePhoto fallback) -->
+          <img *ngIf="item.side === 'other'"
+            [src]="getAvatarUrl(item.message.senderProfilePhoto, thread.otherUserProfilePhoto)"
+            (error)="setAvatarFallback($event)" alt="{{ item.message.senderName }}" class="message-avatar">
 
-        <!-- For own messages show avatar on left -->
-        <img *ngIf="item.side === 'mine'" 
-          [src]="getAvatarUrl(item.message.senderProfilePhoto, null)"
-          (error)="setAvatarFallback($event)" alt="{{ item.message.senderName }}" class="message-avatar">
+          <!-- For own messages show avatar -->
+          <img *ngIf="item.side === 'mine'" 
+            [src]="getAvatarUrl(item.message.senderProfilePhoto, null)"
+            (error)="setAvatarFallback($event)" alt="{{ item.message.senderName }}" class="message-avatar">
 
-        <!-- Sender name -->
-        <div class="message-sender" [class.own]="item.side === 'mine'">{{ item.message.senderName || (item.side ===
-          'mine' ? (currentUserName || '') : '') }}</div>
+          <!-- Sender name below avatar -->
+          <div class="message-sender" [class.own]="item.side === 'mine'">
+            {{ item.message.senderName || (item.side === 'mine' ? (currentUserName || '') : '') }}
+          </div>
+        </div>
 
         <!-- Message bubble -->
         <div class="message-bubble" [ngClass]="item.side === 'mine' ? 'own' : 'other'">
@@ -89,5 +93,5 @@
         <i class="bi bi-send"></i>
       </button>
     </div>
-  </div>
+  </div>  
 </div>
