@@ -1,0 +1,85 @@
+html, body, .earn-page {
+  height: 100%;
+  min-height: 100vh;
+}
+.earn-page {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  background: #fff;
+  padding: 2rem 2vw 2rem 2vw;
+  border-radius: 0;
+  box-shadow: none;
+  width: 100%;
+  height: 100%;
+  min-height: 100vh;
+  margin: 0;
+}
+}
+.earn-content {
+  margin-top: 2rem;
+}
+.btn-gradient {
+  background: linear-gradient(to right, rgb(217, 233, 255) 40%, rgb(255, 230, 217) 80%, rgb(255, 217, 217) 100%);
+  color: #222;
+  border: none;
+  border-radius: 8px;
+  padding: 0.75rem 2rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: box-shadow 0.2s;
+}
+.btn-gradient:hover {
+  box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+}
+@media (max-width: 600px) {
+  .earn-page {
+    padding: 1rem;
+    max-width: 100%;
+  }
+}
+
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
+  margin-top: 2rem;
+}
+.earn-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+.earn-table th, .earn-table td {
+  padding: 0.75rem 1rem;
+  text-align: left;
+  border-bottom: 1px solid #f0f0f0;
+}
+.earn-table th {
+  background: #f7faff;
+  font-weight: 600;
+  color: #222;
+}
+.earn-table tr:last-child td {
+  border-bottom: none;
+}
+.profit-cell {
+  font-weight: bold;
+  color: #1a8a34;
+}
+.total-profit-row {
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+  color: #007bff;
+}
+.loading, .error {
+  margin: 2rem 0;
+  font-size: 1.1rem;
+  text-align: center;
+}
+.error {
+  color: #d32f2f;
+}

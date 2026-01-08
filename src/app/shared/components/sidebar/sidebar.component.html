@@ -22,6 +22,18 @@
         </a>
       </li>
       <li class="nav-item">
+        <a (click)="goTo('/earns')" class="nav-link" role="button" [title]="'sidebar.earns' | translate">
+          <i class="bi bi-cash-coin"></i>
+          <span class="nav-label">{{ 'sidebar.earns' | translate }}</span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a (click)="goTo('/clients')" class="nav-link" role="button" [title]="'sidebar.clients' | translate">
+          <i class="bi bi-people"></i>
+          <span class="nav-label">{{ 'sidebar.clients' | translate }}</span>
+        </a>
+      </li>
+      <li class="nav-item">
         <a (click)="goTo('programs')" class="nav-link" role="button" [title]="'sidebar.programs' | translate">
           <i class="bi bi-collection"></i>
           <span class="nav-label">{{ 'sidebar.programs' | translate }}</span>

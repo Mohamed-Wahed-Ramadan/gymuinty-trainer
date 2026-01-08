@@ -9,6 +9,8 @@ import { InboxComponent } from './features/inbox/inbox.component';
 import { ProfileComponent } from './features/profile/profile.component';
 import { HomeComponent } from './features/home/home.component';
 import { AccountSettingsComponent } from './features/dashboard/account-settings/account-settings.component';
+import { EarnsComponent } from './features/earns/earns.component';
+import { ClientsComponent } from './features/clients/clients.component';
 
 export const routes: Routes = [
   {
@@ -42,6 +44,18 @@ export const routes: Routes = [
     canActivate: [authGuard, roleGuard],
     data: { role: 'Trainer' },
     component: DashboardComponent
+  },
+  {
+    path: 'earns',
+    canActivate: [authGuard, roleGuard],
+    data: { role: 'Trainer' },
+    component: EarnsComponent
+  },
+  {
+    path: 'clients',
+    canActivate: [authGuard, roleGuard],
+    data: { role: 'Trainer' },
+    component: ClientsComponent
   },
   {
     path: 'dashboard/settings',

@@ -1,0 +1,41 @@
+<div class="earn-page">
+  <h1>{{ 'dashboard.earns' | translate }}</h1>
+  <div class="earn-content">
+    <div *ngIf="isLoading" class="loading">{{ 'loading' | translate }}</div>
+    <div *ngIf="error" class="error">{{ error }}</div>
+    <ng-container *ngIf="!isLoading && !error && earnsData">
+      <div class="total-profit-row">
+        <span class="total-profit-label">{{ 'earns.totalProfit' | translate }}:</span>
+        <span class="total-profit-value">{{ earnsData.totalProfit | number:'1.2-2' }} {{ earnsData.packages?.[0]?.currency || 'EGP' }}</span>
+      </div>
+      <div class="table-responsive">
+        <table class="earn-table">
+          <thead>
+            <tr>
+              <th>{{ 'earns.packageName' | translate }}</th>
+              <th>{{ 'earns.priceMonthly' | translate }}</th>
+              <th>{{ 'earns.priceYearly' | translate }}</th>
+              <th>{{ 'earns.totalSubscriptions' | translate }}</th>
+              <th>{{ 'earns.activeSubscriptions' | translate }}</th>
+              <th>{{ 'earns.totalRevenue' | translate }}</th>
+              <th>{{ 'earns.platformFee' | translate }}</th>
+              <th>{{ 'earns.profit' | translate }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let pkg of earnsData.packages">
+              <td>{{ pkg.packageName }}</td>
+              <td>{{ pkg.priceMonthly | number:'1.2-2' }} {{ pkg.currency }}</td>
+              <td>{{ pkg.priceYearly | number:'1.2-2' }} {{ pkg.currency }}</td>
+              <td>{{ pkg.totalSubscriptions }}</td>
+              <td>{{ pkg.activeSubscriptions }}</td>
+              <td>{{ pkg.totalRevenue | number:'1.2-2' }} {{ pkg.currency }}</td>
+              <td>{{ pkg.platformFee | number:'1.2-2' }} {{ pkg.currency }}</td>
+              <td class="profit-cell">{{ pkg.profit | number:'1.2-2' }} {{ pkg.currency }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </ng-container>
+  </div>
+</div>

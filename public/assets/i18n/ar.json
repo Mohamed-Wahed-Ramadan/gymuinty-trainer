@@ -1,4 +1,17 @@
+ 
 {
+   "clients": {
+    "title": "العملاء",
+    "clientName": "اسم العميل",
+    "clientEmail": "البريد الإلكتروني",
+    "status": "الحالة",
+    "startDate": "تاريخ البداية",
+    "currentPeriodEnd": "تاريخ الانتهاء",
+    "amountPaid": "المبلغ المدفوع",
+    "isAnnual": "نوع الاشتراك",
+    "annual": "سنوي",
+    "monthly": "شهري"
+  },
   "navbarr": {
     "signIn": "تسجيل الدخول",
     "signUp": "إنشاء حساب",
@@ -14,7 +27,8 @@
   },
   "auth": {
     "login": {
-      "title": "تسجيل الدخول",
+      "earns": {
+      },
       "subtitle": "لوحة تحكم المدرب",
       "emailOrUsername": "البريد الإلكتروني أو اسم المستخدم",
       "password": "كلمة المرور",
@@ -74,9 +88,10 @@
     "title": "لوحة التحكم",
     "welcome": "أهلا وسهلا بعودتك",
     "menu": "القائمة",
+    "earns": "المكسب",
+    "clients": "العملاء",
     "programs": "البرامج",
     "packages": "الحزم",
-    "clients": "العملاء",
     "revenue": "الإيرادات",
     "myPrograms": "برامجي",
     "week": "أسبوع",
@@ -87,6 +102,8 @@
   },
   "sidebar": {
     "dashboard": "لوحة التحكم",
+    "earns": "المكسب",
+    "clients": "العملاء",
     "programs": "البرامج",
     "packages": "الحزم",
     "exercises": "التمارين",
@@ -493,5 +510,18 @@
     "endDate": "تاريخ الانتهاء",
     "online": "متصل",
     "offline": "غير متصل"
+  },
+  "earns": {
+    "title": "المكسب",
+    "packageName": "اسم الباقة",
+    "priceMonthly": "السعر الشهري",
+    "priceYearly": "السعر السنوي",
+    "totalSubscriptions": "إجمالي الاشتراكات",
+    "activeSubscriptions": "الاشتراكات النشطة",
+    "totalRevenue": "إجمالي الإيرادات",
+    "platformFee": "رسوم المنصة",
+    "profit": "صافي الربح",
+    "totalProfit": "إجمالي الأرباح"
   }
-}
+  }
+

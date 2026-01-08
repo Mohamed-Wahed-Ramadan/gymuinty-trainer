@@ -1,4 +1,17 @@
+  
 {
+  "clients": {
+    "title": "Clients",
+    "clientName": "Client Name",
+    "clientEmail": "Email",
+    "status": "Status",
+    "startDate": "Start Date",
+    "currentPeriodEnd": "End Date",
+    "amountPaid": "Amount Paid",
+    "isAnnual": "Subscription Type",
+    "annual": "Annual",
+    "monthly": "Monthly"
+  },
   "navbarr": {
     "signIn": "Sign In",
     "signUp": "Sign Up",
@@ -61,6 +74,16 @@
     "listTitle": "Messages",
     "searchPlaceholder": "Search conversations...",
     "noChats": "No conversations yet",
+        "title": "Clients",
+        "clientName": "Client Name",
+        "clientEmail": "Email",
+        "status": "Status",
+        "startDate": "Start Date",
+        "currentPeriodEnd": "End Date",
+        "amountPaid": "Amount Paid",
+        "isAnnual": "Type",
+        "annual": "Annual",
+        "monthly": "Monthly",
     "lastMessagePreview": "Last message preview...",
     "startConversation": "Start a conversation",
     "typing": "{{name}} is typing...",
@@ -74,9 +97,10 @@
     "title": "Dashboard",
     "welcome": "Welcome back",
     "menu": "Menu",
+    "earns": "Earnings",
+    "clients": "Clients",
     "programs": "Programs",
     "packages": "Packages",
-    "clients": "Clients",
     "revenue": "Revenue",
     "myPrograms": "My Programs",
     "week": "Week",
@@ -87,6 +111,8 @@
   },
   "sidebar": {
     "dashboard": "Dashboard",
+    "earns": "Earnings",
+    "clients": "Clients",
     "programs": "Programs",
     "packages": "Packages",
     "exercises": "Exercises",
@@ -494,5 +520,17 @@
     "endDate": "End Date",
     "online": "Online",
     "offline": "Offline"
+    },
+  "earns": {
+    "title": "Earnings",
+    "packageName": "Package Name",
+    "priceMonthly": "Monthly Price",
+    "priceYearly": "Yearly Price",
+    "totalSubscriptions": "Total Subscriptions",
+    "activeSubscriptions": "Active Subscriptions",
+    "totalRevenue": "Total Revenue",
+    "platformFee": "Platform Fee",
+    "profit": "Profit",
+    "totalProfit": "Total Profit"
   }
 }

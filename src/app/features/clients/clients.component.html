@@ -1,0 +1,42 @@
+<div class="clients-page">
+  <h1>{{ 'dashboard.clients' | translate }}</h1>
+  <div class="clients-content">
+    <div *ngIf="isLoading" class="loading">{{ 'loading' | translate }}</div>
+    <div *ngIf="error" class="error">{{ error }}</div>
+    <ng-container *ngIf="!isLoading && !error && clientsData.length">
+      <div *ngFor="let pkg of clientsData" class="package-section">
+        <h2 class="package-title">{{ pkg.packageName }}</h2>
+        <div class="table-responsive">
+          <table class="clients-table">
+            <thead>
+              <tr>
+                <th>{{ 'clients.clientName' | translate }}</th>
+                <th>{{ 'clients.clientEmail' | translate }}</th>
+                <th>{{ 'clients.status' | translate }}</th>
+                <th>{{ 'clients.startDate' | translate }}</th>
+                <th>{{ 'clients.currentPeriodEnd' | translate }}</th>
+                <th>{{ 'clients.amountPaid' | translate }}</th>
+                <th>{{ 'clients.isAnnual' | translate }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let sub of pkg.subscriptions">
+                <td>{{ sub.clientName }}</td>
+                <td>{{ sub.clientEmail }}</td>
+                <td>{{ sub.status | translate }}</td>
+                <td>{{ sub.startDate | date:'mediumDate' }}</td>
+                <td>{{ sub.currentPeriodEnd | date:'mediumDate' }}</td>
+                <td>{{ sub.amountPaid | number:'1.2-2' }} {{ sub.currency }}</td>
+                <td>
+                  <span [ngClass]="{'annual': sub.isAnnual, 'monthly': !sub.isAnnual}">
+                    {{ sub.isAnnual ? ('clients.annual' | translate) : ('clients.monthly' | translate) }}
+                  </span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </ng-container>
+  </div>
+</div>
