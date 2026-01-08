@@ -26,10 +26,32 @@
       </button>
 
       <!-- Login Button (only if not logged in) -->
-      <button *ngIf="!isLoggedIn" class="btn-login" (click)="goToLogin()">
-        <i class="bi bi-box-arrow-in-right"></i>
-        <span>{{ 'navbar.login' | translate }}</span>
-      </button>
+
+      <!-- Sign In Dropdown (only if not logged in) -->
+      <div *ngIf="!isLoggedIn" class="signin-dropdown-container">
+        <button class="btn-signin" (click)="toggleSigninDropdown()">
+          <i class="bi bi-box-arrow-in-right"></i>
+          <span>{{ 'navbarr.signIn' | translate }}</span>
+          <i class="bi bi-caret-down-fill dropdown-caret"></i>
+        </button>
+        <div class="signin-dropdown" *ngIf="signinDropdownOpen">
+          <button class="signin-option" (click)="signinAsTrainer()">{{ 'navbarr.asTrainer' | translate }}</button>
+          <button class="signin-option" (click)="signinAsClient()">{{ 'navbarr.asClient' | translate }}</button>
+        </div>
+      </div>
+
+      <!-- Sign Up Dropdown (only if not logged in) -->
+      <div *ngIf="!isLoggedIn" class="signup-dropdown-container">
+        <button class="btn-signup" (click)="toggleSignupDropdown()">
+          <i class="bi bi-person-plus"></i>
+          <span>{{ 'navbarr.signUp' | translate }}</span>
+          <i class="bi bi-caret-down-fill dropdown-caret"></i>
+        </button>
+        <div class="signup-dropdown" *ngIf="signupDropdownOpen">
+          <button class="signup-option" (click)="signupAsTrainer()">{{ 'navbarr.asTrainer' | translate }}</button>
+          <button class="signup-option" (click)="signupAsClient()">{{ 'navbarr.asClient' | translate }}</button>
+        </div>
+      </div>
     </div>
   </div>
 </nav>

@@ -1,4 +1,10 @@
 {
+  "navbarr": {
+    "signIn": "تسجيل الدخول",
+    "signUp": "إنشاء حساب",
+    "asTrainer": "كمدرب",
+    "asClient": "كعميل"
+  },
   "app": {
     "brand": "جيمونتي"
   },

@@ -196,6 +196,113 @@ background:
   font-size: 16px;
 }
 
+/* Sign In Dropdown Styles */
+.signin-dropdown-container {
+  position: relative;
+  display: inline-block;
+}
+.btn-signin {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #fff;
+  color: #4A90E2;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  margin-left: 8px;
+}
+.btn-signin:hover {
+  background: #f8f9fa;
+}
+.signin-dropdown {
+  position: absolute;
+  top: 110%;
+  right: 0;
+  background: white;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+  min-width: 150px;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  padding: 8px 0;
+}
+.signin-option {
+  background: none;
+  border: none;
+  color: #4A90E2;
+  padding: 10px 20px;
+  text-align: left;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.signin-option:hover {
+  background: #f0f4fa;
+}
+
+/* Sign Up Dropdown Styles */
+.signup-dropdown-container {
+  position: relative;
+  display: inline-block;
+}
+.btn-signup {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #4A90E2;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  margin-left: 8px;
+}
+.btn-signup:hover {
+  background: #357ABD;
+}
+.dropdown-caret {
+  font-size: 12px;
+}
+.signup-dropdown {
+  position: absolute;
+  top: 110%;
+  right: 0;
+  background: white;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+  min-width: 150px;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  padding: 8px 0;
+}
+.signup-option {
+  background: none;
+  border: none;
+  color: #4A90E2;
+  padding: 10px 20px;
+  text-align: left;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.signup-option:hover {
+  background: #f0f4fa;
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
   .navbar-container {

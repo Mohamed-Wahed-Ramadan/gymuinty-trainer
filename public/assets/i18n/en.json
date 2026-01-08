@@ -1,4 +1,10 @@
 {
+  "navbarr": {
+    "signIn": "Sign In",
+    "signUp": "Sign Up",
+    "asTrainer": "as trainer",
+    "asClient": "as client"
+  },
   "app": {
     "brand": "Gymunity"
   },
