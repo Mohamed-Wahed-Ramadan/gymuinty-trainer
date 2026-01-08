@@ -79,11 +79,18 @@ export class ChatDetailComponent implements OnInit, OnDestroy, AfterViewChecked,
       });
 
     this.shouldScroll = true;
-    // get current username from AuthService/local storage
+    // get current username and userId from AuthService/local storage
     try {
       const u = this.authService.getCurrentUser();
       if (u) {
         this.currentUserName = (u.userName && String(u.userName).trim()) ? String(u.userName).trim() : (u.name ? String(u.name).trim() : null);
+        // Also ensure currentUserId is set if not already provided
+        if (!this.currentUserId && (u as any)?.userId) {
+          this.currentUserId = String((u as any).userId).trim();
+        }
+        if (!this.currentUserId && (u as any)?.id) {
+          this.currentUserId = String((u as any).id).trim();
+        }
       } else {
         // fallback: try localStorage key used by AuthService
         const raw = localStorage.getItem('gymunity_trainer_user');
@@ -91,7 +98,21 @@ export class ChatDetailComponent implements OnInit, OnDestroy, AfterViewChecked,
           try {
             const parsed = JSON.parse(raw);
             this.currentUserName = parsed.userName || parsed.name || null;
+            if (!this.currentUserId && parsed.userId) {
+              this.currentUserId = String(parsed.userId).trim();
+            }
+            if (!this.currentUserId && parsed.id) {
+              this.currentUserId = String(parsed.id).trim();
+            }
           } catch (e) { /* ignore */ }
+        }
+      }
+      
+      // Final fallback: get userId from token
+      if (!this.currentUserId) {
+        const userIdFromToken = this.authService.getUserIdFromToken();
+        if (userIdFromToken) {
+          this.currentUserId = String(userIdFromToken).trim();
         }
       }
     } catch (e) {
@@ -273,15 +294,118 @@ export class ChatDetailComponent implements OnInit, OnDestroy, AfterViewChecked,
     this.otherMessages = [];
     this.displayMessages = [];
 
-    const curName = this.currentUserName ? String(this.currentUserName).trim().toLowerCase() : null;
-    for (const m of this.messages || []) {
-      const senderName = m.senderName ? String(m.senderName).trim() : '';
-      const isMineByName = curName && senderName && senderName.toLowerCase() === curName;
-      const isMineById = this.currentUserId && m.senderId === this.currentUserId;
-      const side: 'mine' | 'other' = (isMineByName || isMineById) ? 'mine' : 'other';
-      if (side === 'mine') this.myMessages.push(m); else this.otherMessages.push(m);
+    // DEBUG: Log current user info
+    console.log('🔍 Current User ID:', this.currentUserId);
+    console.log('🔍 Current User Name:', this.currentUserName);
+    console.log('🔍 Thread Other User Name:', this.thread?.otherUserName);
+    console.log('🔍 Thread Trainer ID:', this.thread?.trainerId);
+    console.log('🔍 Thread Client ID:', this.thread?.clientId);
+
+    // Sort messages by time first (oldest first)
+    const sortedMessages = [...(this.messages || [])].sort((a, b) => {
+      const timeA = new Date(a.createdAt).getTime();
+      const timeB = new Date(b.createdAt).getTime();
+      return timeA - timeB;
+    });
+
+    for (const m of sortedMessages) {
+      // DEBUG: Log each message sender info
+      console.log('📩 Message Sender ID:', m.senderId, '| Sender Name:', m.senderName, '| Thread Trainer:', this.thread?.trainerId, '| Thread Client:', this.thread?.clientId);
+
+      // Primary check: Compare sender ID with current user ID (most reliable)
+      let isMine = false;
+      
+      if (this.currentUserId && m.senderId) {
+        // Compare as strings to avoid type mismatch
+        const currentIdStr = String(this.currentUserId).trim();
+        const senderIdStr = String(m.senderId).trim();
+        isMine = currentIdStr === senderIdStr;
+        console.log('  🔎 ID Comparison:', currentIdStr, '===', senderIdStr, '→', isMine);
+      }
+
+      // Secondary check: Compare with thread.trainerId or thread.clientId
+      if (!isMine && this.thread && this.currentUserId) {
+        const currentIdStr = String(this.currentUserId).trim();
+        
+        // Check if current user is the trainer
+        if (this.thread.trainerId) {
+          const trainerIdStr = String(this.thread.trainerId).trim();
+          if (currentIdStr === trainerIdStr) {
+            // Current user is trainer, so if senderId matches trainerId, it's mine
+            if (m.senderId) {
+              const senderIdStr = String(m.senderId).trim();
+              if (trainerIdStr === senderIdStr) {
+                isMine = true;
+                console.log('  🔎 Trainer ID Match:', trainerIdStr, '===', senderIdStr);
+              }
+            }
+          }
+        }
+        
+        // Check if current user is the client
+        if (!isMine && this.thread.clientId) {
+          const clientIdStr = String(this.thread.clientId).trim();
+          if (currentIdStr === clientIdStr) {
+            // Current user is client, so if senderId matches clientId, it's mine
+            if (m.senderId) {
+              const senderIdStr = String(m.senderId).trim();
+              if (clientIdStr === senderIdStr) {
+                isMine = true;
+                console.log('  🔎 Client ID Match:', clientIdStr, '===', senderIdStr);
+              }
+            }
+          }
+        }
+      }
+
+      // Fallback: Compare sender name with current user name
+      if (!isMine && this.currentUserName && m.senderName) {
+        const curName = String(this.currentUserName).trim().toLowerCase();
+        const senderName = String(m.senderName).trim().toLowerCase();
+        // Only match if names are exactly the same
+        if (curName === senderName) {
+          // But exclude if sender name matches thread.otherUserName
+          if (this.thread?.otherUserName) {
+            const otherUserName = String(this.thread.otherUserName).trim().toLowerCase();
+            if (senderName !== otherUserName) {
+              isMine = true;
+              console.log('  🔎 Name Match:', curName, '===', senderName);
+            } else {
+              console.log('  🔎 Name matches other user, excluding:', senderName);
+            }
+          } else {
+            isMine = true;
+            console.log('  🔎 Name Match (no other user):', curName, '===', senderName);
+          }
+        }
+      }
+
+      // Final check: If sender name matches thread.otherUserName, it's definitely not mine
+      if (isMine && this.thread?.otherUserName && m.senderName) {
+        const otherUserName = String(this.thread.otherUserName).trim().toLowerCase();
+        const senderName = String(m.senderName).trim().toLowerCase();
+        if (senderName === otherUserName) {
+          isMine = false;
+          console.log('  🔎 Override: Sender matches other user name');
+        }
+      }
+
+      const side: 'mine' | 'other' = isMine ? 'mine' : 'other';
+      
+      // DEBUG: Log the decision
+      console.log('✅ Message classified as:', side, '| Content:', m.content?.substring(0, 30));
+
+      if (side === 'mine') {
+        this.myMessages.push(m);
+      } else {
+        this.otherMessages.push(m);
+      }
+      
       this.displayMessages.push({ message: m, side });
     }
+
+    // DEBUG: Log final counts
+    console.log('📊 My messages:', this.myMessages.length, '| Other messages:', this.otherMessages.length);
 
     // Persist separated arrays per thread id (optional storage)
     try {

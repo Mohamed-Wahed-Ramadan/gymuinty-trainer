@@ -1,3 +1,6 @@
+.message-wrapper.own-message .message-time {
+  color: #000;
+}
 .chat-detail-container {
   display: flex;
   flex-direction: column;
@@ -139,15 +142,16 @@ background:
   max-width: 100%;
 }
 
+
 .message-bubble.other {
-  background: #e6f5ea; /* green background for other user's messages */
+  background: #d9e9ff; /* blue background for other user's messages */
   border: none;
   color: #0b3e1a;
   border-radius: 16px 16px 16px 4px;
 }
 
 .message-bubble.own {
-  background: #ff4d4f; /* red background for my messages */
+  background: #ffd9d9; /* red background for my messages */
   border: none;
   color: #fff;
   border-radius: 16px 16px 4px 16px;
