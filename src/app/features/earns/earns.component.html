@@ -6,7 +6,8 @@
     <ng-container *ngIf="!isLoading && !error && earnsData">
       <div class="total-profit-row">
         <span class="total-profit-label">{{ 'earns.totalProfit' | translate }}:</span>
-        <span class="total-profit-value">{{ earnsData.totalProfit | number:'1.2-2' }} {{ earnsData.packages?.[0]?.currency || 'EGP' }}</span>
+        <span class="total-profit-value">{{ earnsData.totalProfit | number:'1.2-2' }} {{
+          earnsData.packages?.[0]?.currency || 'EGP' }}</span>
       </div>
       <div class="table-responsive">
         <table class="earn-table">
@@ -24,7 +25,7 @@
           </thead>
           <tbody>
             <tr *ngFor="let pkg of earnsData.packages">
-              <td>{{ pkg.packageName }}</td>
+              <td>{{ pkg.name }}</td>
               <td>{{ pkg.priceMonthly | number:'1.2-2' }} {{ pkg.currency }}</td>
               <td>{{ pkg.priceYearly | number:'1.2-2' }} {{ pkg.currency }}</td>
               <td>{{ pkg.totalSubscriptions }}</td>
