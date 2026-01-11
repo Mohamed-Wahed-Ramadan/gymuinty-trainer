@@ -54,10 +54,7 @@
       <span>{{ 'auth.login.signInWithGoogle' | translate }}</span>
     </div>
 
-    <div id="g_id_onload" [attr.data-client_id]="googleClientId" data-callback="handleCredentialResponse"
-      (nglize)="onGoogleSignInSuccess($event)">
-    </div>
-    <div class="g_id_signin" data-type="standard"></div>
+    <div class="g_id_signin"></div>
 
     <div class="login-footer">
       <p>{{ 'auth.login.noAccount' | translate }} <a routerLink="/auth/register" class="signup-link">{{

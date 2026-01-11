@@ -10,7 +10,7 @@ import { CommonModule, NgClass, DatePipe, DecimalPipe } from '@angular/common';
   templateUrl: './earns.component.html',
   styleUrls: ['./earns.component.css'],
 //   standalone: true,
-  imports: [CommonModule, TranslateModule, NgClass, DatePipe, DecimalPipe]
+  imports: [CommonModule, TranslateModule , DecimalPipe]
 })
 export class EarnsComponent implements OnInit {
   earnsData: any = null;
