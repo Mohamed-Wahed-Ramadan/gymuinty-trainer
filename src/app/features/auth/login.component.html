@@ -23,6 +23,7 @@
             formControlName="password" placeholder="{{ 'auth.login.password' | translate }}"
             [class.is-invalid]="password?.invalid && password?.touched" />
           <button type="button" class="password-toggle" (click)="togglePasswordVisibility()"
+            [title]="showPassword ? 'Hide password' : 'Show password'"
             [attr.aria-label]="showPassword ? 'Hide password' : 'Show password'">
             <i [class]="showPassword ? 'bi bi-eye-slash' : 'bi bi-eye'"></i>
           </button>
