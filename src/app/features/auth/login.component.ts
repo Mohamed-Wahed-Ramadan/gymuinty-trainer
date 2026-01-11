@@ -195,7 +195,8 @@ export class LoginComponent implements OnInit {
     console.log('[GoogleAuth] Starting auth process with ID token');
     
     const googleAuthRequest = {
-      idToken: response.credential
+      idToken: response.credential,
+      role: 'Trainer' // Specify role as Trainer for this application
     };
 
     // Send ID Token to backend
