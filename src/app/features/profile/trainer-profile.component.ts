@@ -20,7 +20,7 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
               <p><strong>{{ 'profile.handle' | translate }}:</strong> @{{ profile.handle }}</p>
               <p><strong>{{ 'profile.bio' | translate }}:</strong> {{ profile.bio }}</p>
               <p><strong>{{ 'profile.yearsOfExperience' | translate }}:</strong> {{ profile.yearsExperience }}</p>
-              <p *ngIf="profile.ratingAverage"><strong>{{ 'profile.rating' | translate }}:</strong> {{ profile.ratingAverage }}/5.0</p>
+              <p *ngIf="profile.ratingAverageComputed"><strong>{{ 'profile.rating' | translate }}:</strong> {{ profile.ratingAverageComputed }}/5.0</p>
               <p *ngIf="profile.totalClients"><strong>{{ 'profile.totalClients' | translate }}:</strong> {{ profile.totalClients }}</p>
               <img *ngIf="profile.coverImageUrl" [src]="profile.coverImageUrl" [alt]="'profile.cover' | translate" class="cover-img" />
 

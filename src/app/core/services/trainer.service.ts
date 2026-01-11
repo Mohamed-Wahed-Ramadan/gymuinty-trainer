@@ -19,6 +19,7 @@ export interface TrainerProfileResponse {
   isVerified: boolean;
   verifiedAt: string | null;
   ratingAverage: number;
+  ratingAverageComputed: number;
   totalClients: number;
   yearsExperience: number;
   statusImageUrl: string | null;

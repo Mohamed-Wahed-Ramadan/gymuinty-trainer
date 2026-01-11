@@ -17,6 +17,7 @@ const mockTrainerProfile = {
   isSuspended: false,
   suspendedAt: null,
   ratingAverage: 4.8,
+  ratingAverageComputed: 4.8,
   totalClients: 156,
   yearsExperience: 10,
   statusImageUrl: 'https://images.unsplash.com/photo-1517836357463-d25ddfcbf042?w=500&h=300&fit=crop',
