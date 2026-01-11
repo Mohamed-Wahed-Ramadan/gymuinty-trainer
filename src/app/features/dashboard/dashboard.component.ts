@@ -3,8 +3,8 @@ import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { ActivatedRoute } from '@angular/router';
 import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
-import { AuthService, ProgramService, PackageService, Program, Package } from '../../core/services';
+import { takeUntil, switchMap } from 'rxjs/operators';
+import { AuthService, ProgramService, PackageService, Program, Package, TrainerService } from '../../core/services';
 import { ProgramsComponent } from './programs/programs.component';
 import { PackagesComponent } from './packages/packages.component';
 import { ProgramDetailComponent } from './program-detail/program-detail.component';
@@ -36,6 +36,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     private programService: ProgramService,
     private packageService: PackageService,
     private authService: AuthService,
+    private trainerService: TrainerService,
     private router: Router,
     private route: ActivatedRoute,
     private cdr: ChangeDetectorRef
@@ -80,11 +81,17 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   loadPackages(): void {
+    if (!this.userId) {
+      console.error('No userId found');
+      return;
+    }
+    
     this.isLoadingPackages = true;
-    // Use getAllPackages() since we don't have Trainer Profile ID
-    // and API returns all packages (can filter by trainer on backend)
-    this.packageService.getAllPackages()
-      .pipe(takeUntil(this.destroy$))
+    this.trainerService.getProfileByUserId(this.userId)
+      .pipe(
+        switchMap(profile => this.packageService.getPackagesByTrainer(profile.id)),
+        takeUntil(this.destroy$)
+      )
       .subscribe({
         next: (packages) => {
           this.packages = packages;
